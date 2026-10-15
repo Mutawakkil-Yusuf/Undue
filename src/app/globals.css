@@ -104,6 +104,16 @@
   padding-bottom: max(env(safe-area-inset-bottom), 0px);
 }
 
+/* Keeps content clear of the floating add button and the bottom nav,
+   including on devices with a home indicator. */
+@utility pb-clear-fab {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 150px);
+}
+
+@utility bottom-clear-fab {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 150px);
+}
+
 @utility pt-safe {
   padding-top: max(env(safe-area-inset-top), 0px);
 }

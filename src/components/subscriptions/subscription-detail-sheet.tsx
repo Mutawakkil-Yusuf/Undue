@@ -120,7 +120,7 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
         footer={
           subscription ? (
             subscription.status === "active" ? (
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-2.5 min-[360px]:flex-row min-[360px]:gap-3">
                 <Button
                   variant="secondary"
                   onClick={() => handleEdit(subscription)}
@@ -138,7 +138,7 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
                 </Button>
               </div>
             ) : (
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-2.5 min-[360px]:flex-row min-[360px]:gap-3">
                 <Button
                   variant="danger"
                   onClick={() => handleDelete(subscription)}
@@ -204,11 +204,11 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
           size="lg"
           className={cancelled ? "opacity-60" : undefined}
         />
-        <div className="flex flex-col gap-0.5">
-          <span className="flex items-center gap-2 font-display text-xl text-ink">
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <span className="flex min-w-0 items-center gap-2 font-display text-xl text-ink">
             {subscription.name}
             {subscription.isTrial ? (
-              <span className="rounded-full bg-ember-soft px-2 py-0.5 text-[11px] font-medium text-ember-strong">
+              <span className="shrink-0 rounded-full bg-ember-soft px-2 py-0.5 text-[11px] font-medium text-ember-strong">
                 Trial
               </span>
             ) : null}

@@ -77,7 +77,7 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
         title={editing ? "Edit subscription" : "Add subscription"}
         description="Nothing here leaves your device."
         footer={
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-2.5 min-[360px]:flex-row min-[360px]:gap-3">
             <Button variant="secondary" onClick={close} className="flex-1">
               Cancel
             </Button>

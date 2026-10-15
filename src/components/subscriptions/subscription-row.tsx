@@ -36,10 +36,10 @@ export function SubscriptionRow({
         className={cancelled ? "opacity-50" : undefined}
       />
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           <span className="truncate font-medium text-ink">{subscription.name}</span>
           {subscription.isTrial ? (
-            <span className="rounded-full bg-ember-soft px-2 py-0.5 text-[11px] font-medium text-ember-strong">
+            <span className="shrink-0 rounded-full bg-ember-soft px-2 py-0.5 text-[11px] font-medium text-ember-strong">
               Trial
             </span>
           ) : null}
