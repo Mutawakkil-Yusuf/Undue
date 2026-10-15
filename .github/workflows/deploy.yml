@@ -1,0 +1,50 @@
+name: Deploy to Vercel
+
+# Manual, opt-in deploys. Set repository secrets first:
+#   VERCEL_TOKEN     - a Vercel access token
+#   VERCEL_ORG_ID    - from `vercel link` (.vercel/project.json -> orgId)
+#   VERCEL_PROJECT_ID- from `vercel link` (.vercel/project.json -> projectId)
+# Leave these unset and the workflow simply will not be triggered.
+
+on:
+  workflow_dispatch:
+    inputs:
+      production:
+        description: Deploy to production (otherwise a preview deployment)
+        type: boolean
+        default: false
+
+concurrency:
+  group: vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.21.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install Vercel CLI
+        run: pnpm add --global vercel@latest
+
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=${{ inputs.production && 'production' || 'preview' }}
+
+      - name: Build prebuilt output
+        run: vercel build ${{ inputs.production && '--prod' || '' }}
+
+      - name: Deploy
+        run: vercel deploy --prebuilt ${{ inputs.production && '--prod' || '' }}
