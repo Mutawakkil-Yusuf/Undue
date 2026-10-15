@@ -14,6 +14,7 @@ import { MoneyText } from "@/components/ui/money-text";
 import { ServiceAvatar } from "@/components/ui/service-avatar";
 import { Sheet } from "@/components/ui/sheet";
 import {
+  CalendarIcon,
   ClockIcon,
   ExternalLinkIcon,
   PencilIcon,
@@ -29,10 +30,12 @@ import { computeCancelWindow } from "@/lib/domain/cancel-by";
 import { advance, cycleLabel, cycleShortLabel } from "@/lib/domain/cycle";
 import { civilDate, diffInDays, formatIsoDate, parseIsoDate } from "@/lib/domain/date";
 import { formatCountdown, formatDate } from "@/lib/domain/format";
+import { buildCalendar, CALENDAR_MIME_TYPE } from "@/lib/domain/ics";
 import { getCategory, type Subscription } from "@/lib/domain/schema";
 import { getUrgencyPresentation, urgencySurfaceClass } from "@/lib/domain/urgency";
 import { useToday } from "@/lib/hooks/use-today";
 import { cn } from "@/lib/utils/cn";
+import { downloadTextFile } from "@/lib/utils/download";
 import { useSubscriptionSheet } from "./subscription-sheet";
 
 interface SubscriptionDetailContextValue {
@@ -174,9 +177,24 @@ interface DetailBodyProps {
 }
 
 function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
+  const { showToast } = useToast();
   const cancelWindow = computeCancelWindow(subscription, today);
   const presentation = getUrgencyPresentation(cancelWindow.urgency);
   const cancelled = subscription.status === "cancelled";
+
+  function handleAddToCalendar() {
+    const slug =
+      subscription.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "") || "reminder";
+    downloadTextFile(
+      `undue-${slug}.ics`,
+      buildCalendar([subscription]),
+      CALENDAR_MIME_TYPE,
+    );
+    showToast("Calendar reminder downloaded", "success");
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -269,6 +287,16 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
             leadingIcon={<ClockIcon width={18} height={18} />}
           >
             It renewed — advance one cycle
+          </Button>
+        ) : null}
+        {subscription.status === "active" ? (
+          <Button
+            variant="secondary"
+            block
+            onClick={handleAddToCalendar}
+            leadingIcon={<CalendarIcon width={18} height={18} />}
+          >
+            Add cancel reminder to calendar
           </Button>
         ) : null}
         {subscription.cancelUrl ? (

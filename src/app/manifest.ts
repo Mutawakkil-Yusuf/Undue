@@ -7,8 +7,12 @@ export default function manifest(): MetadataRoute.Manifest {
     description:
       "Track every subscription and see the exact last day to cancel before you are charged.",
     start_url: "/",
+    scope: "/",
     display: "standalone",
     orientation: "portrait",
+    lang: "en",
+    dir: "ltr",
+    categories: ["finance", "productivity", "utilities"],
     background_color: "#f6f1e7",
     theme_color: "#f6f1e7",
     icons: [
@@ -23,6 +27,12 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: "any",
         type: "image/svg+xml",
         purpose: "maskable",
+      },
+      {
+        src: "/apple-icon",
+        sizes: "180x180",
+        type: "image/png",
+        purpose: "any",
       },
     ],
   };

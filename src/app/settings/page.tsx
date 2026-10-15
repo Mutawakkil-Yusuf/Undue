@@ -7,7 +7,14 @@ import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Field, SelectInput, TextInput } from "@/components/ui/field";
 import { SegmentedControl } from "@/components/ui/segmented-control";
-import { DownloadIcon, ShieldIcon, TrashIcon, UploadIcon } from "@/components/ui/icons";
+import { Switch } from "@/components/ui/switch";
+import {
+  CalendarIcon,
+  DownloadIcon,
+  ShieldIcon,
+  TrashIcon,
+  UploadIcon,
+} from "@/components/ui/icons";
 import { updateSettings } from "@/lib/db/settings";
 import {
   createBackup,
@@ -16,9 +23,20 @@ import {
   restoreBackup,
   serializeBackup,
 } from "@/lib/db/backup";
+import { useSubscriptions } from "@/lib/db/hooks";
 import { CURRENCY_CODES, type AppSettings, type CurrencyCode } from "@/lib/domain/schema";
 import { todayIso } from "@/lib/domain/date";
+import { buildCalendar, CALENDAR_MIME_TYPE, calendarFilename } from "@/lib/domain/ics";
+import {
+  useNotificationsEnabled,
+  useNotificationsSupported,
+} from "@/lib/hooks/use-notifications";
+import {
+  requestNotificationPermission,
+  setNotificationsEnabled,
+} from "@/lib/notifications/notifications";
 import { THEMES, THEME_LABELS } from "@/lib/theme/theme";
+import { downloadTextFile } from "@/lib/utils/download";
 
 interface SettingsDraft {
   displayCurrency: CurrencyCode;
@@ -173,6 +191,83 @@ function AppearanceCard() {
   );
 }
 
+function RemindersCard() {
+  const { showToast } = useToast();
+  const subscriptions = useSubscriptions();
+  const enabled = useNotificationsEnabled();
+  const supported = useNotificationsSupported();
+  const active = subscriptions?.filter((item) => item.status === "active") ?? [];
+
+  function handleExportCalendar() {
+    if (active.length === 0) {
+      showToast("Add a subscription first to create reminders.");
+      return;
+    }
+    downloadTextFile(calendarFilename(), buildCalendar(active), CALENDAR_MIME_TYPE);
+    showToast("Calendar file downloaded", "success");
+  }
+
+  async function handleToggleNotifications(next: boolean) {
+    if (!next) {
+      setNotificationsEnabled(false);
+      return;
+    }
+    if (!supported) {
+      showToast("Notifications aren't supported on this device.", "danger");
+      return;
+    }
+    const result = await requestNotificationPermission();
+    if (result === "granted") {
+      setNotificationsEnabled(true);
+      showToast("Daily reminders turned on", "success");
+    } else {
+      setNotificationsEnabled(false);
+      showToast(
+        "Notifications are blocked. Enable them in your browser settings.",
+        "danger",
+      );
+    }
+  }
+
+  return (
+    <section className="flex flex-col gap-4 rounded-card border border-line bg-surface p-5 shadow-card">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
+          Reminders
+        </h2>
+        <p className="text-sm text-muted">
+          Add cancellation deadlines to your calendar, or get a nudge in this browser on
+          the day a cancel window closes.
+        </p>
+      </div>
+
+      <Button
+        variant="secondary"
+        onClick={handleExportCalendar}
+        block
+        disabled={active.length === 0}
+        leadingIcon={<CalendarIcon width={18} height={18} />}
+      >
+        {active.length > 0
+          ? `Add ${active.length} reminder${active.length === 1 ? "" : "s"} to calendar (.ics)`
+          : "Add reminders to calendar (.ics)"}
+      </Button>
+
+      <Switch
+        checked={enabled && supported}
+        onChange={handleToggleNotifications}
+        disabled={!supported}
+        label="Daily reminder notification"
+        description={
+          supported
+            ? "Shows a notification when a subscription is due to be cancelled."
+            : "Not supported on this device."
+        }
+      />
+    </section>
+  );
+}
+
 function DataCard() {
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -180,13 +275,11 @@ function DataCard() {
   async function handleExport() {
     try {
       const backup = await createBackup();
-      const blob = new Blob([serializeBackup(backup)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `undue-backup-${todayIso()}.json`;
-      link.click();
-      URL.revokeObjectURL(url);
+      downloadTextFile(
+        `undue-backup-${todayIso()}.json`,
+        serializeBackup(backup),
+        "application/json",
+      );
       showToast("Backup downloaded", "success");
     } catch {
       showToast("Could not create a backup", "danger");
@@ -291,6 +384,8 @@ export default function SettingsPage() {
       {isReady ? <PreferencesCard key={settings.updatedAt} settings={settings} /> : null}
 
       <AppearanceCard />
+
+      <RemindersCard />
 
       <DataCard />
 
