@@ -1,4 +1,4 @@
-import { CategoryIcon } from "@/components/ui/category-icon";
+import { CATEGORY_TINTS, CategoryIcon } from "@/components/ui/category-icon";
 import type { CategoryId } from "@/lib/domain/schema";
 import { cn } from "@/lib/utils/cn";
 
@@ -23,17 +23,20 @@ interface ServiceAvatarProps {
 }
 
 export function ServiceAvatar({ category, size = "md", className }: ServiceAvatarProps) {
+  const tint = CATEGORY_TINTS[category];
   return (
     <span
       aria-hidden="true"
       className={cn(
-        "flex shrink-0 items-center justify-center border border-line bg-bone text-ink/70",
+        "flex shrink-0 items-center justify-center border border-line",
+        tint.soft,
         SIZE_CLASSES[size],
         className,
       )}
     >
       <CategoryIcon
         category={category}
+        className={tint.text}
         width={ICON_SIZES[size]}
         height={ICON_SIZES[size]}
       />

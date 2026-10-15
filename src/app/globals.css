@@ -28,6 +28,29 @@
   --color-urgent: #c62828;
   --color-urgent-soft: #fbe4e4;
 
+  --color-cat-streaming: #d9481f;
+  --color-cat-streaming-soft: #fbe4d9;
+  --color-cat-music: #6d4ae0;
+  --color-cat-music-soft: #eae4fb;
+  --color-cat-cloud: #2a6fd6;
+  --color-cat-cloud-soft: #e1ecfb;
+  --color-cat-software: #0f8a7e;
+  --color-cat-software-soft: #ddf1ee;
+  --color-cat-mobile: #1e7a5a;
+  --color-cat-mobile-soft: #e1f1ea;
+  --color-cat-internet: #0b7fa8;
+  --color-cat-internet-soft: #dcf0f6;
+  --color-cat-gaming: #b32aa6;
+  --color-cat-gaming-soft: #f8e1f5;
+  --color-cat-fitness: #c25e12;
+  --color-cat-fitness-soft: #fbe7d6;
+  --color-cat-finance: #9a6b0f;
+  --color-cat-finance-soft: #f6ecd3;
+  --color-cat-education: #3f51b5;
+  --color-cat-education-soft: #e4e7f7;
+  --color-cat-other: #6b6660;
+  --color-cat-other-soft: #ece7dd;
+
   --radius-card: 1rem;
   --radius-field: 0.75rem;
   --radius-sheet: 1.25rem;
@@ -151,6 +174,29 @@
   --color-soon-soft: #33270f;
   --color-urgent: #f17a72;
   --color-urgent-soft: #3a1d1d;
+
+  --color-cat-streaming: #ff7a52;
+  --color-cat-streaming-soft: #3a2019;
+  --color-cat-music: #a48bf5;
+  --color-cat-music-soft: #241f3d;
+  --color-cat-cloud: #6ba6f0;
+  --color-cat-cloud-soft: #17263c;
+  --color-cat-software: #3dbfac;
+  --color-cat-software-soft: #14302b;
+  --color-cat-mobile: #56c39a;
+  --color-cat-mobile-soft: #16302a;
+  --color-cat-internet: #4cc2e0;
+  --color-cat-internet-soft: #122b33;
+  --color-cat-gaming: #e87bd9;
+  --color-cat-gaming-soft: #361a33;
+  --color-cat-fitness: #f0954e;
+  --color-cat-fitness-soft: #372215;
+  --color-cat-finance: #e0b45a;
+  --color-cat-finance-soft: #33270f;
+  --color-cat-education: #93a2f2;
+  --color-cat-education-soft: #1e2140;
+  --color-cat-other: #a49b8c;
+  --color-cat-other-soft: #2a2620;
 
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.35);
   --shadow-sheet: 0 -8px 40px rgba(0, 0, 0, 0.5);
