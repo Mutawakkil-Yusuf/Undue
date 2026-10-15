@@ -95,9 +95,44 @@ for custom domains.
 
 ## Deploying
 
-The app builds as a standard Next.js app and deploys to Vercel with no extra
+The app is a standard Next.js app and deploys to Vercel with no extra
 configuration. It is intentionally **not** a static export, so server rendering
 and metadata routes (icons, manifest, open graph) work out of the box.
+
+`vercel.json` adds a small set of security headers and keeps the service worker
+(`/sw.js`) uncached so updates ship immediately. Node is pinned to 22.x via
+`engines` so Vercel matches CI.
+
+### Vercel dashboard
+
+1. Import the repository at vercel.com/new.
+2. Accept the detected settings (framework: Next.js, install: `pnpm install`,
+   build: `pnpm build`).
+3. Set `NEXT_PUBLIC_SITE_URL` to your production URL — only needed for a custom
+   domain; the `VERCEL_URL` fallback covers the default `*.vercel.app` domain.
+
+### Vercel CLI
+
+```bash
+pnpm add --global vercel@latest
+vercel link
+vercel pull --yes --environment=production
+vercel build --prod
+vercel deploy --prebuilt --prod
+```
+
+### Deploy from GitHub Actions (optional)
+
+`.github/workflows/deploy.yml` deploys on demand. Add these repository secrets:
+
+| Secret              | Where to find it                           |
+| ------------------- | ------------------------------------------ |
+| `VERCEL_TOKEN`      | Vercel → Account Settings → Tokens         |
+| `VERCEL_ORG_ID`     | `.vercel/project.json` after `vercel link` |
+| `VERCEL_PROJECT_ID` | `.vercel/project.json` after `vercel link` |
+
+Then run the **Deploy to Vercel** workflow from the Actions tab; toggle
+`production` to target production instead of a preview.
 
 ## Project layout
 
