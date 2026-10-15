@@ -1,4 +1,4 @@
-const CACHE_NAME = "undue-v1";
+const CACHE_NAME = "undue-v2";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -40,7 +40,7 @@ self.addEventListener("fetch", (event) => {
         if (cached) {
           return cached;
         }
-        const shell = await caches.match("/");
+        const shell = await caches.match("/app");
         if (shell) {
           return shell;
         }

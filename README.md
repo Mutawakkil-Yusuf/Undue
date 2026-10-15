@@ -138,9 +138,11 @@ Then run the **Deploy to Vercel** workflow from the Actions tab; toggle
 
 ```
 src/
-  app/            Routes: dashboard, guides, settings, manifest, icons, 404
+  app/            Landing page at /, app routes under (app)/ (dashboard,
+                  guides, settings), plus manifest, icons, open graph, 404
   components/
     shell/        App shell, bottom nav, brand mark, reminder notifier
+    landing/      Marketing landing page pieces
     subscriptions/ Form, sheet, detail sheet, list, row, spend summary
     ui/           Primitives: button, field, sheet, switch, chips, icons
     providers/    Theme, toast, and app-data contexts
