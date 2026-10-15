@@ -22,6 +22,12 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000"),
+  ),
   applicationName: "Undue",
   title: {
     default: "Undue — know the last day to cancel",
@@ -29,6 +35,19 @@ export const metadata: Metadata = {
   },
   description:
     "Track every subscription and see the exact last day to cancel before you are charged. Private by design: nothing leaves your device.",
+  openGraph: {
+    type: "website",
+    siteName: "Undue",
+    title: "Undue — know the last day to cancel",
+    description:
+      "Track every subscription and see the exact last day to cancel before you are charged. Private by design.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Undue — know the last day to cancel",
+    description:
+      "Track every subscription and see the exact last day to cancel before you are charged.",
+  },
   appleWebApp: {
     capable: true,
     title: "Undue",
