@@ -38,7 +38,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <SubscriptionSheetProvider>
             <SubscriptionDetailProvider>
               <div className="mx-auto flex min-h-[100dvh] w-full max-w-lg flex-col">
-                <main className="flex-1 px-4 pt-safe pb-32">{children}</main>
+                <main className="flex-1 px-4 pt-safe pb-clear-fab">{children}</main>
               </div>
               <AddSubscriptionButton />
               <BottomNav />

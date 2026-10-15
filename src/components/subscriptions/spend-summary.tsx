@@ -38,7 +38,7 @@ export function SpendSummaryCard({
             amount={amount}
             currency={currency}
             rounded
-            className="font-display text-4xl text-ink"
+            className="font-display text-3xl text-ink min-[420px]:text-4xl"
           />
           <span className="text-xs text-muted">
             across {activeCount} active{" "}

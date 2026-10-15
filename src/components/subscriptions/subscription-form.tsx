@@ -220,27 +220,30 @@ export function SubscriptionForm({
         </Field>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Repeat every" htmlFor="subscription-interval">
-          <TextInput
-            id="subscription-interval"
-            type="number"
-            min={1}
-            max={60}
-            value={cycleInterval}
-            onChange={(event) =>
-              setCycleInterval(Number.parseInt(event.target.value, 10) || 1)
-            }
-          />
-        </Field>
-        <Field label="Unit" htmlFor="subscription-unit">
-          <SegmentedControl
-            ariaLabel="Billing cycle unit"
-            options={CYCLE_UNIT_OPTIONS}
-            value={cycleUnit}
-            onChange={setCycleUnit}
-          />
-        </Field>
+      <Field label="Repeat every" htmlFor="subscription-interval">
+        <TextInput
+          id="subscription-interval"
+          type="number"
+          min={1}
+          max={60}
+          value={cycleInterval}
+          onChange={(event) =>
+            setCycleInterval(Number.parseInt(event.target.value, 10) || 1)
+          }
+          className="max-w-40"
+        />
+      </Field>
+
+      <div className="flex flex-col gap-1.5">
+        <span className="text-xs font-medium tracking-wide text-muted uppercase">
+          Unit
+        </span>
+        <SegmentedControl
+          ariaLabel="Billing cycle unit"
+          options={CYCLE_UNIT_OPTIONS}
+          value={cycleUnit}
+          onChange={setCycleUnit}
+        />
       </div>
 
       <Field

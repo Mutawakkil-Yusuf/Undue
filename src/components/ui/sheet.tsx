@@ -71,11 +71,11 @@ export function Sheet({
         aria-modal="true"
         aria-label={title}
         className={cn(
-          "relative z-10 flex max-h-[88dvh] w-full max-w-lg animate-sheet-in flex-col",
+          "relative z-10 flex max-h-[min(88dvh,44rem)] w-full max-w-lg animate-sheet-in flex-col",
           "rounded-t-sheet border border-line bg-surface shadow-sheet",
         )}
       >
-        <div className="flex items-start justify-between gap-4 px-5 pt-4">
+        <div className="flex shrink-0 items-start justify-between gap-4 px-5 pt-4">
           <div className="flex flex-col gap-1">
             <span
               aria-hidden="true"
@@ -94,10 +94,12 @@ export function Sheet({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
+        <div className="flex min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4">
+          {children}
+        </div>
 
         {footer ? (
-          <div className="border-t border-line px-5 py-3 pb-safe">{footer}</div>
+          <div className="shrink-0 border-t border-line px-5 py-3 pb-safe">{footer}</div>
         ) : null}
       </div>
     </div>
