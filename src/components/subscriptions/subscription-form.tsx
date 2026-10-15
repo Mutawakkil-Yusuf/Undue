@@ -47,6 +47,7 @@ function parseAmount(value: string): number {
 interface SubscriptionFormProps {
   formId: string;
   initial: Subscription | null;
+  seed?: CatalogEntry | null;
   defaultCurrency: CurrencyCode;
   defaultLeadDays: number;
   onSubmit: (input: SubscriptionInput) => void;
@@ -55,26 +56,37 @@ interface SubscriptionFormProps {
 export function SubscriptionForm({
   formId,
   initial,
+  seed = null,
   defaultCurrency,
   defaultLeadDays,
   onSubmit,
 }: SubscriptionFormProps) {
   const [query, setQuery] = useState("");
-  const [catalogEntry, setCatalogEntry] = useState<CatalogEntry | null>(null);
-  const [name, setName] = useState(initial?.name ?? "");
-  const [category, setCategory] = useState<CategoryId>(initial?.category ?? "other");
+  const [catalogEntry, setCatalogEntry] = useState<CatalogEntry | null>(seed);
+  const [name, setName] = useState(initial?.name ?? seed?.name ?? "");
+  const [category, setCategory] = useState<CategoryId>(
+    initial?.category ?? seed?.category ?? "other",
+  );
   const [amount, setAmount] = useState(initial ? String(initial.amount) : "");
   const [currency, setCurrency] = useState<CurrencyCode>(
     initial?.currency ?? defaultCurrency,
   );
-  const [cycleUnit, setCycleUnit] = useState<CycleUnit>(initial?.cycle.unit ?? "month");
-  const [cycleInterval, setCycleInterval] = useState(initial?.cycle.interval ?? 1);
+  const [cycleUnit, setCycleUnit] = useState<CycleUnit>(
+    initial?.cycle.unit ?? seed?.defaultCycle.unit ?? "month",
+  );
+  const [cycleInterval, setCycleInterval] = useState(
+    initial?.cycle.interval ?? seed?.defaultCycle.interval ?? 1,
+  );
   const [nextRenewal, setNextRenewal] = useState(
     initial?.nextRenewal ?? defaultRenewalDate(),
   );
-  const [leadDays, setLeadDays] = useState(initial?.leadDays ?? defaultLeadDays);
+  const [leadDays, setLeadDays] = useState(
+    initial?.leadDays ?? seed?.defaultLeadDays ?? defaultLeadDays,
+  );
   const [isTrial, setIsTrial] = useState(initial?.isTrial ?? false);
-  const [cancelUrl, setCancelUrl] = useState(initial?.cancelUrl ?? null);
+  const [cancelUrl, setCancelUrl] = useState(
+    initial?.cancelUrl ?? seed?.cancelUrl ?? null,
+  );
   const [notes, setNotes] = useState(initial?.notes ?? "");
   const [errors, setErrors] = useState<{ name?: string; amount?: string }>({});
 

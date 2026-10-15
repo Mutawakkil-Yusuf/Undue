@@ -4,8 +4,11 @@ import { MoneyText } from "@/components/ui/money-text";
 import { CountdownChip } from "@/components/ui/countdown-chip";
 import { ServiceAvatar } from "@/components/ui/service-avatar";
 import { UrgencyRail } from "@/components/ui/urgency-rail";
+import { TrendUpIcon } from "@/components/ui/icons";
 import { computeCancelWindow } from "@/lib/domain/cancel-by";
+import { formatMoney } from "@/lib/domain/currency";
 import { formatDate } from "@/lib/domain/format";
+import { priceChange } from "@/lib/domain/price-history";
 import type { Subscription } from "@/lib/domain/schema";
 import { getUrgencyPresentation } from "@/lib/domain/urgency";
 
@@ -23,6 +26,8 @@ export function SubscriptionRow({
   const window = computeCancelWindow(subscription, referenceDate);
   const cancelled = subscription.status === "cancelled";
   const tone = cancelled ? "muted" : getUrgencyPresentation(window.urgency).tone;
+  const change = priceChange(subscription.priceHistory);
+  const increased = !cancelled && change?.increased === true;
 
   return (
     <button
@@ -41,6 +46,12 @@ export function SubscriptionRow({
           {subscription.isTrial ? (
             <span className="shrink-0 rounded-full bg-ember-soft px-2 py-0.5 text-[11px] font-medium text-ember-strong">
               Trial
+            </span>
+          ) : null}
+          {increased && change ? (
+            <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-urgent-soft px-2 py-0.5 text-[11px] font-medium text-urgent">
+              <TrendUpIcon width={11} height={11} />
+              {formatMoney(change.delta, subscription.currency)}
             </span>
           ) : null}
         </div>

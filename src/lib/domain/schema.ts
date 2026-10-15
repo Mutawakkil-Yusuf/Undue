@@ -66,6 +66,13 @@ export const isoDateSchema = z
 export const subscriptionStatusSchema = z.enum(["active", "cancelled"]);
 export type SubscriptionStatus = z.infer<typeof subscriptionStatusSchema>;
 
+export const pricePointSchema = z.object({
+  at: isoDateSchema,
+  amount: z.number().nonnegative().finite(),
+  currency: currencyCodeSchema,
+});
+export type PricePoint = z.infer<typeof pricePointSchema>;
+
 export const subscriptionSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1).max(80),
@@ -79,6 +86,7 @@ export const subscriptionSchema = z.object({
   isTrial: z.boolean(),
   cancelUrl: z.string().url().nullable(),
   notes: z.string().max(1000).nullable(),
+  priceHistory: z.array(pricePointSchema).default([]),
   status: subscriptionStatusSchema,
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),

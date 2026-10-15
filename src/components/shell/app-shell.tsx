@@ -20,7 +20,7 @@ function AddSubscriptionButton() {
   return (
     <button
       type="button"
-      onClick={openAdd}
+      onClick={() => openAdd()}
       aria-label="Add subscription"
       style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 78px)" }}
       className="fixed left-1/2 z-40 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-ember-strong text-on-ember shadow-sheet transition-transform active:scale-95"

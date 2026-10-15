@@ -148,6 +148,17 @@
   }
 }
 
+@keyframes rise-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @utility animate-sheet-in {
   animation: sheet-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -156,9 +167,14 @@
   animation: fade-in 160ms ease-out;
 }
 
+@utility animate-rise-in {
+  animation: rise-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-sheet-in,
-  .animate-fade-in {
+  .animate-fade-in,
+  .animate-rise-in {
     animation: none;
   }
 }

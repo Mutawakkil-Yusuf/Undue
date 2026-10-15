@@ -6,6 +6,7 @@ interface EmptyStateProps {
   title: string;
   description: string;
   action?: ReactNode;
+  footer?: ReactNode;
   className?: string;
 }
 
@@ -14,6 +15,7 @@ export function EmptyState({
   title,
   description,
   action,
+  footer,
   className,
 }: EmptyStateProps) {
   return (
@@ -32,6 +34,7 @@ export function EmptyState({
       <h2 className="font-display text-xl text-ink">{title}</h2>
       <p className="max-w-xs text-sm text-muted">{description}</p>
       {action ? <div className="mt-1">{action}</div> : null}
+      {footer ? <div className="mt-1 w-full">{footer}</div> : null}
     </div>
   );
 }
