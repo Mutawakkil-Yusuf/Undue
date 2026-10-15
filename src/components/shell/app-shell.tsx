@@ -11,6 +11,7 @@ import {
 } from "@/components/subscriptions/subscription-sheet";
 import { SubscriptionDetailProvider } from "@/components/subscriptions/subscription-detail-sheet";
 import { BottomNav } from "./bottom-nav";
+import { ReminderNotifier } from "./reminder-notifier";
 import { ServiceWorkerRegistrar } from "./service-worker-registrar";
 
 function AddSubscriptionButton() {
@@ -41,6 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </div>
               <AddSubscriptionButton />
               <BottomNav />
+              <ReminderNotifier />
               <ServiceWorkerRegistrar />
             </SubscriptionDetailProvider>
           </SubscriptionSheetProvider>

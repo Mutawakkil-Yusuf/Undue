@@ -5,6 +5,7 @@ import { Field, SelectInput, TextArea, TextInput } from "@/components/ui/field";
 import { SearchIcon } from "@/components/ui/icons";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { ServiceAvatar } from "@/components/ui/service-avatar";
+import { Switch } from "@/components/ui/switch";
 import { searchCatalog } from "@/lib/catalog";
 import type { CatalogEntry } from "@/lib/catalog/schema";
 import { addDays, civilDate, formatIsoDate, todayIso } from "@/lib/domain/date";
@@ -296,20 +297,12 @@ export function SubscriptionForm({
         </div>
       </Field>
 
-      <label className="flex items-center justify-between rounded-field border border-line bg-surface px-3.5 py-3">
-        <span className="flex flex-col">
-          <span className="text-sm font-medium text-ink">Free trial</span>
-          <span className="text-xs text-muted">
-            Remind me before this converts to a paid plan.
-          </span>
-        </span>
-        <input
-          type="checkbox"
-          checked={isTrial}
-          onChange={(event) => setIsTrial(event.target.checked)}
-          className="size-5 accent-[var(--color-ember)]"
-        />
-      </label>
+      <Switch
+        checked={isTrial}
+        onChange={setIsTrial}
+        label="Free trial"
+        description="Remind me before this converts to a paid plan."
+      />
 
       {cancelUrl ? (
         <p className="text-xs text-muted">
