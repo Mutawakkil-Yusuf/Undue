@@ -12,6 +12,8 @@ import {
   ShieldIcon,
   SparkIcon,
 } from "@/components/ui/icons";
+import { ServiceAvatar } from "@/components/ui/service-avatar";
+import type { CategoryId } from "@/lib/domain/schema";
 import { cn } from "@/lib/utils/cn";
 
 const PRIMARY_CTA =
@@ -20,7 +22,7 @@ const SECONDARY_CTA =
   "inline-flex h-12 items-center justify-center rounded-full border border-line bg-surface px-6 text-base font-medium text-ink transition-colors hover:border-line-strong";
 
 interface PreviewItem {
-  emoji: string;
+  category: CategoryId;
   name: string;
   cycle: string;
   cancelBy: string;
@@ -30,7 +32,7 @@ interface PreviewItem {
 
 const UP_NEXT: readonly PreviewItem[] = [
   {
-    emoji: "🎬",
+    category: "streaming",
     name: "Netflix",
     cycle: "₦4,400 / month",
     cancelBy: "Fri, 30 Oct",
@@ -38,7 +40,7 @@ const UP_NEXT: readonly PreviewItem[] = [
     tone: "urgent",
   },
   {
-    emoji: "📺",
+    category: "streaming",
     name: "DStv Compact",
     cycle: "₦19,000 / month",
     cancelBy: "Tue, 3 Nov",
@@ -46,7 +48,7 @@ const UP_NEXT: readonly PreviewItem[] = [
     tone: "soon",
   },
   {
-    emoji: "🎧",
+    category: "music",
     name: "Spotify",
     cycle: "₦2,900 / month",
     cancelBy: "Sun, 15 Nov",
@@ -344,12 +346,7 @@ function PreviewCard() {
             <span
               className={cn("h-9 w-1.5 shrink-0 rounded-full", TONE[item.tone].rail)}
             />
-            <span
-              aria-hidden="true"
-              className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-base"
-            >
-              {item.emoji}
-            </span>
+            <ServiceAvatar category={item.category} size="sm" />
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="truncate text-sm font-medium text-ink">{item.name}</span>
               <span className="truncate text-xs text-muted">{item.cycle}</span>

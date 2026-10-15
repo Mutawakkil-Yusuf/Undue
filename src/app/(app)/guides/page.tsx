@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { TextInput } from "@/components/ui/field";
 import { ExternalLinkIcon, GuidesIcon, SearchIcon } from "@/components/ui/icons";
+import { ServiceAvatar } from "@/components/ui/service-avatar";
 import { searchCatalog } from "@/lib/catalog";
 import { getCategory } from "@/lib/domain/schema";
 
@@ -54,12 +55,7 @@ export default function GuidesPage() {
               className="flex flex-col gap-2 rounded-card border border-line bg-surface p-4 shadow-card"
             >
               <div className="flex items-center gap-3">
-                <span
-                  aria-hidden="true"
-                  className="flex size-10 items-center justify-center rounded-xl border border-line bg-bone text-lg"
-                >
-                  {entry.emoji}
-                </span>
+                <ServiceAvatar category={entry.category} size="sm" />
                 <div className="flex flex-col">
                   <span className="font-medium text-ink">{entry.name}</span>
                   <span className="text-xs text-muted">

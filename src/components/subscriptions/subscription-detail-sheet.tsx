@@ -200,7 +200,7 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
     <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3">
         <ServiceAvatar
-          emoji={subscription.emoji}
+          category={subscription.category}
           size="lg"
           className={cancelled ? "opacity-60" : undefined}
         />

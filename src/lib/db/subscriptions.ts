@@ -12,7 +12,6 @@ import { nowIso } from "@/lib/utils/time";
 export interface SubscriptionInput {
   name: string;
   serviceId: string | null;
-  emoji: string;
   category: CategoryId;
   amount: number;
   currency: CurrencyCode;

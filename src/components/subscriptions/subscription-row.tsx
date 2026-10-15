@@ -32,7 +32,7 @@ export function SubscriptionRow({
     >
       <UrgencyRail tone={tone} />
       <ServiceAvatar
-        emoji={subscription.emoji}
+        category={subscription.category}
         className={cancelled ? "opacity-50" : undefined}
       />
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">

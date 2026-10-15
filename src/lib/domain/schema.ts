@@ -33,21 +33,20 @@ export type CategoryId = z.infer<typeof categoryIdSchema>;
 export interface Category {
   readonly id: CategoryId;
   readonly label: string;
-  readonly emoji: string;
 }
 
 export const CATEGORIES: readonly Category[] = [
-  { id: "streaming", label: "Streaming", emoji: "📺" },
-  { id: "music", label: "Music", emoji: "🎧" },
-  { id: "cloud", label: "Cloud storage", emoji: "☁️" },
-  { id: "software", label: "Software", emoji: "🧩" },
-  { id: "mobile", label: "Airtime & data", emoji: "📶" },
-  { id: "internet", label: "Internet & hosting", emoji: "🌐" },
-  { id: "gaming", label: "Gaming", emoji: "🎮" },
-  { id: "fitness", label: "Health & fitness", emoji: "💪" },
-  { id: "finance", label: "Finance", emoji: "🏦" },
-  { id: "education", label: "Learning", emoji: "📚" },
-  { id: "other", label: "Other", emoji: "📦" },
+  { id: "streaming", label: "Streaming" },
+  { id: "music", label: "Music" },
+  { id: "cloud", label: "Cloud storage" },
+  { id: "software", label: "Software" },
+  { id: "mobile", label: "Airtime & data" },
+  { id: "internet", label: "Internet & hosting" },
+  { id: "gaming", label: "Gaming" },
+  { id: "fitness", label: "Health & fitness" },
+  { id: "finance", label: "Finance" },
+  { id: "education", label: "Learning" },
+  { id: "other", label: "Other" },
 ];
 
 const categoryById = new Map(CATEGORIES.map((category) => [category.id, category]));
@@ -71,7 +70,6 @@ export const subscriptionSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1).max(80),
   serviceId: z.string().min(1).nullable(),
-  emoji: z.string().min(1).max(8),
   category: categoryIdSchema,
   amount: z.number().nonnegative().finite(),
   currency: currencyCodeSchema,
