@@ -21,7 +21,8 @@ export function SubscriptionRow({
   onSelect,
 }: SubscriptionRowProps) {
   const window = computeCancelWindow(subscription, referenceDate);
-  const presentation = getUrgencyPresentation(window.urgency);
+  const cancelled = subscription.status === "cancelled";
+  const tone = cancelled ? "muted" : getUrgencyPresentation(window.urgency).tone;
 
   return (
     <button
@@ -29,10 +30,10 @@ export function SubscriptionRow({
       onClick={() => onSelect(subscription)}
       className="flex w-full items-stretch gap-3 rounded-card border border-line bg-surface p-3 text-left shadow-card transition-colors active:bg-bone"
     >
-      <UrgencyRail tone={presentation.tone} />
+      <UrgencyRail tone={tone} />
       <ServiceAvatar
         emoji={subscription.emoji}
-        className={subscription.status === "cancelled" ? "opacity-50" : undefined}
+        className={cancelled ? "opacity-50" : undefined}
       />
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
         <div className="flex items-center gap-2">
@@ -48,7 +49,13 @@ export function SubscriptionRow({
         </span>
       </div>
       <div className="flex shrink-0 flex-col items-end justify-center gap-1.5">
-        <CountdownChip window={window} />
+        {cancelled ? (
+          <span className="inline-flex items-center rounded-full bg-line/50 px-2.5 py-1 text-xs font-medium text-muted">
+            Cancelled
+          </span>
+        ) : (
+          <CountdownChip window={window} />
+        )}
         <MoneyText
           amount={subscription.amount}
           currency={subscription.currency}

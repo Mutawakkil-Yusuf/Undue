@@ -5,11 +5,11 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary: "bg-ember-strong text-white hover:bg-ember active:bg-ember",
+  primary: "bg-ember-strong text-on-ember hover:bg-ember active:bg-ember",
   secondary:
     "bg-surface text-ink border border-line hover:border-line-strong active:bg-bone",
   ghost: "bg-transparent text-ink hover:bg-line/60 active:bg-line",
-  danger: "bg-urgent-soft text-urgent hover:bg-urgent hover:text-white",
+  danger: "bg-urgent-soft text-urgent hover:bg-urgent hover:text-on-ember",
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
