@@ -19,6 +19,7 @@ import {
   ExternalLinkIcon,
   PencilIcon,
   TrashIcon,
+  TrendUpIcon,
 } from "@/components/ui/icons";
 import {
   advanceRenewal,
@@ -31,6 +32,7 @@ import { advance, cycleLabel, cycleShortLabel } from "@/lib/domain/cycle";
 import { civilDate, diffInDays, formatIsoDate, parseIsoDate } from "@/lib/domain/date";
 import { formatCountdown, formatDate } from "@/lib/domain/format";
 import { buildCalendar, CALENDAR_MIME_TYPE } from "@/lib/domain/ics";
+import { priceChange } from "@/lib/domain/price-history";
 import { getCategory, type Subscription } from "@/lib/domain/schema";
 import { getUrgencyPresentation, urgencySurfaceClass } from "@/lib/domain/urgency";
 import { useToday } from "@/lib/hooks/use-today";
@@ -181,6 +183,7 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
   const cancelWindow = computeCancelWindow(subscription, today);
   const presentation = getUrgencyPresentation(cancelWindow.urgency);
   const cancelled = subscription.status === "cancelled";
+  const change = priceChange(subscription.priceHistory);
 
   function handleAddToCalendar() {
     const slug =
@@ -266,6 +269,60 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
             : `${subscription.leadDays} ${subscription.leadDays === 1 ? "day" : "days"} before`}
         </DetailRow>
       </dl>
+
+      {change ? (
+        <section className="flex flex-col gap-3 rounded-card border border-line bg-bone/60 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-medium tracking-wide text-muted uppercase">
+              Price history
+            </span>
+            {change.increased ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-urgent-soft px-2.5 py-1 text-xs font-medium text-urgent">
+                <TrendUpIcon width={13} height={13} />
+                <MoneyText amount={change.delta} currency={subscription.currency} />
+                {change.pct !== null ? ` · ${Math.round(change.pct)}%` : null}
+              </span>
+            ) : null}
+          </div>
+          <ul className="flex flex-col gap-1.5">
+            {[...subscription.priceHistory].reverse().map((point, index, list) => {
+              const previous = list[index + 1];
+              const isLatest = index === 0;
+              return (
+                <li
+                  key={`${point.at}-${point.amount}`}
+                  className="flex items-center justify-between gap-4 text-sm"
+                >
+                  <span className="text-muted">{formatDate(point.at)}</span>
+                  <span className="flex items-center gap-2">
+                    {previous &&
+                    previous.amount !== point.amount &&
+                    previous.currency === point.currency ? (
+                      <span
+                        className={cn(
+                          "text-xs",
+                          point.amount > previous.amount ? "text-urgent" : "text-safe",
+                        )}
+                      >
+                        {point.amount > previous.amount ? "+" : "−"}
+                        <MoneyText
+                          amount={Math.abs(point.amount - previous.amount)}
+                          currency={point.currency}
+                        />
+                      </span>
+                    ) : null}
+                    <MoneyText
+                      amount={point.amount}
+                      currency={point.currency}
+                      className={cn("font-medium", isLatest ? "text-ink" : "text-muted")}
+                    />
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
 
       {subscription.notes ? (
         <div className="rounded-card border border-line bg-bone/60 p-4">

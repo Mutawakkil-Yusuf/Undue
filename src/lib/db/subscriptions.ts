@@ -7,6 +7,8 @@ import {
   type Subscription,
   type SubscriptionStatus,
 } from "@/lib/domain/schema";
+import { todayIso } from "@/lib/domain/date";
+import { recordPrice } from "@/lib/domain/price-history";
 import { nowIso } from "@/lib/utils/time";
 
 export interface SubscriptionInput {
@@ -28,6 +30,11 @@ function buildSubscription(input: SubscriptionInput): Subscription {
   return subscriptionSchema.parse({
     ...input,
     id: crypto.randomUUID(),
+    priceHistory: recordPrice([], {
+      at: todayIso(),
+      amount: input.amount,
+      currency: input.currency,
+    }),
     status: "active" satisfies SubscriptionStatus,
     createdAt: timestamp,
     updatedAt: timestamp,
@@ -54,6 +61,11 @@ export async function updateSubscription(
     ...existing,
     ...input,
     id,
+    priceHistory: recordPrice(existing.priceHistory ?? [], {
+      at: todayIso(),
+      amount: input.amount,
+      currency: input.currency,
+    }),
     updatedAt: nowIso(),
   });
   await db.subscriptions.put(next);

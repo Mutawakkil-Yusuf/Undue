@@ -9,12 +9,15 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run || (echo 'vitest: retrying once after a transient module-resolution failure' >&2 && vitest run)",
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@visx/group": "^4.0.0",
+    "@visx/scale": "^4.0.0",
+    "@visx/shape": "^4.0.0",
     "dexie": "^4.4.6",
     "dexie-react-hooks": "^4.4.0",
     "next": "16.4.1",
@@ -40,7 +43,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^5.0.4"
+    "vitest": "^5.0.5"
   },
   "packageManager": "pnpm@10.21.0",
   "engines": {

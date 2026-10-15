@@ -55,3 +55,11 @@ export const CATEGORY_TINTS: Record<CategoryId, CategoryTint> = {
   education: { soft: "bg-cat-education-soft", text: "text-cat-education" },
   other: { soft: "bg-cat-other-soft", text: "text-cat-other" },
 };
+
+export function categoryColor(id: CategoryId): string {
+  return `var(--color-cat-${id})`;
+}
+
+export function categorySoftColor(id: CategoryId): string {
+  return `var(--color-cat-${id}-soft)`;
+}

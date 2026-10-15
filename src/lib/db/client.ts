@@ -11,6 +11,21 @@ export class UndueDatabase extends Dexie {
       subscriptions: "id, status, nextRenewal, createdAt",
       settings: "id",
     });
+    this.version(2)
+      .stores({
+        subscriptions: "id, status, nextRenewal, createdAt",
+        settings: "id",
+      })
+      .upgrade((transaction) =>
+        transaction
+          .table("subscriptions")
+          .toCollection()
+          .modify((subscription: { priceHistory?: unknown }) => {
+            if (!Array.isArray(subscription.priceHistory)) {
+              subscription.priceHistory = [];
+            }
+          }),
+      );
   }
 }
 

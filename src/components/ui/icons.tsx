@@ -181,6 +181,15 @@ export function SparkIcon(props: IconProps) {
   );
 }
 
+export function TrendUpIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M3.5 16.5 9 11l3.5 3.5L20.5 6.5" />
+      <path d="M15 6.5h5.5V12" />
+    </Icon>
+  );
+}
+
 export function StreamingIcon(props: IconProps) {
   return (
     <Icon {...props}>

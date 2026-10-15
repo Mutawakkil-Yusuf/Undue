@@ -97,3 +97,26 @@ const URGENCY_RANK: Record<UrgencyLevel, number> = {
 export function compareUrgency(a: UrgencyLevel, b: UrgencyLevel): number {
   return URGENCY_RANK[a] - URGENCY_RANK[b];
 }
+
+export const URGENCY_BUCKETS = ["now", "week", "later"] as const;
+export type UrgencyBucket = (typeof URGENCY_BUCKETS)[number];
+
+export const URGENCY_BUCKET_LABELS: Record<UrgencyBucket, string> = {
+  now: "Now",
+  week: "This week",
+  later: "Later",
+};
+
+export function urgencyBucket(level: UrgencyLevel): UrgencyBucket {
+  switch (level) {
+    case "missed":
+    case "today":
+    case "urgent":
+    case "past":
+      return "now";
+    case "soon":
+      return "week";
+    case "safe":
+      return "later";
+  }
+}
