@@ -2,9 +2,11 @@
 
 import { useRef, useState } from "react";
 import { useAppData } from "@/components/providers/app-data-provider";
+import { useTheme } from "@/components/providers/theme-provider";
 import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Field, SelectInput, TextInput } from "@/components/ui/field";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { DownloadIcon, ShieldIcon, TrashIcon, UploadIcon } from "@/components/ui/icons";
 import { updateSettings } from "@/lib/db/settings";
 import {
@@ -16,6 +18,7 @@ import {
 } from "@/lib/db/backup";
 import { CURRENCY_CODES, type AppSettings, type CurrencyCode } from "@/lib/domain/schema";
 import { todayIso } from "@/lib/domain/date";
+import { THEMES, THEME_LABELS } from "@/lib/theme/theme";
 
 interface SettingsDraft {
   displayCurrency: CurrencyCode;
@@ -143,6 +146,33 @@ function PreferencesCard({ settings }: { settings: AppSettings }) {
   );
 }
 
+function AppearanceCard() {
+  const { theme, setTheme } = useTheme();
+  const options = THEMES.map((value) => ({
+    value,
+    label: THEME_LABELS[value],
+  }));
+
+  return (
+    <section className="flex flex-col gap-4 rounded-card border border-line bg-surface p-5 shadow-card">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
+          Appearance
+        </h2>
+        <p className="text-sm text-muted">
+          Pick a light or dark theme, or follow your device.
+        </p>
+      </div>
+      <SegmentedControl
+        ariaLabel="Theme"
+        options={options}
+        value={theme}
+        onChange={setTheme}
+      />
+    </section>
+  );
+}
+
 function DataCard() {
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -259,6 +289,8 @@ export default function SettingsPage() {
       </header>
 
       {isReady ? <PreferencesCard key={settings.updatedAt} settings={settings} /> : null}
+
+      <AppearanceCard />
 
       <DataCard />
 

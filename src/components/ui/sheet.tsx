@@ -8,7 +8,7 @@ interface SheetProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  description?: string;
+  description?: string | undefined;
   children: ReactNode;
   footer?: ReactNode;
 }
@@ -63,7 +63,7 @@ export function Sheet({
         type="button"
         aria-label="Close"
         onClick={onClose}
-        className="absolute inset-0 animate-fade-in bg-ink/40 backdrop-blur-[2px]"
+        className="absolute inset-0 animate-fade-in bg-black/50 backdrop-blur-[2px]"
       />
       <div
         ref={panelRef}
