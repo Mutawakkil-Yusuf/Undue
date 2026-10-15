@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
-import { AppShell } from "@/components/shell/app-shell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,7 +29,7 @@ export const metadata: Metadata = {
   ),
   applicationName: "Undue",
   title: {
-    default: "Undue — know the last day to cancel",
+    default: "Undue: know the last day to cancel",
     template: "%s · Undue",
   },
   description:
@@ -38,13 +37,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Undue",
-    title: "Undue — know the last day to cancel",
+    title: "Undue: know the last day to cancel",
     description:
       "Track every subscription and see the exact last day to cancel before you are charged. Private by design.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Undue — know the last day to cancel",
+    title: "Undue: know the last day to cancel",
     description:
       "Track every subscription and see the exact last day to cancel before you are charged.",
   },
@@ -73,15 +72,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased motion-safe:scroll-smooth`}
       suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-full">
-        <AppShell>{children}</AppShell>
-      </body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

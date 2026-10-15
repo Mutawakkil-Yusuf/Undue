@@ -11,7 +11,7 @@ export default function NotFound() {
         The page you were looking for does not exist or has moved.
       </p>
       <Link
-        href="/"
+        href="/app"
         className="mt-1 inline-flex min-h-11 items-center justify-center rounded-full bg-ember-strong px-6 text-sm font-medium text-on-ember transition-transform active:scale-95"
       >
         Back to dashboard

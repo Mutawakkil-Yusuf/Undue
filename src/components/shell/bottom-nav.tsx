@@ -12,14 +12,14 @@ interface NavItem {
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { href: "/", label: "Home", Icon: HomeIcon },
+  { href: "/app", label: "Home", Icon: HomeIcon },
   { href: "/guides", label: "Guides", Icon: GuidesIcon },
   { href: "/settings", label: "Settings", Icon: SettingsIcon },
 ];
 
 function isActive(pathname: string, href: string): boolean {
-  if (href === "/") {
-    return pathname === "/";
+  if (href === "/app") {
+    return pathname === "/app";
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
