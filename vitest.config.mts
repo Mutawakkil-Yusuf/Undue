@@ -15,5 +15,9 @@ export default defineConfig({
     include: ["src/**/*.test.{ts,tsx}"],
     globals: false,
     css: false,
+    // The suite is small. Running files serially avoids an intermittent
+    // module-resolution failure seen when many jsdom workers transform and
+    // read the shared Vite cache at once.
+    fileParallelism: false,
   },
 });
