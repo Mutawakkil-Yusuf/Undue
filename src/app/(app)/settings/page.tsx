@@ -37,6 +37,7 @@ import {
 } from "@/lib/notifications/notifications";
 import { THEMES, THEME_LABELS } from "@/lib/theme/theme";
 import { downloadTextFile } from "@/lib/utils/download";
+import { vibrate } from "@/lib/utils/haptics";
 
 interface SettingsDraft {
   displayCurrency: CurrencyCode;
@@ -271,6 +272,7 @@ function RemindersCard() {
 function DataCard() {
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [confirmingErase, setConfirmingErase] = useState(false);
 
   async function handleExport() {
     try {
@@ -299,13 +301,13 @@ function DataCard() {
   }
 
   async function handleErase() {
-    if (
-      !window.confirm(
-        "Delete every subscription and reset your settings? This cannot be undone.",
-      )
-    ) {
+    if (!confirmingErase) {
+      setConfirmingErase(true);
+      window.setTimeout(() => setConfirmingErase(false), 6000);
       return;
     }
+    setConfirmingErase(false);
+    vibrate([12, 40, 12]);
     try {
       await eraseAll();
       showToast("Everything erased", "success");
@@ -362,7 +364,7 @@ function DataCard() {
           block
           leadingIcon={<TrashIcon width={18} height={18} />}
         >
-          Erase everything
+          {confirmingErase ? "Tap again to erase everything" : "Erase everything"}
         </Button>
       </div>
     </section>

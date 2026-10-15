@@ -24,6 +24,7 @@ import {
 import {
   advanceRenewal,
   deleteSubscription,
+  restoreSubscription,
   setSubscriptionStatus,
 } from "@/lib/db/subscriptions";
 import { useSubscription } from "@/lib/db/hooks";
@@ -38,6 +39,7 @@ import { getUrgencyPresentation, urgencySurfaceClass } from "@/lib/domain/urgenc
 import { useToday } from "@/lib/hooks/use-today";
 import { cn } from "@/lib/utils/cn";
 import { downloadTextFile } from "@/lib/utils/download";
+import { vibrate } from "@/lib/utils/haptics";
 import { useSubscriptionSheet } from "./subscription-sheet";
 
 interface SubscriptionDetailContextValue {
@@ -80,11 +82,21 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
   }
 
   async function handleStatus(target: Subscription, status: "active" | "cancelled") {
+    vibrate(8);
     try {
       await setSubscriptionStatus(target.id, status);
+      const previous = status === "cancelled" ? "active" : "cancelled";
       showToast(
         status === "cancelled" ? "Marked as cancelled" : "Subscription reactivated",
         "success",
+        {
+          label: "Undo",
+          onClick: () => {
+            void setSubscriptionStatus(target.id, previous).catch(() => {
+              showToast("Could not undo that change", "danger");
+            });
+          },
+        },
       );
     } catch {
       showToast("Could not update this subscription", "danger");
@@ -92,13 +104,18 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
   }
 
   async function handleDelete(target: Subscription) {
-    if (!window.confirm(`Delete ${target.name}? This cannot be undone.`)) {
-      return;
-    }
+    vibrate(12);
     try {
       await deleteSubscription(target.id);
-      showToast("Subscription deleted", "success");
       close();
+      showToast("Subscription deleted", "success", {
+        label: "Undo",
+        onClick: () => {
+          void restoreSubscription(target)
+            .then(() => showToast(`${target.name} restored`, "success"))
+            .catch(() => showToast("Could not restore that subscription", "danger"));
+        },
+      });
     } catch {
       showToast("Could not delete this subscription", "danger");
     }

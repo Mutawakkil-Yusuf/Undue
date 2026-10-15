@@ -17,16 +17,19 @@ import {
   updateSubscription,
   type SubscriptionInput,
 } from "@/lib/db/subscriptions";
+import type { CatalogEntry } from "@/lib/catalog/schema";
 import type { Subscription } from "@/lib/domain/schema";
 import { SubscriptionForm } from "./subscription-form";
 
 const FORM_ID = "subscription-form";
 
 type SheetState =
-  { kind: "closed" } | { kind: "add" } | { kind: "edit"; subscription: Subscription };
+  | { kind: "closed" }
+  | { kind: "add"; seed: CatalogEntry | null }
+  | { kind: "edit"; subscription: Subscription };
 
 interface SubscriptionSheetContextValue {
-  openAdd: () => void;
+  openAdd: (seed?: CatalogEntry) => void;
   openEdit: (subscription: Subscription) => void;
 }
 
@@ -39,7 +42,11 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
   const { showToast } = useToast();
   const [state, setState] = useState<SheetState>({ kind: "closed" });
 
-  const openAdd = useCallback(() => setState({ kind: "add" }), []);
+  const openAdd = useCallback(
+    (seed: CatalogEntry | undefined = undefined) =>
+      setState({ kind: "add", seed: seed ?? null }),
+    [],
+  );
   const openEdit = useCallback(
     (subscription: Subscription) => setState({ kind: "edit", subscription }),
     [],
@@ -52,6 +59,7 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
   );
 
   const editing = state.kind === "edit" ? state.subscription : null;
+  const seed = state.kind === "add" ? state.seed : null;
 
   async function handleSubmit(input: SubscriptionInput) {
     try {
@@ -89,9 +97,10 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
       >
         {state.kind !== "closed" ? (
           <SubscriptionForm
-            key={editing?.id ?? "new"}
+            key={editing?.id ?? seed?.id ?? "new"}
             formId={FORM_ID}
             initial={editing}
+            seed={seed}
             defaultCurrency={settings.displayCurrency}
             defaultLeadDays={settings.defaultLeadDays}
             onSubmit={handleSubmit}

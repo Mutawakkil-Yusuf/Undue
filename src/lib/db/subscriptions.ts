@@ -85,3 +85,7 @@ export async function advanceRenewal(id: string, nextRenewal: string): Promise<v
 export async function deleteSubscription(id: string): Promise<void> {
   await db.subscriptions.delete(id);
 }
+
+export async function restoreSubscription(subscription: Subscription): Promise<void> {
+  await db.subscriptions.put(subscription);
+}

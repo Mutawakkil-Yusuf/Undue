@@ -148,8 +148,12 @@ export function SubscriptionExplorer({
         </p>
       ) : groups ? (
         <div className="flex flex-col gap-5">
-          {groups.map((group) => (
-            <section key={group.bucket} className="flex flex-col gap-2.5">
+          {groups.map((group, groupIndex) => (
+            <section
+              key={group.bucket}
+              className="flex animate-rise-in flex-col gap-2.5"
+              style={{ animationDelay: `${Math.min(groupIndex, 6) * 40}ms` }}
+            >
               <div className="flex items-baseline justify-between">
                 <h3 className="text-xs font-medium tracking-wide text-muted uppercase">
                   {URGENCY_BUCKET_LABELS[group.bucket]}
@@ -172,8 +176,12 @@ export function SubscriptionExplorer({
         </div>
       ) : (
         <ul className="flex flex-col gap-2.5">
-          {visible.map((subscription) => (
-            <li key={subscription.id}>
+          {visible.map((subscription, index) => (
+            <li
+              key={subscription.id}
+              className="animate-rise-in"
+              style={{ animationDelay: `${Math.min(index, 8) * 30}ms` }}
+            >
               <SubscriptionRow
                 subscription={subscription}
                 referenceDate={referenceDate}
