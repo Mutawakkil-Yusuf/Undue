@@ -30,7 +30,6 @@ function buildSubscription(overrides: Partial<Subscription>): Subscription {
     id: "sub-1",
     name: "Test",
     serviceId: null,
-    emoji: "📦",
     category: "other",
     amount: 1000,
     currency: "NGN",

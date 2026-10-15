@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
+import { CategoryIcon } from "@/components/ui/category-icon";
 import { Field, SelectInput, TextArea, TextInput } from "@/components/ui/field";
 import { SearchIcon } from "@/components/ui/icons";
 import { SegmentedControl } from "@/components/ui/segmented-control";
@@ -95,8 +96,6 @@ export function SubscriptionForm({
     setQuery("");
   }
 
-  const emoji = catalogEntry?.emoji ?? getCategory(category).emoji;
-
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -117,7 +116,6 @@ export function SubscriptionForm({
     onSubmit({
       name: name.trim(),
       serviceId: catalogEntry?.id ?? initial?.serviceId ?? null,
-      emoji,
       category,
       amount: parsedAmount,
       currency,
@@ -135,7 +133,7 @@ export function SubscriptionForm({
   return (
     <form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex items-center gap-3 rounded-card border border-line bg-bone/60 p-3">
-        <ServiceAvatar emoji={emoji} size="lg" />
+        <ServiceAvatar category={category} size="lg" />
         <div className="flex flex-col">
           <span className="font-display text-lg text-ink">
             {name.trim().length > 0 ? name : "New subscription"}
@@ -175,7 +173,7 @@ export function SubscriptionForm({
                 onClick={() => applyCatalogEntry(entry)}
                 className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-bone"
               >
-                <ServiceAvatar emoji={entry.emoji} size="sm" />
+                <ServiceAvatar category={entry.category} size="sm" />
                 <span className="flex flex-col">
                   <span className="text-sm font-medium text-ink">{entry.name}</span>
                   <span className="text-xs text-muted">
@@ -285,13 +283,14 @@ export function SubscriptionForm({
                 setCatalogEntry(null);
               }}
               className={cn(
-                "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
                 category === option.id
                   ? "border-ember bg-ember-soft text-ember-strong"
                   : "border-line bg-surface text-muted hover:text-ink",
               )}
             >
-              {option.emoji} {option.label}
+              <CategoryIcon category={option.id} width={14} height={14} />
+              {option.label}
             </button>
           ))}
         </div>

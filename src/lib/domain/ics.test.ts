@@ -16,7 +16,6 @@ function makeSubscription(overrides: Partial<Subscription> = {}): Subscription {
     id: "sub-1",
     name: "Netflix",
     serviceId: "netflix",
-    emoji: "🎬",
     category: "streaming",
     amount: 4400,
     currency: "NGN",

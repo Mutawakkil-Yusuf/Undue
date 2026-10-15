@@ -3,9 +3,11 @@
     "id": "netflix",
     "name": "Netflix",
     "category": "streaming",
-    "emoji": "🎬",
     "aliases": ["netflix ng", "netflix nigeria"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.netflix.com/cancelplan",
     "cancelNote": "Account -> Membership -> Cancel Membership. Access continues until the end of the paid period."
@@ -14,9 +16,11 @@
     "id": "prime-video",
     "name": "Amazon Prime Video",
     "category": "streaming",
-    "emoji": "📺",
     "aliases": ["prime", "amazon prime video", "prime video"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.amazon.com/mc",
     "cancelNote": "Account & Lists -> Prime -> Manage Membership -> End Membership."
@@ -25,9 +29,11 @@
     "id": "disney-plus",
     "name": "Disney+",
     "category": "streaming",
-    "emoji": "🏰",
     "aliases": ["disney plus", "disney"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.disneyplus.com/account",
     "cancelNote": "Account -> Subscription -> Cancel Subscription."
@@ -36,9 +42,11 @@
     "id": "showmax",
     "name": "Showmax",
     "category": "streaming",
-    "emoji": "🎞️",
     "aliases": ["showmax pro"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.showmax.com/eng/account",
     "cancelNote": "Log in, open Account, select Cancel Subscription and confirm."
@@ -47,9 +55,11 @@
     "id": "youtube-premium",
     "name": "YouTube Premium",
     "category": "streaming",
-    "emoji": "▶️",
     "aliases": ["yt premium", "youtube red"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.youtube.com/paid_memberships",
     "cancelNote": "Settings -> Memberships -> Manage -> Cancel membership."
@@ -58,9 +68,11 @@
     "id": "apple-tv-plus",
     "name": "Apple TV+",
     "category": "streaming",
-    "emoji": "📺",
     "aliases": ["apple tv plus", "apple tv"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
     "cancelNote": "On iPhone: Settings -> [your name] -> Subscriptions -> Apple TV+ -> Cancel. Or manage at appleid.apple.com."
@@ -69,9 +81,11 @@
     "id": "paramount-plus",
     "name": "Paramount+",
     "category": "streaming",
-    "emoji": "⛰️",
     "aliases": ["paramount plus"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.paramountplus.com/account/",
     "cancelNote": "Account -> Cancel Subscription."
@@ -80,9 +94,11 @@
     "id": "dstv",
     "name": "DStv",
     "category": "streaming",
-    "emoji": "🛰️",
     "aliases": ["dstv nigeria", "multichoice"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.dstv.com/en-ng/",
     "cancelNote": "Sign in to Self Service, choose Manage Subscription, then downgrade or select Remove to stop billing."
@@ -91,9 +107,11 @@
     "id": "gotv",
     "name": "GOtv",
     "category": "streaming",
-    "emoji": "🛰️",
     "aliases": ["gotv nigeria"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.gotvafrica.com/en-ng/",
     "cancelNote": "Use GOtv Self Service to change, suspend, or remove your package before the next cycle."
@@ -102,9 +120,11 @@
     "id": "spotify",
     "name": "Spotify",
     "category": "music",
-    "emoji": "🎧",
     "aliases": ["spotify premium"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.spotify.com/account/subscription/",
     "cancelNote": "Account -> Subscription -> Change plan -> Cancel Premium."
@@ -113,9 +133,11 @@
     "id": "apple-music",
     "name": "Apple Music",
     "category": "music",
-    "emoji": "🎵",
     "aliases": ["apple one music"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
     "cancelNote": "iPhone Settings -> [your name] -> Subscriptions -> Apple Music -> Cancel."
@@ -124,9 +146,11 @@
     "id": "youtube-music",
     "name": "YouTube Music",
     "category": "music",
-    "emoji": "🎶",
     "aliases": ["yt music"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.youtube.com/paid_memberships",
     "cancelNote": "Settings -> Memberships -> Manage -> Cancel."
@@ -135,9 +159,11 @@
     "id": "boomplay",
     "name": "Boomplay",
     "category": "music",
-    "emoji": "🎶",
     "aliases": ["boomplay music", "boomplay premium"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 1,
     "cancelUrl": null,
     "cancelNote": "In-app: Account -> VIP/Subscription -> Manage -> Cancel auto-renew. Store subscriptions can be cancelled in Google Play or the App Store."
@@ -146,9 +172,11 @@
     "id": "audiomack",
     "name": "Audiomack",
     "category": "music",
-    "emoji": "🎵",
     "aliases": ["audiomack premium"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 1,
     "cancelUrl": "https://audiomack.com/settings",
     "cancelNote": "Settings -> Account -> Subscription -> Cancel."
@@ -157,9 +185,11 @@
     "id": "icloud-plus",
     "name": "Apple iCloud+",
     "category": "cloud",
-    "emoji": "☁️",
     "aliases": ["icloud", "icloud plus", "apple icloud"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
     "cancelNote": "Settings -> [your name] -> iCloud -> Manage Storage -> Change Storage Plan -> Downgrade."
@@ -168,9 +198,11 @@
     "id": "google-one",
     "name": "Google One",
     "category": "cloud",
-    "emoji": "☁️",
     "aliases": ["google storage", "google drive storage"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://one.google.com/settings",
     "cancelNote": "Google One -> Settings -> Cancel membership."
@@ -179,9 +211,11 @@
     "id": "dropbox",
     "name": "Dropbox",
     "category": "cloud",
-    "emoji": "🗂️",
     "aliases": ["dropbox plus", "dropbox professional"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.dropbox.com/account/plan",
     "cancelNote": "Account -> Plan -> Cancel plan."
@@ -190,9 +224,11 @@
     "id": "onedrive",
     "name": "Microsoft OneDrive",
     "category": "cloud",
-    "emoji": "☁️",
     "aliases": ["onedrive", "microsoft onedrive"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.microsoft.com/services",
     "cancelNote": "Services & subscriptions -> Manage -> Cancel."
@@ -201,9 +237,11 @@
     "id": "apple-one",
     "name": "Apple One",
     "category": "cloud",
-    "emoji": "🍎",
     "aliases": ["apple one bundle"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
     "cancelNote": "Settings -> [your name] -> Subscriptions -> Apple One -> Cancel."
@@ -212,9 +250,11 @@
     "id": "microsoft-365",
     "name": "Microsoft 365",
     "category": "software",
-    "emoji": "📊",
     "aliases": ["office 365", "microsoft office", "ms365"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.microsoft.com/services",
     "cancelNote": "Services & subscriptions -> Manage -> Cancel subscription."
@@ -223,9 +263,11 @@
     "id": "adobe-cc",
     "name": "Adobe Creative Cloud",
     "category": "software",
-    "emoji": "🎨",
     "aliases": ["adobe", "creative cloud", "photoshop", "adobe cc"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 3,
     "cancelUrl": "https://account.adobe.com/plans",
     "cancelNote": "Plans -> Manage plan -> Cancel plan. Annual plans cancelled early may incur a fee."
@@ -234,9 +276,11 @@
     "id": "canva-pro",
     "name": "Canva Pro",
     "category": "software",
-    "emoji": "🖌️",
     "aliases": ["canva", "canva premium"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.canva.com/settings/billing",
     "cancelNote": "Settings -> Billing & plans -> Cancel plan."
@@ -245,9 +289,11 @@
     "id": "chatgpt-plus",
     "name": "ChatGPT Plus",
     "category": "software",
-    "emoji": "🤖",
     "aliases": ["openai", "chatgpt", "chat gpt plus"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://chatgpt.com/",
     "cancelNote": "Settings -> Subscription -> Manage -> Cancel plan."
@@ -256,9 +302,11 @@
     "id": "grammarly",
     "name": "Grammarly",
     "category": "software",
-    "emoji": "✍️",
     "aliases": ["grammarly premium"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.grammarly.com/subscription",
     "cancelNote": "Subscription -> Cancel subscription."
@@ -267,9 +315,11 @@
     "id": "notion",
     "name": "Notion",
     "category": "software",
-    "emoji": "📝",
     "aliases": ["notion plus", "notion ai"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.notion.so/my-account",
     "cancelNote": "Settings -> Plans/Billing -> Downgrade or cancel."
@@ -278,9 +328,11 @@
     "id": "zoom",
     "name": "Zoom",
     "category": "software",
-    "emoji": "📹",
     "aliases": ["zoom pro", "zoom pro account"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://zoom.us/billing",
     "cancelNote": "Billing -> Current Plans -> Cancel."
@@ -289,9 +341,11 @@
     "id": "figma",
     "name": "Figma",
     "category": "software",
-    "emoji": "🧩",
     "aliases": ["figma professional"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.figma.com/settings",
     "cancelNote": "Settings -> Billing -> Change plan / Cancel."
@@ -300,9 +354,11 @@
     "id": "linkedin-premium",
     "name": "LinkedIn Premium",
     "category": "software",
-    "emoji": "💼",
     "aliases": ["linkedin", "linkedin career"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.linkedin.com/premium/manage/",
     "cancelNote": "Premium -> Manage premium -> Cancel premium."
@@ -311,9 +367,11 @@
     "id": "nordvpn",
     "name": "NordVPN",
     "category": "software",
-    "emoji": "🛡️",
     "aliases": ["nord vpn"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://my.nordaccount.com/",
     "cancelNote": "Billing -> turn off auto-renew, or cancel the subscription."
@@ -322,9 +380,11 @@
     "id": "surfshark",
     "name": "Surfshark",
     "category": "software",
-    "emoji": "🛡️",
     "aliases": ["surf shark vpn"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://my.surfshark.com/",
     "cancelNote": "Account -> Subscription -> turn off auto-renew / cancel."
@@ -333,9 +393,11 @@
     "id": "1password",
     "name": "1Password",
     "category": "software",
-    "emoji": "🔐",
     "aliases": ["1 password", "onepassword"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://my.1password.com/",
     "cancelNote": "Billing -> Cancel subscription."
@@ -344,9 +406,11 @@
     "id": "proton-mail",
     "name": "Proton Mail Plus",
     "category": "software",
-    "emoji": "✉️",
     "aliases": ["protonmail", "proton", "proton mail"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.proton.me/",
     "cancelNote": "Settings -> Subscription -> Cancel subscription."
@@ -355,9 +419,11 @@
     "id": "capcut-pro",
     "name": "CapCut Pro",
     "category": "software",
-    "emoji": "🎬",
     "aliases": ["capcut", "cap cut"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 1,
     "cancelUrl": null,
     "cancelNote": "Cancel in the store you subscribed through: Google Play -> Subscriptions, or App Store -> Subscriptions."
@@ -366,9 +432,11 @@
     "id": "telegram-premium",
     "name": "Telegram Premium",
     "category": "software",
-    "emoji": "✈️",
     "aliases": ["telegram"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": null,
     "cancelNote": "Settings -> Telegram Premium -> Manage subscription -> Cancel."
@@ -377,9 +445,11 @@
     "id": "x-premium",
     "name": "X Premium",
     "category": "software",
-    "emoji": "🐦",
     "aliases": ["twitter blue", "x premium", "twitter premium"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://x.com/settings/subscriptions",
     "cancelNote": "Settings -> Premium -> Manage subscription -> Cancel."
@@ -388,9 +458,11 @@
     "id": "snapchat-plus",
     "name": "Snapchat+",
     "category": "software",
-    "emoji": "👻",
     "aliases": ["snapchat plus", "snapchat premium"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": null,
     "cancelNote": "Cancel via the store you subscribed through: Google Play -> Subscriptions, or App Store -> Subscriptions."
@@ -399,9 +471,11 @@
     "id": "mtn-data",
     "name": "MTN Data Auto-Renew",
     "category": "mobile",
-    "emoji": "📶",
     "aliases": ["mtn", "mtn data", "mtn bundle", "mtn night plan"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 1,
     "cancelUrl": "https://www.mtn.ng/",
     "cancelNote": "Use the MyMTN app or dial *131# to review active bundles and switch off automatic renewals."
@@ -410,9 +484,11 @@
     "id": "airtel-data",
     "name": "Airtel Data Auto-Renew",
     "category": "mobile",
-    "emoji": "📶",
     "aliases": ["airtel", "airtel data", "airtel bundle"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 1,
     "cancelUrl": "https://www.airtel.com.ng/",
     "cancelNote": "Dial *141# or use the Airtel app to review plans and disable recurring bundles."
@@ -421,9 +497,11 @@
     "id": "glo-data",
     "name": "Glo Data Auto-Renew",
     "category": "mobile",
-    "emoji": "📶",
     "aliases": ["glo", "glo data", "glo bundle"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 1,
     "cancelUrl": "https://www.gloworld.com/ng/",
     "cancelNote": "Dial *777# to manage data plans and stop automatic renewals."
@@ -432,9 +510,11 @@
     "id": "9mobile-data",
     "name": "9mobile Data Auto-Renew",
     "category": "mobile",
-    "emoji": "📶",
     "aliases": ["9mobile", "etisalat", "9mobile data"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 1,
     "cancelUrl": "https://www.9mobile.com.ng/",
     "cancelNote": "Use *200# or the app to manage and stop automatic data renewals."
@@ -443,9 +523,11 @@
     "id": "starlink",
     "name": "Starlink",
     "category": "internet",
-    "emoji": "🛰️",
     "aliases": ["spacex starlink", "starlink nigeria"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.starlink.com/account",
     "cancelNote": "Account -> Service -> Cancel service. Service continues until the end of the billing cycle."
@@ -454,9 +536,11 @@
     "id": "spectranet",
     "name": "Spectranet",
     "category": "internet",
-    "emoji": "🌐",
     "aliases": ["spectranet 4g"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.spectranet.com.ng/",
     "cancelNote": "Use the self-care portal or contact support to stop your plan from auto-renewing."
@@ -465,9 +549,11 @@
     "id": "smile",
     "name": "Smile",
     "category": "internet",
-    "emoji": "🌐",
     "aliases": ["smile communications", "smile 4g"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.smile.com.ng/",
     "cancelNote": "Manage your plan through Smile self-care to stop auto-renewal."
@@ -476,9 +562,11 @@
     "id": "whogohost",
     "name": "WhoGoHost",
     "category": "internet",
-    "emoji": "🖥️",
     "aliases": ["whogohost hosting", "wgh"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 5,
     "cancelUrl": "https://www.whogohost.com/",
     "cancelNote": "Client area -> open the service -> set the product to Do Not Renew, or request cancellation."
@@ -487,9 +575,11 @@
     "id": "qservers",
     "name": "QServers",
     "category": "internet",
-    "emoji": "🖥️",
     "aliases": ["qservers hosting"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 5,
     "cancelUrl": "https://www.qservers.net/",
     "cancelNote": "Client area -> Services -> request cancellation before the next due date."
@@ -498,9 +588,11 @@
     "id": "namecheap",
     "name": "Namecheap",
     "category": "internet",
-    "emoji": "🌐",
     "aliases": ["namecheap domains", "namecheap hosting"],
-    "defaultCycle": { "unit": "year", "interval": 1 },
+    "defaultCycle": {
+      "unit": "year",
+      "interval": 1
+    },
     "defaultLeadDays": 14,
     "cancelUrl": "https://ap.www.namecheap.com/",
     "cancelNote": "Domain List -> manage the domain -> turn off auto-renew. Do the same for hosting products."
@@ -509,9 +601,11 @@
     "id": "cloudways",
     "name": "Cloudways",
     "category": "internet",
-    "emoji": "🖥️",
     "aliases": ["cloudways hosting"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 3,
     "cancelUrl": "https://platform.cloudways.com/",
     "cancelNote": "Account -> Billing -> delete the server / cancel the subscription before the renewal date."
@@ -520,9 +614,11 @@
     "id": "ps-plus",
     "name": "PlayStation Plus",
     "category": "gaming",
-    "emoji": "🎮",
     "aliases": ["ps plus", "psn", "playstation plus"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.playstation.com/",
     "cancelNote": "Account Management -> Subscriptions -> PlayStation Plus -> Cancel."
@@ -531,9 +627,11 @@
     "id": "xbox-game-pass",
     "name": "Xbox Game Pass",
     "category": "gaming",
-    "emoji": "🎮",
     "aliases": ["game pass", "xbox", "xbox live"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.microsoft.com/services",
     "cancelNote": "Services & subscriptions -> Manage -> Cancel."
@@ -542,9 +640,11 @@
     "id": "nintendo-online",
     "name": "Nintendo Switch Online",
     "category": "gaming",
-    "emoji": "🎮",
     "aliases": ["nintendo online", "switch online"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://accounts.nintendo.com/",
     "cancelNote": "Account settings -> Membership -> turn off automatic renewal."
@@ -553,9 +653,11 @@
     "id": "ea-play",
     "name": "EA Play",
     "category": "gaming",
-    "emoji": "🎮",
     "aliases": ["ea play", "ea access"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.ea.com/",
     "cancelNote": "Account -> EA Play -> Manage membership -> Cancel."
@@ -564,9 +666,11 @@
     "id": "apple-arcade",
     "name": "Apple Arcade",
     "category": "gaming",
-    "emoji": "🕹️",
     "aliases": ["arcade"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
     "cancelNote": "iPhone Settings -> [your name] -> Subscriptions -> Apple Arcade -> Cancel."
@@ -575,9 +679,11 @@
     "id": "discord-nitro",
     "name": "Discord Nitro",
     "category": "gaming",
-    "emoji": "🎮",
     "aliases": ["nitro", "discord"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://discord.com/settings/subscriptions",
     "cancelNote": "Settings -> Subscriptions -> Cancel."
@@ -586,9 +692,11 @@
     "id": "strava",
     "name": "Strava",
     "category": "fitness",
-    "emoji": "🏃",
     "aliases": ["strava premium", "strava subscription"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.strava.com/settings/payments",
     "cancelNote": "Settings -> My Account -> Subscription -> Cancel."
@@ -597,9 +705,11 @@
     "id": "fitbit-premium",
     "name": "Fitbit Premium",
     "category": "fitness",
-    "emoji": "⌚",
     "aliases": ["fitbit"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.fitbit.com/settings/subscription",
     "cancelNote": "Settings -> Subscription -> Cancel."
@@ -608,9 +718,11 @@
     "id": "gym-membership",
     "name": "Gym Membership",
     "category": "fitness",
-    "emoji": "🏋️",
     "aliases": ["gym", "fitness club", "gym subscription"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 7,
     "cancelUrl": null,
     "cancelNote": "Check your contract notice period. Many gyms require written notice or cancellation in person."
@@ -619,9 +731,11 @@
     "id": "duolingo",
     "name": "Duolingo Super",
     "category": "education",
-    "emoji": "🦉",
     "aliases": ["duolingo plus", "duolingo super"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.duolingo.com/settings/subscription",
     "cancelNote": "Cancel via the store you used (Google Play / App Store), or duolingo.com settings."
@@ -630,9 +744,11 @@
     "id": "coursera-plus",
     "name": "Coursera Plus",
     "category": "education",
-    "emoji": "🎓",
     "aliases": ["coursera"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.coursera.org/my-purchases",
     "cancelNote": "Settings -> Purchases/Subscriptions -> Cancel."
@@ -641,9 +757,11 @@
     "id": "udemy-personal-plan",
     "name": "Udemy Personal Plan",
     "category": "education",
-    "emoji": "📚",
     "aliases": ["udemy"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.udemy.com/",
     "cancelNote": "Account -> Subscriptions -> Cancel subscription."
@@ -652,9 +770,11 @@
     "id": "skillshare",
     "name": "Skillshare",
     "category": "education",
-    "emoji": "🎨",
     "aliases": ["skillshare premium"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.skillshare.com/settings/payments",
     "cancelNote": "Settings -> Membership -> Cancel."
@@ -663,9 +783,11 @@
     "id": "linkedin-learning",
     "name": "LinkedIn Learning",
     "category": "education",
-    "emoji": "📘",
     "aliases": ["lynda"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.linkedin.com/learning/",
     "cancelNote": "Learning -> Settings -> Manage subscription."
@@ -674,9 +796,11 @@
     "id": "google-play-pass",
     "name": "Google Play Pass",
     "category": "finance",
-    "emoji": "🎟️",
     "aliases": ["play pass"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": "https://play.google.com/store/account/subscriptions",
     "cancelNote": "Play Store -> Payments & subscriptions -> Subscriptions -> Play Pass -> Cancel."
@@ -685,9 +809,11 @@
     "id": "bank-card-maintenance",
     "name": "Bank SMS / Card Maintenance",
     "category": "finance",
-    "emoji": "🏦",
     "aliases": ["bank charges", "sms alert", "card maintenance"],
-    "defaultCycle": { "unit": "month", "interval": 1 },
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
     "defaultLeadDays": 2,
     "cancelUrl": null,
     "cancelNote": "Debit-card maintenance and SMS alert fees are set by your bank. Contact them to close the card or opt out of SMS alerts where possible."

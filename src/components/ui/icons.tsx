@@ -181,6 +181,104 @@ export function SparkIcon(props: IconProps) {
   );
 }
 
+export function StreamingIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <rect x="3" y="4.5" width="18" height="15" rx="3" />
+      <path d="M10 9.2v5.6l4.6-2.8Z" />
+    </Icon>
+  );
+}
+
+export function MusicIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M9 17V5.5l11-2V15" />
+      <circle cx="6.5" cy="17.3" r="2.5" />
+      <circle cx="17.5" cy="15.3" r="2.5" />
+    </Icon>
+  );
+}
+
+export function CloudIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M7 18.5h9.4a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 6.1 11.4 3.7 3.7 0 0 0 7 18.5Z" />
+    </Icon>
+  );
+}
+
+export function SoftwareIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M10 4.6a2 2 0 0 1 4 0v1.4h2.4A1.6 1.6 0 0 1 18 7.6V10h1.4a2 2 0 0 1 0 4H18v2.4a1.6 1.6 0 0 1-1.6 1.6H14v1.4a2 2 0 0 1-4 0V18H7.6A1.6 1.6 0 0 1 6 16.4V14H4.6a2 2 0 0 1 0-4H6V7.6A1.6 1.6 0 0 1 7.6 6H10Z" />
+    </Icon>
+  );
+}
+
+export function MobileIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 18.5v-2.5M9.5 18.5v-5.5M14 18.5v-8.5M18.5 18.5v-11" />
+    </Icon>
+  );
+}
+
+export function InternetIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M3.5 12h17" />
+      <path d="M12 3.5c2.4 2.3 3.7 5.3 3.7 8.5S14.4 18.2 12 20.5C9.6 18.2 8.3 15.2 8.3 12S9.6 5.8 12 3.5Z" />
+    </Icon>
+  );
+}
+
+export function GamingIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M8.2 8h7.6a5 5 0 0 1 4.9 5.9l-.5 2.9A2.6 2.6 0 0 1 17.1 19a2.6 2.6 0 0 1-2.2-1.2L14.2 16.9H9.8l-.7.9A2.6 2.6 0 0 1 6.9 19a2.6 2.6 0 0 1-3.1-2.2l-.5-2.9A5 5 0 0 1 8.2 8Z" />
+      <path d="M7.6 11.3v2.4M6.4 12.5h2.4M15.4 11.8h.01M17.2 13.6h.01" />
+    </Icon>
+  );
+}
+
+export function FitnessIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M3 12.5h3.6l1.9-5 3.6 10 2-5H21" />
+    </Icon>
+  );
+}
+
+export function FinanceIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M3.5 9.3 12 4l8.5 5.3" />
+      <path d="M5.2 10.2v7.3M9.6 10.2v7.3M14.4 10.2v7.3M18.8 10.2v7.3" />
+      <path d="M3.8 20.5h16.4" />
+    </Icon>
+  );
+}
+
+export function EducationIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 4.8 2.8 9.3 12 13.8l9.2-4.5Z" />
+      <path d="M6.8 11.5V16c0 1.3 2.3 2.6 5.2 2.6s5.2-1.3 5.2-2.6v-4.5" />
+    </Icon>
+  );
+}
+
+export function OtherIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3.6 20 7.6v8.8L12 20.4 4 16.4V7.6Z" />
+      <path d="M4 7.6 12 11.6l8-4M12 11.6v8.8" />
+    </Icon>
+  );
+}
+
 export function InstagramIcon(props: IconProps) {
   return (
     <Icon {...props}>
