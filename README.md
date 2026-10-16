@@ -18,8 +18,13 @@ the things that need action today rise to the top.
 - **Cancel-by windows** — a per-subscription reminder window counts back from the
   next charge to the last safe day to cancel, ranked by urgency (safe, soon,
   urgent, today, missed).
-- **Dashboard** — monthly and yearly spend, an "Up next" list sorted by urgency,
-  and a collapsed set of cancelled plans.
+- **Dashboard** — monthly and yearly spend, an "Up next" explorer you can search,
+  filter by category, and sort (urgency, cost, or name, grouped by urgency), plus
+  a collapsed set of cancelled plans with the savings they represent.
+- **Spend insights** — a category breakdown donut and a 12-month projection of
+  upcoming charges, both rendered on-device and read out as accessible tables.
+- **Price hikes** — every price change is recorded, so an increase shows as a chip
+  on the row and a price history in the detail sheet.
 - **Detail sheet** — cancel window, charge, cycle, next charge, lead time, quick
   actions (advance one cycle, open cancellation page), and one-tap calendar
   export.
@@ -30,6 +35,8 @@ the things that need action today rise to the top.
   window is closing.
 - **Cancel guides** — searchable notes for 60+ popular Nigerian services, with
   direct cancellation links where they exist.
+- **Undo, not "are you sure"** — deleting a subscription or marking one cancelled
+  offers a one-tap undo instead of a blocking dialog.
 - **Dark mode** — light, dark, or follow your device, with no flash on load.
 - **Your data, portable** — JSON export/import to back up or move between devices.
 - **Installable PWA** — add to your home screen; works offline from a cache-first
@@ -50,11 +57,13 @@ with JSON export/import in Settings.
 - **Tailwind CSS v4** (CSS-first `@theme` tokens)
 - **Dexie** for local persistence
 - **Zod** for runtime validation at every boundary
-- **Vitest** for the domain test suite
+- **visx** for the headless spend charts
+- **Vitest** for the domain test suite (95 tests)
 
 The domain layer under `src/lib/domain` is pure and framework-free: date math,
 billing cycles, urgency, "cancel by" windows, currency conversion, spend
-summaries, and ICS generation are all tested without a DOM.
+summaries, price history, projections, and ICS generation are all tested without
+a DOM.
 
 ## Getting started
 
@@ -143,11 +152,14 @@ src/
   components/
     shell/        App shell, bottom nav, brand mark, reminder notifier
     landing/      Marketing landing page pieces
-    subscriptions/ Form, sheet, detail sheet, list, row, spend summary
+    charts/       Spend donut, projection bars, lazy insights section
+    subscriptions/ Form, sheet, detail sheet, explorer, list, row, summary
     ui/           Primitives: button, field, sheet, switch, chips, icons
     providers/    Theme, toast, and app-data contexts
   lib/
-    domain/       Pure logic + tests (dates, cycles, urgency, spend, currency, ICS)
+    domain/       Pure logic + tests (dates, cycles, urgency, spend, currency,
+                  price history, projections, ICS)
+    hooks/        Shared React hooks (today, measured width, notifications)
     db/           Dexie client, repositories, backup, live-query hooks
     catalog/      Nigerian service catalog and search
     notifications/ On-device reminder store
