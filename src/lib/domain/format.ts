@@ -21,6 +21,30 @@ export function formatDate(iso: string, locale = "en-GB"): string {
   return getDateFormatter(locale).format(parseIsoDate(iso));
 }
 
+export function formatLongDate(iso: string, locale = "en-GB"): string {
+  return new Intl.DateTimeFormat(locale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  }).format(parseIsoDate(iso));
+}
+
+export function formatMonthYear(iso: string, locale = "en-GB"): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(parseIsoDate(iso));
+}
+
+export function formatMonthShort(iso: string, locale = "en-GB"): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    timeZone: "UTC",
+  }).format(parseIsoDate(iso));
+}
+
 export function formatDaysUntil(days: number): string {
   if (days === 0) {
     return "today";

@@ -82,6 +82,16 @@ export async function advanceRenewal(id: string, nextRenewal: string): Promise<v
   await db.subscriptions.update(id, { nextRenewal, updatedAt: nowIso() });
 }
 
+export async function setSubscriptionLeadDays(
+  id: string,
+  leadDays: number,
+): Promise<void> {
+  await db.subscriptions.update(id, {
+    leadDays: Math.min(60, Math.max(0, Math.trunc(leadDays))),
+    updatedAt: nowIso(),
+  });
+}
+
 export async function deleteSubscription(id: string): Promise<void> {
   await db.subscriptions.delete(id);
 }

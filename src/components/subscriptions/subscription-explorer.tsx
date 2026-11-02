@@ -33,6 +33,7 @@ interface SubscriptionExplorerProps {
   onSelect: (subscription: Subscription) => void;
   displayCurrency: CurrencyCode;
   fxToNgn: FxToNgn;
+  className?: string;
 }
 
 export function SubscriptionExplorer({
@@ -41,12 +42,11 @@ export function SubscriptionExplorer({
   onSelect,
   displayCurrency,
   fxToNgn,
+  className,
 }: SubscriptionExplorerProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryId | "all">("all");
   const [sort, setSort] = useState<SortKey>("urgency");
-
-  const showControls = subscriptions.length >= 3;
 
   const presentCategories = useMemo(() => {
     const present = new Set(subscriptions.map((item) => item.category));
@@ -97,53 +97,52 @@ export function SubscriptionExplorer({
   }, [sort, visible, referenceDate]);
 
   return (
-    <div className="flex flex-col gap-4">
-      {showControls ? (
-        <div className="flex flex-col gap-3">
-          <div className="relative">
-            <SearchIcon
-              width={18}
-              height={18}
-              className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted"
-            />
-            <TextInput
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search subscriptions…"
-              aria-label="Search subscriptions"
-              autoComplete="off"
-              className="pl-10"
-            />
-          </div>
-
-          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-            <FilterChip
-              active={category === "all"}
-              onClick={() => setCategory("all")}
-              label="All"
-            />
-            {presentCategories.map((option) => (
-              <FilterChip
-                key={option.id}
-                active={category === option.id}
-                onClick={() => setCategory(option.id)}
-                icon={<CategoryIcon category={option.id} width={14} height={14} />}
-                label={option.label}
-              />
-            ))}
-          </div>
-
-          <SegmentedControl
-            ariaLabel="Sort subscriptions"
-            options={SORT_OPTIONS}
-            value={sort}
-            onChange={setSort}
+    <div className={cn("flex flex-col gap-4", className)}>
+      <div className="flex flex-col gap-3">
+        <div className="relative">
+          <SearchIcon
+            width={18}
+            height={18}
+            className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted"
+          />
+          <TextInput
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search subscriptions…"
+            aria-label="Search subscriptions"
+            autoComplete="off"
+            className="h-12 border-transparent bg-surface-soft pl-11"
           />
         </div>
-      ) : null}
+
+        <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+          <FilterChip
+            active={category === "all"}
+            onClick={() => setCategory("all")}
+            label="All"
+          />
+          {presentCategories.map((option) => (
+            <FilterChip
+              key={option.id}
+              active={category === option.id}
+              onClick={() => setCategory(option.id)}
+              icon={<CategoryIcon category={option.id} width={13} height={13} />}
+              label={option.label}
+            />
+          ))}
+        </div>
+
+        <SegmentedControl
+          ariaLabel="Sort subscriptions"
+          options={SORT_OPTIONS}
+          value={sort}
+          onChange={setSort}
+          size="sm"
+        />
+      </div>
 
       {visible.length === 0 ? (
-        <p className="rounded-card border border-line bg-surface px-4 py-6 text-center text-sm text-muted">
+        <p className="rounded-[1.5rem] bg-surface px-4 py-8 text-center text-sm text-muted">
           No subscriptions match that.
         </p>
       ) : groups ? (
@@ -154,13 +153,15 @@ export function SubscriptionExplorer({
               className="flex animate-rise-in flex-col gap-2.5"
               style={{ animationDelay: `${Math.min(groupIndex, 6) * 40}ms` }}
             >
-              <div className="flex items-baseline justify-between">
-                <h3 className="text-xs font-medium tracking-wide text-muted uppercase">
+              <div className="flex items-baseline justify-between px-1">
+                <h3 className="text-[11px] font-bold tracking-[0.13em] text-muted uppercase">
                   {URGENCY_BUCKET_LABELS[group.bucket]}
                 </h3>
-                <span className="text-xs text-muted">{group.items.length}</span>
+                <span className="text-[11px] font-semibold text-muted">
+                  {group.items.length}
+                </span>
               </div>
-              <ul className="flex flex-col gap-2.5">
+              <ul className="flex flex-col gap-2">
                 {group.items.map((subscription) => (
                   <li key={subscription.id}>
                     <SubscriptionRow
@@ -175,7 +176,7 @@ export function SubscriptionExplorer({
           ))}
         </div>
       ) : (
-        <ul className="flex flex-col gap-2.5">
+        <ul className="flex flex-col gap-2">
           {visible.map((subscription, index) => (
             <li
               key={subscription.id}
@@ -209,10 +210,10 @@ function FilterChip({ active, onClick, label, icon }: FilterChipProps) {
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold transition-colors",
         active
-          ? "border-ember bg-ember-soft text-ember-strong"
-          : "border-line bg-surface text-muted hover:text-ink",
+          ? "bg-ink text-bone"
+          : "bg-surface text-muted hover:bg-surface-soft hover:text-ink",
       )}
     >
       {icon}

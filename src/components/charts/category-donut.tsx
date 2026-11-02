@@ -12,7 +12,7 @@ import type { CategorySpend } from "@/lib/domain/spend";
 const SIZE = 200;
 const RADIUS = SIZE / 2;
 const OUTER = RADIUS - 2;
-const INNER = OUTER - 26;
+const INNER = OUTER - 28;
 
 interface CategoryDonutProps {
   data: readonly CategorySpend[];
@@ -43,7 +43,7 @@ export function CategoryDonut({ data, currency }: CategoryDonutProps) {
   }
 
   return (
-    <div className="flex flex-col gap-5 min-[420px]:flex-row min-[420px]:items-center">
+    <div className="flex flex-col gap-5 min-[460px]:flex-row min-[460px]:items-center">
       <div className="relative mx-auto shrink-0" style={{ width: SIZE, height: SIZE }}>
         <svg
           viewBox={`0 0 ${SIZE} ${SIZE}`}
@@ -59,8 +59,8 @@ export function CategoryDonut({ data, currency }: CategoryDonutProps) {
               pieValue={(segment) => segment.monthly}
               outerRadius={OUTER}
               innerRadius={INNER}
-              cornerRadius={3}
-              padAngle={0.02}
+              cornerRadius={6}
+              padAngle={0.03}
             >
               {({ arcs, path }) =>
                 arcs.map((arc, index) => (
@@ -69,7 +69,7 @@ export function CategoryDonut({ data, currency }: CategoryDonutProps) {
                     d={path(arc) ?? undefined}
                     fill={categoryColor(arc.data.category)}
                     opacity={active === null || active === index ? 1 : 0.35}
-                    className="transition-opacity"
+                    className="transition-opacity duration-200"
                     onPointerEnter={() => setActive(index)}
                     onPointerLeave={() => setActive(null)}
                   />
@@ -80,21 +80,21 @@ export function CategoryDonut({ data, currency }: CategoryDonutProps) {
         </svg>
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span className="text-[10px] font-medium tracking-wide text-muted uppercase">
+          <span className="text-[10px] font-bold tracking-[0.12em] text-muted uppercase">
             {focused ? getCategory(focused.category).label : "Each month"}
           </span>
           <MoneyText
             amount={focused ? focused.monthly : total}
             currency={currency}
             rounded
-            className="font-display text-2xl text-ink"
+            className="font-display text-2xl font-extrabold tracking-[-0.05em] text-ink"
           />
           {focused ? (
-            <span className="text-[11px] text-muted">
+            <span className="text-[11px] font-semibold text-muted">
               {Math.round(focused.share * 100)}%
             </span>
           ) : (
-            <span className="text-[11px] text-muted">
+            <span className="text-[11px] font-semibold text-muted">
               {segments.length} {segments.length === 1 ? "category" : "categories"}
             </span>
           )}
@@ -111,26 +111,26 @@ export function CategoryDonut({ data, currency }: CategoryDonutProps) {
               onFocus={() => setActive(index)}
               onBlur={() => setActive(null)}
               onClick={() => setActive((current) => (current === index ? null : index))}
-              className="flex w-full items-center gap-3 rounded-field px-2 py-1.5 text-left transition-colors hover:bg-bone active:bg-bone"
+              className="flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition-colors hover:bg-surface-soft active:bg-surface-soft"
             >
               <span
-                aria-hidden="true"
-                className="size-3 shrink-0 rounded-full"
+                className="flex size-7 shrink-0 items-center justify-center rounded-lg"
                 style={{ backgroundColor: categoryColor(segment.category) }}
-              />
-              <CategoryIcon
-                category={segment.category}
-                width={16}
-                height={16}
-                className="shrink-0 text-muted"
-              />
-              <span className="min-w-0 flex-1 truncate text-sm text-ink">
+              >
+                <CategoryIcon
+                  category={segment.category}
+                  width={14}
+                  height={14}
+                  className="text-ink-fixed"
+                />
+              </span>
+              <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ink">
                 {getCategory(segment.category).label}
               </span>
-              <span className="shrink-0 text-sm font-medium text-ink">
+              <span className="shrink-0 text-xs font-bold text-ink">
                 <MoneyText amount={segment.monthly} currency={currency} rounded />
               </span>
-              <span className="w-9 shrink-0 text-right font-tabular text-xs text-muted">
+              <span className="w-8 shrink-0 text-right font-tabular text-[11px] font-semibold text-muted">
                 {Math.round(segment.share * 100)}%
               </span>
             </button>

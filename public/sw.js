@@ -1,4 +1,4 @@
-const CACHE_NAME = "undue-v2";
+const CACHE_NAME = "undue-v3";
 
 self.addEventListener("install", () => {
   self.skipWaiting();

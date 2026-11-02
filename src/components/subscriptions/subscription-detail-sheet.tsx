@@ -8,16 +8,21 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { Mascot } from "@/components/brand/mascot";
 import { useToast } from "@/components/providers/toast-provider";
+import { useCelebration } from "@/components/shell/celebration";
 import { Button } from "@/components/ui/button";
 import { MoneyText } from "@/components/ui/money-text";
-import { ServiceAvatar } from "@/components/ui/service-avatar";
 import { Sheet } from "@/components/ui/sheet";
+import { SwipeButton } from "@/components/ui/swipe-button";
 import {
+  BellIcon,
   CalendarIcon,
-  ClockIcon,
+  CheckIcon,
+  CloseIcon,
   ExternalLinkIcon,
   PencilIcon,
+  ShareIcon,
   TrashIcon,
   TrendUpIcon,
 } from "@/components/ui/icons";
@@ -25,6 +30,7 @@ import {
   advanceRenewal,
   deleteSubscription,
   restoreSubscription,
+  setSubscriptionLeadDays,
   setSubscriptionStatus,
 } from "@/lib/db/subscriptions";
 import { useSubscription } from "@/lib/db/hooks";
@@ -35,7 +41,7 @@ import { formatCountdown, formatDate } from "@/lib/domain/format";
 import { buildCalendar, CALENDAR_MIME_TYPE } from "@/lib/domain/ics";
 import { priceChange } from "@/lib/domain/price-history";
 import { getCategory, type Subscription } from "@/lib/domain/schema";
-import { getUrgencyPresentation, urgencySurfaceClass } from "@/lib/domain/urgency";
+import type { UrgencyLevel } from "@/lib/domain/urgency";
 import { useToday } from "@/lib/hooks/use-today";
 import { cn } from "@/lib/utils/cn";
 import { downloadTextFile } from "@/lib/utils/download";
@@ -50,9 +56,21 @@ const SubscriptionDetailContext = createContext<SubscriptionDetailContextValue |
   null,
 );
 
+const ACCENT_BY_URGENCY: Record<UrgencyLevel, string> = {
+  today: "bg-coral",
+  urgent: "bg-coral",
+  missed: "bg-coral",
+  soon: "bg-yellow",
+  safe: "bg-lime",
+  past: "bg-paper-soft",
+};
+
+const REMINDER_CHOICES = [0, 1, 3, 7] as const;
+
 export function SubscriptionDetailProvider({ children }: { children: ReactNode }) {
   const { openEdit } = useSubscriptionSheet();
   const { showToast } = useToast();
+  const { celebrate } = useCelebration();
   const today = useToday();
   const [id, setId] = useState<string | null>(null);
   const subscription = useSubscription(id ?? "");
@@ -81,25 +99,28 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
     }
   }
 
-  async function handleStatus(target: Subscription, status: "active" | "cancelled") {
+  async function handleCancel(target: Subscription) {
+    vibrate([10, 30, 10]);
+    try {
+      await setSubscriptionStatus(target.id, "cancelled");
+      close();
+      celebrate(target, {
+        onUndo: async () => {
+          await setSubscriptionStatus(target.id, "active");
+        },
+      });
+    } catch {
+      showToast("Could not cancel this subscription", "danger");
+    }
+  }
+
+  async function handleReactivate(target: Subscription) {
     vibrate(8);
     try {
-      await setSubscriptionStatus(target.id, status);
-      const previous = status === "cancelled" ? "active" : "cancelled";
-      showToast(
-        status === "cancelled" ? "Marked as cancelled" : "Subscription reactivated",
-        "success",
-        {
-          label: "Undo",
-          onClick: () => {
-            void setSubscriptionStatus(target.id, previous).catch(() => {
-              showToast("Could not undo that change", "danger");
-            });
-          },
-        },
-      );
+      await setSubscriptionStatus(target.id, "active");
+      showToast("Subscription reactivated", "success");
     } catch {
-      showToast("Could not update this subscription", "danger");
+      showToast("Could not reactivate this subscription", "danger");
     }
   }
 
@@ -121,6 +142,20 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
     }
   }
 
+  async function handleLeadDays(target: Subscription, leadDays: number) {
+    try {
+      await setSubscriptionLeadDays(target.id, leadDays);
+      showToast(
+        leadDays === 0
+          ? "We'll remind you on the day"
+          : `We'll remind you ${leadDays} ${leadDays === 1 ? "day" : "days"} before`,
+        "success",
+      );
+    } catch {
+      showToast("Could not update the reminder", "danger");
+    }
+  }
+
   function handleEdit(target: Subscription) {
     close();
     openEdit(target);
@@ -134,46 +169,63 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
       <Sheet
         open={open}
         onClose={close}
-        title={subscription?.name ?? "Subscription"}
-        description={subscription ? getCategory(subscription.category).label : undefined}
+        tone="dark"
+        size="lg"
+        padded={false}
+        footerPadded={false}
+        ariaLabel={subscription ? `${subscription.name} details` : "Subscription details"}
+        header={
+          subscription ? (
+            <DetailHeader
+              subscription={subscription}
+              today={today}
+              onClose={close}
+              onEdit={() => handleEdit(subscription)}
+            />
+          ) : undefined
+        }
         footer={
           subscription ? (
-            subscription.status === "active" ? (
-              <div className="flex flex-col gap-2.5 min-[360px]:flex-row min-[360px]:gap-3">
-                <Button
-                  variant="secondary"
-                  onClick={() => handleEdit(subscription)}
-                  className="flex-1"
-                  leadingIcon={<PencilIcon width={18} height={18} />}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => handleStatus(subscription, "cancelled")}
-                  className="flex-1"
-                >
-                  Mark cancelled
-                </Button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2.5 min-[360px]:flex-row min-[360px]:gap-3">
-                <Button
-                  variant="danger"
-                  onClick={() => handleDelete(subscription)}
-                  className="flex-1"
-                  leadingIcon={<TrashIcon width={18} height={18} />}
-                >
-                  Delete
-                </Button>
-                <Button
-                  onClick={() => handleStatus(subscription, "active")}
-                  className="flex-1"
-                >
-                  Reactivate
-                </Button>
-              </div>
-            )
+            <div className="rounded-b-[2rem] bg-surface px-5 pt-3 pb-safe-3 sm:px-7 sm:pb-safe-5">
+              {subscription.status === "active" ? (
+                <div className="flex flex-col gap-2.5 min-[360px]:flex-row min-[360px]:gap-3">
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleEdit(subscription)}
+                    className="flex-1"
+                    leadingIcon={<PencilIcon width={18} height={18} />}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => void handleCancel(subscription)}
+                    className="flex-1"
+                    leadingIcon={<CloseIcon width={18} height={18} />}
+                  >
+                    Cancel plan
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2.5 min-[360px]:flex-row min-[360px]:gap-3">
+                  <Button
+                    variant="danger"
+                    onClick={() => void handleDelete(subscription)}
+                    className="flex-1"
+                    leadingIcon={<TrashIcon width={18} height={18} />}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => void handleReactivate(subscription)}
+                    className="flex-1"
+                  >
+                    Reactivate
+                  </Button>
+                </div>
+              )}
+            </div>
           ) : null
         }
       >
@@ -182,6 +234,8 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
             subscription={subscription}
             today={today}
             onAdvance={handleAdvance}
+            onCancel={handleCancel}
+            onLeadDays={handleLeadDays}
           />
         ) : null}
       </Sheet>
@@ -189,18 +243,143 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
   );
 }
 
+function DetailHeader({
+  subscription,
+  today,
+  onClose,
+  onEdit,
+}: {
+  subscription: Subscription;
+  today: Date | null;
+  onClose: () => void;
+  onEdit: () => void;
+}) {
+  const { showToast } = useToast();
+  const window = today ? computeCancelWindow(subscription, today) : null;
+  const cancelled = subscription.status === "cancelled";
+  const variant = cancelled
+    ? "calm"
+    : window?.urgency === "today" ||
+        window?.urgency === "urgent" ||
+        window?.urgency === "missed"
+      ? "alarmed"
+      : window?.urgency === "past"
+        ? "sleepy"
+        : "happy";
+
+  async function handleShare() {
+    const text = cancelled
+      ? `${subscription.name} is cancelled. One less charge.`
+      : `${subscription.name} renews ${formatDate(subscription.nextRenewal)}. Last day to cancel: ${
+          window ? formatDate(window.cancelBy) : "check Undue"
+        }.`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: subscription.name, text });
+        return;
+      }
+      await navigator.clipboard.writeText(text);
+      showToast("Deadline copied", "success");
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return;
+      }
+      showToast("Could not share that just now.", "danger");
+    }
+  }
+
+  return (
+    <header className="relative overflow-hidden bg-dark px-5 pt-1 pb-6 text-paper sm:px-7">
+      <div className="flex items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="flex size-11 items-center justify-center rounded-full bg-paper/10 text-paper transition-colors hover:bg-paper/15"
+        >
+          <CloseIcon width={20} height={20} />
+        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void handleShare()}
+            aria-label="Share deadline"
+            className="flex size-11 items-center justify-center rounded-full bg-paper/10 text-paper transition-colors hover:bg-paper/15"
+          >
+            <ShareIcon width={19} height={19} />
+          </button>
+          <button
+            type="button"
+            onClick={onEdit}
+            aria-label="Edit subscription"
+            className="flex size-11 items-center justify-center rounded-full bg-paper/10 text-paper transition-colors hover:bg-paper/15"
+          >
+            <PencilIcon width={19} height={19} />
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-5 flex items-end justify-between gap-4">
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-paper/10 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-paper/65 uppercase">
+              {getCategory(subscription.category).label}
+            </span>
+            {subscription.isTrial ? (
+              <span className="rounded-full bg-coral px-2.5 py-1 text-[10px] font-bold text-ink-fixed">
+                Trial
+              </span>
+            ) : null}
+            {cancelled ? (
+              <span className="rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold text-ink-fixed">
+                Cancelled
+              </span>
+            ) : null}
+          </div>
+          <h2 className="font-display text-[2.8rem] leading-[0.85] font-extrabold tracking-[-0.06em] text-balance">
+            {subscription.name}
+          </h2>
+          <p className="text-sm font-semibold text-paper/55">
+            <MoneyText amount={subscription.amount} currency={subscription.currency} /> ·{" "}
+            {cycleShortLabel(subscription.cycle)}
+          </p>
+        </div>
+        <Mascot
+          variant={variant}
+          color="var(--color-yellow)"
+          size={104}
+          className="shrink-0 animate-float"
+        />
+      </div>
+    </header>
+  );
+}
+
 interface DetailBodyProps {
   subscription: Subscription;
   today: Date;
   onAdvance: (subscription: Subscription) => void;
+  onCancel: (subscription: Subscription) => void;
+  onLeadDays: (subscription: Subscription, leadDays: number) => void;
 }
 
-function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
+function DetailBody({
+  subscription,
+  today,
+  onAdvance,
+  onCancel,
+  onLeadDays,
+}: DetailBodyProps) {
   const { showToast } = useToast();
   const cancelWindow = computeCancelWindow(subscription, today);
-  const presentation = getUrgencyPresentation(cancelWindow.urgency);
   const cancelled = subscription.status === "cancelled";
   const change = priceChange(subscription.priceHistory);
+  const accent = cancelled ? "bg-surface" : ACCENT_BY_URGENCY[cancelWindow.urgency];
+  const reminderChoices = REMINDER_CHOICES.includes(
+    subscription.leadDays as (typeof REMINDER_CHOICES)[number],
+  )
+    ? [...REMINDER_CHOICES]
+    : [...REMINDER_CHOICES, subscription.leadDays];
 
   function handleAddToCalendar() {
     const slug =
@@ -217,61 +396,139 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-center gap-3">
-        <ServiceAvatar
-          category={subscription.category}
-          size="lg"
-          className={cancelled ? "opacity-60" : undefined}
-        />
-        <div className="flex min-w-0 flex-col gap-0.5">
-          <span className="flex min-w-0 items-center gap-2 font-display text-xl text-ink">
-            {subscription.name}
-            {subscription.isTrial ? (
-              <span className="shrink-0 rounded-full bg-ember-soft px-2 py-0.5 text-[11px] font-medium text-ember-strong">
-                Trial
-              </span>
-            ) : null}
+    <div className="flex min-h-full flex-col gap-5 bg-bone px-5 py-5 sm:px-7 sm:py-6">
+      <section
+        className={cn(
+          "relative overflow-hidden rounded-[1.75rem] p-5 shadow-card",
+          accent,
+          cancelled ? "text-ink" : "text-ink-fixed",
+        )}
+      >
+        <div className="relative z-10 flex flex-col gap-1 pr-24">
+          <span
+            className={cn(
+              "text-[10px] font-bold tracking-[0.14em] uppercase",
+              cancelled ? "text-muted" : "text-ink-fixed/60",
+            )}
+          >
+            {cancelled ? "Status" : "Your last day to cancel"}
           </span>
-          <span className="text-sm text-muted">
-            {getCategory(subscription.category).label}
+          <span className="font-display text-3xl leading-none font-extrabold tracking-[-0.05em]">
+            {cancelled ? "Cancelled" : formatDate(cancelWindow.cancelBy)}
+          </span>
+          <span
+            className={cn(
+              "text-xs leading-relaxed font-semibold",
+              cancelled ? "text-muted" : "text-ink-fixed/70",
+            )}
+          >
+            {cancelled
+              ? "You stopped this one. Reactivate it if you keep the plan."
+              : cancelWindow.urgency === "today"
+                ? "That's today. Cancel before the next charge."
+                : cancelWindow.urgency === "missed"
+                  ? "The safe window has passed. Check the provider before the charge."
+                  : cancelWindow.urgency === "past"
+                    ? "This renewal date has passed. Mark it renewed to move to the next cycle."
+                    : `${formatCountdown(cancelWindow.daysUntilCancelBy)} left before it renews.`}
           </span>
         </div>
+        <Mascot
+          variant={cancelled ? "calm" : cancelWindow.urgency === "today" || cancelWindow.urgency === "urgent" || cancelWindow.urgency === "missed" ? "alarmed" : cancelWindow.urgency === "past" ? "sleepy" : "happy"}
+          color={cancelled ? "var(--color-lime)" : "var(--color-paper)"}
+          size={92}
+          className="pointer-events-none absolute -right-1 -bottom-3"
+        />
+        {!cancelled ? (
+          <span className="relative z-10 mt-4 inline-flex items-center rounded-full bg-ink-fixed px-3 py-1.5 text-[11px] font-bold text-paper">
+            {cancelWindow.urgency === "past"
+              ? "Renewed"
+              : formatCountdown(cancelWindow.daysUntilCancelBy)}
+          </span>
+        ) : null}
+      </section>
+
+      {!cancelled ? (
+        <div className="flex flex-col gap-2">
+          <SwipeButton
+            label="Swipe to mark cancelled"
+            onComplete={() => onCancel(subscription)}
+          />
+          <p className="text-center text-[11px] font-medium text-muted">
+            You can undo this if you change your mind.
+          </p>
+        </div>
+      ) : null}
+
+      <div className="grid grid-cols-1 gap-2.5 min-[360px]:grid-cols-2">
+        {subscription.cancelUrl ? (
+          <button
+            type="button"
+            onClick={() =>
+              window.open(subscription.cancelUrl ?? "", "_blank", "noopener")
+            }
+            className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-surface px-4 text-sm font-bold text-ink shadow-card transition-colors hover:bg-surface-soft"
+          >
+            <ExternalLinkIcon width={18} height={18} />
+            How to cancel
+          </button>
+        ) : null}
+        <button
+          type="button"
+          onClick={handleAddToCalendar}
+          className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-surface px-4 text-sm font-bold text-ink shadow-card transition-colors hover:bg-surface-soft"
+        >
+          <CalendarIcon width={18} height={18} />
+          Add reminder
+        </button>
+        {!cancelled ? (
+          <button
+            type="button"
+            onClick={() => onAdvance(subscription)}
+            className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-surface px-4 text-sm font-bold text-ink shadow-card transition-colors hover:bg-surface-soft"
+          >
+            <CheckIcon width={18} height={18} />
+            It renewed
+          </button>
+        ) : null}
       </div>
 
-      {cancelled ? (
-        <section className="rounded-card border border-line bg-line/40 p-4">
-          <span className="text-xs font-medium tracking-wide text-muted uppercase">
-            Status
-          </span>
-          <p className="mt-1 font-display text-xl text-ink">Cancelled</p>
-          <p className="mt-1 text-sm text-muted">
-            You marked this as cancelled. Reactivate it if you keep the plan.
-          </p>
-        </section>
-      ) : (
-        <section
-          className={cn(
-            "flex items-center justify-between gap-4 rounded-card p-4",
-            urgencySurfaceClass(presentation.tone),
-          )}
-        >
-          <div className="flex flex-col gap-1">
-            <span className="text-xs font-medium tracking-wide uppercase opacity-90">
-              Cancel by
+      {!cancelled ? (
+        <section className="flex flex-col gap-3 rounded-[1.5rem] bg-surface p-4 shadow-card">
+          <div className="flex items-center gap-2">
+            <span className="flex size-8 items-center justify-center rounded-full bg-yellow text-ink-fixed">
+              <BellIcon width={16} height={16} />
             </span>
-            <span className="font-display text-2xl">
-              {formatDate(cancelWindow.cancelBy)}
-            </span>
-            <span className="text-sm opacity-90">{presentation.description}</span>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-ink">Remind me</span>
+              <span className="text-[11px] text-muted">Before the last safe day</span>
+            </div>
           </div>
-          <span className="font-display font-tabular text-3xl">
-            {formatCountdown(cancelWindow.daysUntilCancelBy)}
-          </span>
+          <div className="flex flex-wrap gap-2">
+            {reminderChoices.map((days) => {
+              const selected = subscription.leadDays === days;
+              return (
+                <button
+                  key={days}
+                  type="button"
+                  onClick={() => void onLeadDays(subscription, days)}
+                  aria-pressed={selected}
+                  className={cn(
+                    "rounded-full px-3.5 py-2 text-xs font-bold transition-colors",
+                    selected
+                      ? "bg-ink text-bone"
+                      : "bg-surface-soft text-muted hover:text-ink",
+                  )}
+                >
+                  {days === 0 ? "On the day" : `${days} ${days === 1 ? "day" : "days"}`}
+                </button>
+              );
+            })}
+          </div>
         </section>
-      )}
+      ) : null}
 
-      <dl className="flex flex-col divide-y divide-line rounded-card border border-line">
+      <dl className="flex flex-col divide-y divide-line rounded-[1.5rem] bg-surface px-4 shadow-card">
         <DetailRow label="Charge">
           <span className="inline-flex items-baseline gap-1.5">
             <MoneyText amount={subscription.amount} currency={subscription.currency} />
@@ -283,18 +540,20 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
         <DetailRow label="Reminder window">
           {subscription.leadDays === 0
             ? "On the day"
-            : `${subscription.leadDays} ${subscription.leadDays === 1 ? "day" : "days"} before`}
+            : `${subscription.leadDays} ${
+                subscription.leadDays === 1 ? "day" : "days"
+              } before`}
         </DetailRow>
       </dl>
 
       {change ? (
-        <section className="flex flex-col gap-3 rounded-card border border-line bg-bone/60 p-4">
+        <section className="flex flex-col gap-3 rounded-[1.5rem] bg-surface p-4 shadow-card">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-medium tracking-wide text-muted uppercase">
+            <span className="text-[10px] font-bold tracking-[0.13em] text-coral uppercase">
               Price history
             </span>
             {change.increased ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-urgent-soft px-2.5 py-1 text-xs font-medium text-urgent">
+              <span className="inline-flex items-center gap-1 rounded-full bg-urgent-soft px-2.5 py-1 text-xs font-bold text-urgent">
                 <TrendUpIcon width={13} height={13} />
                 <MoneyText amount={change.delta} currency={subscription.currency} />
                 {change.pct !== null ? ` · ${Math.round(change.pct)}%` : null}
@@ -307,7 +566,7 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
               const isLatest = index === 0;
               return (
                 <li
-                  key={`${point.at}-${point.amount}`}
+                  key={`${point.at}-${point.amount}-${index}`}
                   className="flex items-center justify-between gap-4 text-sm"
                 >
                   <span className="text-muted">{formatDate(point.at)}</span>
@@ -331,7 +590,10 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
                     <MoneyText
                       amount={point.amount}
                       currency={point.currency}
-                      className={cn("font-medium", isLatest ? "text-ink" : "text-muted")}
+                      className={cn(
+                        "font-semibold",
+                        isLatest ? "text-ink" : "text-muted",
+                      )}
                     />
                   </span>
                 </li>
@@ -342,8 +604,8 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
       ) : null}
 
       {subscription.notes ? (
-        <div className="rounded-card border border-line bg-bone/60 p-4">
-          <span className="text-xs font-medium tracking-wide text-muted uppercase">
+        <div className="rounded-[1.5rem] bg-surface p-4 shadow-card">
+          <span className="text-[10px] font-bold tracking-[0.13em] text-muted uppercase">
             Notes
           </span>
           <p className="mt-1 text-sm whitespace-pre-wrap text-ink">
@@ -351,50 +613,15 @@ function DetailBody({ subscription, today, onAdvance }: DetailBodyProps) {
           </p>
         </div>
       ) : null}
-
-      <div className="flex flex-col gap-2.5">
-        {subscription.status === "active" ? (
-          <Button
-            variant="secondary"
-            block
-            onClick={() => onAdvance(subscription)}
-            leadingIcon={<ClockIcon width={18} height={18} />}
-          >
-            It renewed — advance one cycle
-          </Button>
-        ) : null}
-        {subscription.status === "active" ? (
-          <Button
-            variant="secondary"
-            block
-            onClick={handleAddToCalendar}
-            leadingIcon={<CalendarIcon width={18} height={18} />}
-          >
-            Add cancel reminder to calendar
-          </Button>
-        ) : null}
-        {subscription.cancelUrl ? (
-          <Button
-            variant="secondary"
-            block
-            onClick={() =>
-              window.open(subscription.cancelUrl ?? "", "_blank", "noopener")
-            }
-            leadingIcon={<ExternalLinkIcon width={18} height={18} />}
-          >
-            Open cancellation page
-          </Button>
-        ) : null}
-      </div>
     </div>
   );
 }
 
 function DetailRow({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-4 px-4 py-3">
+    <div className="flex items-center justify-between gap-4 py-3.5">
       <dt className="text-sm text-muted">{label}</dt>
-      <dd className="text-right text-sm font-medium text-ink">{children}</dd>
+      <dd className="text-right text-sm font-semibold text-ink">{children}</dd>
     </div>
   );
 }

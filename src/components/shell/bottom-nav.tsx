@@ -2,8 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GuidesIcon, HomeIcon, SettingsIcon } from "@/components/ui/icons";
+import { useSubscriptionSheet } from "@/components/subscriptions/subscription-sheet";
+import {
+  CalendarIcon,
+  GuidesIcon,
+  HomeIcon,
+  PlusIcon,
+  SettingsIcon,
+} from "@/components/ui/icons";
 import { cn } from "@/lib/utils/cn";
+import { vibrate } from "@/lib/utils/haptics";
 
 interface NavItem {
   href: string;
@@ -11,45 +19,77 @@ interface NavItem {
   Icon: typeof HomeIcon;
 }
 
-const NAV_ITEMS: readonly NavItem[] = [
+const LEFT_ITEMS: readonly NavItem[] = [
   { href: "/app", label: "Home", Icon: HomeIcon },
+  { href: "/calendar", label: "Calendar", Icon: CalendarIcon },
+];
+
+const RIGHT_ITEMS: readonly NavItem[] = [
   { href: "/guides", label: "Guides", Icon: GuidesIcon },
   { href: "/settings", label: "Settings", Icon: SettingsIcon },
 ];
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/app") {
-    return pathname === "/app";
+    return pathname === "/app" || pathname === "/insights";
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
+  const active = isActive(pathname, item.href);
+  const Icon = item.Icon;
+
+  return (
+    <Link
+      href={item.href}
+      aria-label={item.label}
+      aria-current={active ? "page" : undefined}
+      className="group flex h-14 w-14 items-center justify-center rounded-full"
+    >
+      <span
+        className={cn(
+          "flex size-12 items-center justify-center rounded-full transition-all duration-300 ease-out",
+          active
+            ? "scale-100 bg-lime text-ink-fixed shadow-[0_0_0_4px_rgba(189,230,106,0.16)]"
+            : "scale-95 text-paper/55 group-hover:bg-paper/10 group-hover:text-paper group-active:scale-90",
+        )}
+      >
+        <Icon width={23} height={23} strokeWidth={active ? 2.2 : 1.8} />
+      </span>
+    </Link>
+  );
+}
+
 export function BottomNav() {
   const pathname = usePathname();
+  const { openAdd } = useSubscriptionSheet();
 
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 pb-safe backdrop-blur"
+      className="fixed inset-x-0 bottom-nav z-40 px-4 lg:hidden"
     >
-      <div className="mx-auto grid max-w-lg grid-cols-3">
-        {NAV_ITEMS.map(({ href, label, Icon }) => {
-          const active = isActive(pathname, href);
-          return (
-            <Link
-              key={href}
-              href={href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-                active ? "text-ember-strong" : "text-muted hover:text-ink",
-              )}
-            >
-              <Icon width={22} height={22} />
-              {label}
-            </Link>
-          );
-        })}
+      <div className="mx-auto flex h-[74px] max-w-md items-center justify-between rounded-full bg-dark px-2.5 shadow-float ring-1 ring-paper/10">
+        {LEFT_ITEMS.map((item) => (
+          <NavLink key={item.href} item={item} pathname={pathname} />
+        ))}
+
+        <button
+          type="button"
+          onClick={() => {
+            vibrate(6);
+            openAdd();
+          }}
+          aria-label="Add subscription"
+          className="-mt-9 flex size-[62px] shrink-0 items-center justify-center rounded-full bg-coral text-ink-fixed ring-[6px] ring-bone transition-transform duration-200 ease-out active:scale-90"
+        >
+          <PlusIcon width={30} height={30} strokeWidth={2.2} />
+        </button>
+
+        {RIGHT_ITEMS.map((item) => (
+          <NavLink key={item.href} item={item} pathname={pathname} />
+        ))}
       </div>
     </nav>
   );

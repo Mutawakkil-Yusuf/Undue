@@ -39,7 +39,7 @@ interface InsightsSectionProps {
 }
 
 export function InsightsSection({ categories, months, currency }: InsightsSectionProps) {
-  const hasCategories = categories.length > 0;
+  const hasCategories = categories.some((category) => category.monthly > 0);
   const hasMonths = months.some((month) => month.total > 0);
 
   return (

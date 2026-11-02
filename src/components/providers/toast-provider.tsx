@@ -31,9 +31,9 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 const TONE_CLASSES: Record<ToastTone, string> = {
-  default: "bg-ink text-bone",
-  success: "bg-safe text-white",
-  danger: "bg-urgent text-white",
+  default: "bg-ink-fixed text-paper",
+  success: "bg-ink-fixed text-lime",
+  danger: "bg-[#bd3b2c] text-paper",
 };
 
 const TOAST_DURATION_MS = 3200;
@@ -68,11 +68,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div
         aria-live="polite"
         aria-atomic="false"
-        className="pointer-events-none fixed inset-x-0 bottom-clear-fab z-[60] flex flex-col items-center gap-2 px-4"
+        className="pointer-events-none fixed inset-x-0 bottom-toast z-[95] flex flex-col items-center gap-2 px-4"
       >
         {toasts.map((toast) => {
           const classes = cn(
-            "pointer-events-auto flex max-w-sm animate-sheet-in items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium shadow-sheet",
+            "pointer-events-auto flex max-w-sm animate-sheet-in items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold shadow-float",
             TONE_CLASSES[toast.tone],
           );
 
@@ -98,7 +98,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   toast.action?.onClick();
                   dismiss(toast.id);
                 }}
-                className="shrink-0 rounded-full font-semibold underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
+                className="shrink-0 rounded-full bg-paper/15 px-2.5 py-1 text-xs font-bold text-paper underline-offset-2"
               >
                 {toast.action.label}
               </button>

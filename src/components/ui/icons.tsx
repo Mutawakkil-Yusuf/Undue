@@ -82,6 +82,146 @@ export function ChevronRightIcon(props: IconProps) {
   );
 }
 
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M15 5l-7 7 7 7" />
+    </Icon>
+  );
+}
+
+export function ChevronDownIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 9l7 7 7-7" />
+    </Icon>
+  );
+}
+
+export function ArrowRightIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 12h16M14 6l6 6-6 6" />
+    </Icon>
+  );
+}
+
+export function ArrowUpRightIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M7 17 17 7M8 7h9v9" />
+    </Icon>
+  );
+}
+
+export function ArrowLeftIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M20 12H4M10 6l-6 6 6 6" />
+    </Icon>
+  );
+}
+
+export function BellIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5Z" />
+      <path d="M10 19a2.2 2.2 0 0 0 4 0" />
+    </Icon>
+  );
+}
+
+export function SunIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5M2.5 12h2M19.5 12h2M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5" />
+    </Icon>
+  );
+}
+
+export function MoonIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z" />
+    </Icon>
+  );
+}
+
+export function AutoIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 3.5v17a8.5 8.5 0 0 0 0-17Z" fill="currentColor" stroke="none" />
+    </Icon>
+  );
+}
+
+export function ChartIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
+    </Icon>
+  );
+}
+
+export function PaletteIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3a9 9 0 1 0 0 18c1.7 0 2.5-1 2.5-2.2 0-1.8 1.1-2.6 2.8-2.6H19a3 3 0 0 0 3-3A9.4 9.4 0 0 0 12 3Z" />
+      <circle cx="7.5" cy="11" r="1" fill="currentColor" stroke="none" />
+      <circle cx="10" cy="7" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="7.2" r="1" fill="currentColor" stroke="none" />
+      <circle cx="17.5" cy="11" r="1" fill="currentColor" stroke="none" />
+    </Icon>
+  );
+}
+
+export function LockIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <rect x="4.5" y="10" width="15" height="11" rx="3" />
+      <path d="M8 10V7.5a4 4 0 0 1 8 0V10" />
+    </Icon>
+  );
+}
+
+export function ShareIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 15V3.5M8 7l4-3.5L16 7" />
+      <path d="M5 12.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-6.5" />
+    </Icon>
+  );
+}
+
+export function SparkleIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3l1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6Z" />
+      <path d="M18.5 15.5l.7 2.3 2.3.7-2.3.7-.7 2.3-.7-2.3-2.3-.7 2.3-.7Z" />
+    </Icon>
+  );
+}
+
+export function MoreIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" />
+    </Icon>
+  );
+}
+
+export function FilterIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 6h16M7 12h10M10 18h4" />
+    </Icon>
+  );
+}
+
 export function CalendarIcon(props: IconProps) {
   return (
     <Icon {...props}>

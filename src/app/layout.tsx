@@ -1,21 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
   display: "swap",
 });
@@ -62,7 +56,10 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   interactiveWidget: "resizes-content",
-  themeColor: "#f6f1e7",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8f0e5" },
+    { media: "(prefers-color-scheme: dark)", color: "#121110" },
+  ],
 };
 
 export default function RootLayout({
@@ -73,7 +70,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased motion-safe:scroll-smooth`}
+      className={`${bricolage.variable} ${dmSans.variable} h-full antialiased motion-safe:scroll-smooth`}
       suppressHydrationWarning
     >
       <head>

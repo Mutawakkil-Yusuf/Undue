@@ -60,6 +60,11 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
 
   const editing = state.kind === "edit" ? state.subscription : null;
   const seed = state.kind === "add" ? state.seed : null;
+  const submitLabel = editing
+    ? "Save changes"
+    : seed
+      ? `Add ${seed.name}`
+      : "Add subscription";
 
   async function handleSubmit(input: SubscriptionInput) {
     try {
@@ -82,16 +87,29 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
       <Sheet
         open={state.kind !== "closed"}
         onClose={close}
-        title={editing ? "Edit subscription" : "Add subscription"}
+        title={editing ? "Edit subscription" : "Add a subscription"}
         description="Nothing here leaves your device."
+        tone="lime"
+        size="lg"
+        bodyClassName="pb-2"
         footer={
-          <div className="flex flex-col gap-2.5 min-[360px]:flex-row min-[360px]:gap-3">
-            <Button variant="secondary" onClick={close} className="flex-1">
+          <div className="flex flex-col gap-2">
+            <Button
+              type="submit"
+              form={FORM_ID}
+              variant="primary"
+              size="lg"
+              block
+            >
+              {submitLabel}
+            </Button>
+            <button
+              type="button"
+              onClick={close}
+              className="text-center text-xs font-semibold text-ink-fixed/55 hover:text-ink-fixed"
+            >
               Cancel
-            </Button>
-            <Button type="submit" form={FORM_ID} className="flex-1">
-              {editing ? "Save changes" : "Add subscription"}
-            </Button>
+            </button>
           </div>
         }
       >

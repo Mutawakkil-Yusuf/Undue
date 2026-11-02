@@ -4,59 +4,81 @@
 
 @theme {
   --font-sans:
-    var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    var(--font-dm-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display:
+    var(--font-bricolage), var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
 
-  --color-bone: #f6f1e7;
-  --color-surface: #ffffff;
-  --color-ink: #1b1a17;
-  --color-muted: #6b6660;
-  --color-line: #e4ddd0;
-  --color-line-strong: #d6ccb8;
+  /* Core surfaces */
+  --color-bone: #f8f0e5;
+  --color-cream: #f8f0e5;
+  --color-cream-deep: #efe2d3;
+  --color-surface: #fffdf9;
+  --color-surface-soft: #fbf5ec;
+  --color-ink: #191713;
+  --color-muted: #756b5f;
+  --color-line: #e9dfd1;
+  --color-line-strong: #d5c6b4;
 
-  --color-ember: #e4572e;
-  --color-ember-strong: #c9451f;
-  --color-ember-soft: #fbe9e1;
-  --color-on-ember: #ffffff;
+  /* Fixed colours that never invert (used on bright cards) */
+  --color-ink-fixed: #191713;
+  --color-paper: #fffdf9;
+  --color-paper-soft: #f7efe4;
 
-  --color-safe: #1e7a5a;
-  --color-safe-soft: #e4f2ec;
-  --color-soon: #b8791a;
-  --color-soon-soft: #fbf0dc;
-  --color-urgent: #c62828;
-  --color-urgent-soft: #fbe4e4;
+  /* Playful accents */
+  --color-coral: #ff6b5a;
+  --color-coral-strong: #f25b49;
+  --color-yellow: #f7bd3f;
+  --color-lime: #bde66a;
+  --color-sky: #93baf8;
+  --color-lavender: #cbb8f7;
+  --color-dark: #171614;
 
-  --color-cat-streaming: #d9481f;
-  --color-cat-streaming-soft: #fbe4d9;
-  --color-cat-music: #6d4ae0;
-  --color-cat-music-soft: #eae4fb;
-  --color-cat-cloud: #2a6fd6;
-  --color-cat-cloud-soft: #e1ecfb;
-  --color-cat-software: #0f8a7e;
-  --color-cat-software-soft: #ddf1ee;
-  --color-cat-mobile: #1e7a5a;
-  --color-cat-mobile-soft: #e1f1ea;
-  --color-cat-internet: #0b7fa8;
-  --color-cat-internet-soft: #dcf0f6;
-  --color-cat-gaming: #b32aa6;
-  --color-cat-gaming-soft: #f8e1f5;
-  --color-cat-fitness: #c25e12;
-  --color-cat-fitness-soft: #fbe7d6;
-  --color-cat-finance: #9a6b0f;
-  --color-cat-finance-soft: #f6ecd3;
-  --color-cat-education: #3f51b5;
-  --color-cat-education-soft: #e4e7f7;
-  --color-cat-other: #6b6660;
-  --color-cat-other-soft: #ece7dd;
+  --color-ember: #ff6b5a;
+  --color-ember-strong: #f25b49;
+  --color-ember-soft: #ffe3de;
+  --color-on-ember: #191713;
 
-  --radius-card: 1rem;
-  --radius-field: 0.75rem;
-  --radius-sheet: 1.25rem;
+  /* Semantic urgency */
+  --color-safe: #4d7a25;
+  --color-safe-soft: #e9f6d3;
+  --color-soon: #9a6500;
+  --color-soon-soft: #fdf0cd;
+  --color-urgent: #bd3b2c;
+  --color-urgent-soft: #ffe1dc;
 
-  --shadow-card: 0 1px 2px rgba(27, 26, 23, 0.06), 0 4px 16px rgba(27, 26, 23, 0.05);
-  --shadow-sheet: 0 -8px 40px rgba(27, 26, 23, 0.18);
+  /* Categories */
+  --color-cat-streaming: #ff6b5a;
+  --color-cat-streaming-soft: #ffe3de;
+  --color-cat-music: #f7bd3f;
+  --color-cat-music-soft: #fdf0cd;
+  --color-cat-cloud: #93baf8;
+  --color-cat-cloud-soft: #e3edff;
+  --color-cat-software: #bde66a;
+  --color-cat-software-soft: #eef9d7;
+  --color-cat-mobile: #f7bd3f;
+  --color-cat-mobile-soft: #fdf0cd;
+  --color-cat-internet: #93baf8;
+  --color-cat-internet-soft: #e3edff;
+  --color-cat-gaming: #cbb8f7;
+  --color-cat-gaming-soft: #f0e9ff;
+  --color-cat-fitness: #bde66a;
+  --color-cat-fitness-soft: #eef9d7;
+  --color-cat-finance: #f7bd3f;
+  --color-cat-finance-soft: #fdf0cd;
+  --color-cat-education: #93baf8;
+  --color-cat-education-soft: #e3edff;
+  --color-cat-other: #efe2d3;
+  --color-cat-other-soft: #f5ece0;
+
+  --radius-card: 1.75rem;
+  --radius-field: 1rem;
+  --radius-sheet: 2rem;
+
+  --shadow-card: 0 1px 2px rgba(25, 23, 19, 0.04), 0 10px 28px -18px rgba(25, 23, 19, 0.18);
+  --shadow-float: 0 28px 60px -30px rgba(25, 23, 19, 0.45);
+  --shadow-sheet: 0 -18px 60px -24px rgba(25, 23, 19, 0.4);
 }
 
 @layer base {
@@ -69,6 +91,7 @@
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -83,6 +106,18 @@
     overscroll-behavior-y: none;
   }
 
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.035em;
+  }
+
+  ::selection {
+    background: var(--color-coral);
+    color: var(--color-ink-fixed);
+  }
+
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button {
     appearance: none;
@@ -95,8 +130,12 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-ember);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  .dark :focus-visible {
+    outline-color: var(--color-lime);
   }
 }
 
@@ -104,18 +143,24 @@
   padding-bottom: max(env(safe-area-inset-bottom), 0px);
 }
 
-/* Keeps content clear of the floating add button and the bottom nav,
-   including on devices with a home indicator. */
-@utility pb-clear-fab {
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 150px);
+@utility pb-safe-3 {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
 }
 
-@utility bottom-clear-fab {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 150px);
+@utility pb-safe-5 {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.25rem);
+}
+
+@utility pb-safe-8 {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem);
 }
 
 @utility pt-safe {
   padding-top: max(env(safe-area-inset-top), 0px);
+}
+
+@utility pt-safe-4 {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
 }
 
 @utility px-safe {
@@ -123,18 +168,46 @@
   padding-right: max(env(safe-area-inset-right), 0px);
 }
 
+@utility pb-nav {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 118px);
+}
+
+@utility pb-nav-lg {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 150px);
+}
+
+@utility bottom-nav {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+}
+
+@utility bottom-toast {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 112px);
+}
+
 @utility font-tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
 @keyframes sheet-in {
   from {
-    transform: translateY(18px);
+    transform: translateY(24px) scale(0.985);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
@@ -150,7 +223,7 @@
 
 @keyframes rise-in {
   from {
-    transform: translateY(8px);
+    transform: translateY(12px);
     opacity: 0;
   }
   to {
@@ -159,71 +232,161 @@
   }
 }
 
+@keyframes pop-in {
+  0% {
+    transform: scale(0.86);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(1deg);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate3d(0, -12px, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--drift, 12px), 110vh, 0) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.85;
+  }
+}
+
 @utility animate-sheet-in {
-  animation: sheet-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: sheet-in 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @utility animate-fade-in {
-  animation: fade-in 160ms ease-out;
+  animation: fade-in 200ms ease-out;
 }
 
 @utility animate-rise-in {
-  animation: rise-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: rise-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-pop-in {
+  animation: pop-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-float {
+  animation: float-soft 5s ease-in-out infinite;
+}
+
+@utility animate-wiggle {
+  animation: wiggle 2.8s ease-in-out infinite;
+}
+
+@utility animate-pulse-soft {
+  animation: pulse-soft 2.4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-sheet-in,
   .animate-fade-in,
-  .animate-rise-in {
+  .animate-rise-in,
+  .animate-pop-in,
+  .animate-float,
+  .animate-wiggle,
+  .animate-pulse-soft {
     animation: none;
+  }
+
+  .confetti-piece {
+    animation: none !important;
+    opacity: 0;
   }
 }
 
 .dark {
   color-scheme: dark;
 
-  --color-bone: #14120f;
-  --color-surface: #1d1a15;
-  --color-ink: #f6f1e7;
-  --color-muted: #a49b8c;
-  --color-line: #2c2820;
-  --color-line-strong: #413a2e;
+  --color-bone: #121110;
+  --color-cream: #121110;
+  --color-cream-deep: #1c1916;
+  --color-surface: #1c1a17;
+  --color-surface-soft: #23201c;
+  --color-ink: #f8f0e5;
+  --color-muted: #a99f92;
+  --color-line: #2e2a24;
+  --color-line-strong: #463e34;
 
-  --color-ember: #f2643c;
-  --color-ember-strong: #ff7a52;
-  --color-ember-soft: #3a2019;
-  --color-on-ember: #1b1206;
+  --color-ember: #ff7a6a;
+  --color-ember-strong: #ff6b5a;
+  --color-ember-soft: #3a211d;
+  --color-on-ember: #191713;
 
-  --color-safe: #56c39a;
-  --color-safe-soft: #16302a;
-  --color-soon: #e0a94a;
-  --color-soon-soft: #33270f;
-  --color-urgent: #f17a72;
-  --color-urgent-soft: #3a1d1d;
+  --color-safe: #b7e184;
+  --color-safe-soft: #24331a;
+  --color-soon: #f7cf77;
+  --color-soon-soft: #352a12;
+  --color-urgent: #ff8a7c;
+  --color-urgent-soft: #3d201c;
 
-  --color-cat-streaming: #ff7a52;
-  --color-cat-streaming-soft: #3a2019;
-  --color-cat-music: #a48bf5;
-  --color-cat-music-soft: #241f3d;
-  --color-cat-cloud: #6ba6f0;
-  --color-cat-cloud-soft: #17263c;
-  --color-cat-software: #3dbfac;
-  --color-cat-software-soft: #14302b;
-  --color-cat-mobile: #56c39a;
-  --color-cat-mobile-soft: #16302a;
-  --color-cat-internet: #4cc2e0;
-  --color-cat-internet-soft: #122b33;
-  --color-cat-gaming: #e87bd9;
-  --color-cat-gaming-soft: #361a33;
-  --color-cat-fitness: #f0954e;
-  --color-cat-fitness-soft: #372215;
-  --color-cat-finance: #e0b45a;
-  --color-cat-finance-soft: #33270f;
-  --color-cat-education: #93a2f2;
-  --color-cat-education-soft: #1e2140;
-  --color-cat-other: #a49b8c;
-  --color-cat-other-soft: #2a2620;
+  --color-cat-streaming: #ff7a6a;
+  --color-cat-streaming-soft: #3a211d;
+  --color-cat-music: #f7bd3f;
+  --color-cat-music-soft: #352a12;
+  --color-cat-cloud: #93baf8;
+  --color-cat-cloud-soft: #1c2a40;
+  --color-cat-software: #bde66a;
+  --color-cat-software-soft: #273318;
+  --color-cat-mobile: #f7bd3f;
+  --color-cat-mobile-soft: #352a12;
+  --color-cat-internet: #93baf8;
+  --color-cat-internet-soft: #1c2a40;
+  --color-cat-gaming: #cbb8f7;
+  --color-cat-gaming-soft: #2b2340;
+  --color-cat-fitness: #bde66a;
+  --color-cat-fitness-soft: #273318;
+  --color-cat-finance: #f7bd3f;
+  --color-cat-finance-soft: #352a12;
+  --color-cat-education: #93baf8;
+  --color-cat-education-soft: #1c2a40;
+  --color-cat-other: #d9cbb9;
+  --color-cat-other-soft: #26221d;
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.35);
-  --shadow-sheet: 0 -8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px -18px rgba(0, 0, 0, 0.7);
+  --shadow-float: 0 28px 60px -30px rgba(0, 0, 0, 0.8);
+  --shadow-sheet: 0 -18px 60px -24px rgba(0, 0, 0, 0.8);
 }

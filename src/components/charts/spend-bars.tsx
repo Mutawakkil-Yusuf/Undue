@@ -13,11 +13,11 @@ import {
 import type { CurrencyCode } from "@/lib/domain/schema";
 import { useMeasuredWidth } from "@/lib/hooks/use-measured-width";
 
-const CHART_HEIGHT = 128;
-const LABEL_HEIGHT = 18;
+const CHART_HEIGHT = 132;
+const LABEL_HEIGHT = 20;
 const HEIGHT = CHART_HEIGHT + LABEL_HEIGHT;
-const MIN_BAR = 3;
-const STUB = 2;
+const MIN_BAR = 5;
+const STUB = 3;
 
 interface SpendBarsProps {
   months: readonly ProjectedMonth[];
@@ -34,13 +34,13 @@ export function SpendBars({ months, currency }: SpendBarsProps) {
     [months],
   );
 
-  const width = Math.max(measuredWidth, 200);
+  const width = Math.max(measuredWidth, 220);
   const xScale = useMemo(
     () =>
       scaleBand<string>({
         domain: months.map((month) => month.month),
         range: [0, width],
-        padding: 0.34,
+        padding: 0.36,
       }),
     [months, width],
   );
@@ -54,10 +54,10 @@ export function SpendBars({ months, currency }: SpendBarsProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-baseline justify-between gap-4">
-        <span className="text-sm font-medium text-ink">
+        <span className="text-sm font-bold text-ink">
           {active ? projectionMonthFullLabel(active.month) : ""}
         </span>
-        <span className="text-sm text-muted">
+        <span className="text-sm font-semibold text-muted">
           {active ? (
             <MoneyText amount={active.total} currency={currency} rounded />
           ) : null}
@@ -93,8 +93,8 @@ export function SpendBars({ months, currency }: SpendBarsProps) {
                 const fill =
                   month.total > 0
                     ? isSelected
-                      ? "var(--color-ember-strong)"
-                      : "var(--color-ember)"
+                      ? "var(--color-coral)"
+                      : "var(--color-sky)"
                     : "var(--color-line-strong)";
 
                 return (
@@ -104,9 +104,9 @@ export function SpendBars({ months, currency }: SpendBarsProps) {
                       y={CHART_HEIGHT - height}
                       width={bandWidth}
                       height={height}
-                      rx={Math.min(4, bandWidth / 2)}
+                      rx={Math.min(7, bandWidth / 2)}
                       fill={fill}
-                      className="transition-colors"
+                      className="transition-colors duration-200"
                     />
                     <rect
                       x={bandX}
@@ -128,9 +128,10 @@ export function SpendBars({ months, currency }: SpendBarsProps) {
                 <text
                   key={month.month}
                   x={(xScale(month.month) ?? 0) + xScale.bandwidth() / 2}
-                  y={CHART_HEIGHT + 13}
+                  y={CHART_HEIGHT + 14}
                   textAnchor="middle"
                   fontSize={10}
+                  fontWeight={600}
                   fill="var(--color-muted)"
                 >
                   {projectionMonthLabel(month.month)}
@@ -145,7 +146,7 @@ export function SpendBars({ months, currency }: SpendBarsProps) {
 
       <p className="text-xs text-muted">
         Projected over {months.length} months:{" "}
-        <MoneyText amount={total} currency={currency} rounded className="text-ink" />
+        <MoneyText amount={total} currency={currency} rounded className="font-bold text-ink" />
       </p>
 
       <table className="sr-only">
