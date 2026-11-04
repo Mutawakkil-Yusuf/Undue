@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Subscription } from "@/lib/domain/schema";
+import { SITE_HOST } from "@/lib/site";
 import {
   buildCardSpecFor,
   buildDeadlineCardSpec,
@@ -50,7 +51,7 @@ describe("buildDeadlineCardSpec", () => {
     expect(spec.detail).toMatch(/^Renews Sun,? 8 Nov$/);
     expect(spec.showsAmount).toBe(false);
     expect(spec.detail).not.toMatch(/₦|NGN/);
-    expect(spec.shareText).toContain("undue.netlify.app");
+    expect(spec.shareText).toContain(SITE_HOST);
   });
 
   it("adds the price when asked", () => {
