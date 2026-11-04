@@ -5,7 +5,7 @@
  * Netlify or Vercel production URL) and inlines it as NEXT_PUBLIC_SITE_URL, so
  * the server (metadata, open graph) and the browser (share cards) agree.
  */
-export const DEFAULT_SITE_URL = "https://undue.netlify.app";
+export const DEFAULT_SITE_URL = "https://useundue.vercel.app";
 
 export function normalizeSiteUrl(value: string | undefined | null): string | null {
   const trimmed = value?.trim();

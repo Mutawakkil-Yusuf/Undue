@@ -1,6 +1,9 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { LogoMark } from "@/components/brand/logo-mark";
 
-export const alt = "Undue: know the last day to cancel";
+export const alt = "Undue: know when to cancel, before you’re charged";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -10,7 +13,40 @@ const PREVIEW = [
   { name: "Spotify", meta: "Charges 18 Nov", tone: "#bde66a", pill: "17 days" },
 ];
 
-export default function OpengraphImage() {
+async function loadFonts() {
+  const [bricolage, dmSans600, dmSans700] = await Promise.all([
+    readFile(join(process.cwd(), "src/assets/fonts/bricolage-grotesque-800.woff")),
+    readFile(join(process.cwd(), "src/assets/fonts/dm-sans-600.woff")),
+    readFile(join(process.cwd(), "src/assets/fonts/dm-sans-700.woff")),
+  ]);
+  const asArrayBuffer = (buffer: Buffer): ArrayBuffer =>
+    Uint8Array.from(buffer).buffer as ArrayBuffer;
+
+  return [
+    {
+      name: "Bricolage Grotesque",
+      data: asArrayBuffer(bricolage),
+      weight: 800 as const,
+      style: "normal" as const,
+    },
+    {
+      name: "DM Sans",
+      data: asArrayBuffer(dmSans600),
+      weight: 600 as const,
+      style: "normal" as const,
+    },
+    {
+      name: "DM Sans",
+      data: asArrayBuffer(dmSans700),
+      weight: 700 as const,
+      style: "normal" as const,
+    },
+  ];
+}
+
+export default async function OpengraphImage() {
+  const fonts = await loadFonts();
+
   return new ImageResponse(
     <div
       style={{
@@ -21,7 +57,7 @@ export default function OpengraphImage() {
         position: "relative",
         overflow: "hidden",
         padding: "62px 68px",
-        fontFamily: "sans-serif",
+        fontFamily: "DM Sans",
       }}
     >
       <div
@@ -59,89 +95,25 @@ export default function OpengraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <LogoMark size={64} />
           <div
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: 16,
-              background: "#bde66a",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-              overflow: "hidden",
+              fontFamily: "Bricolage Grotesque",
+              fontSize: 40,
+              fontWeight: 800,
+              letterSpacing: -1.5,
+              color: "#191713",
             }}
           >
-            <div
-              style={{
-                position: "relative",
-                width: 38,
-                height: 32,
-                background: "#fffdf9",
-                border: "4px solid #191713",
-                borderRadius: 10,
-                display: "flex",
-                boxSizing: "border-box",
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  top: 5,
-                  height: 4,
-                  background: "#191713",
-                  display: "flex",
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  left: 7,
-                  top: -8,
-                  width: 4,
-                  height: 10,
-                  background: "#191713",
-                  borderRadius: 999,
-                  display: "flex",
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  right: 7,
-                  top: -8,
-                  width: 4,
-                  height: 10,
-                  background: "#191713",
-                  borderRadius: 999,
-                  display: "flex",
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  left: 5,
-                  top: 16,
-                  width: 28,
-                  height: 5,
-                  background: "#ff6b5a",
-                  borderRadius: 999,
-                  transform: "rotate(-45deg)",
-                  display: "flex",
-                }}
-              />
-            </div>
+            Undue
           </div>
-          <div style={{ fontSize: 42, fontWeight: 800, color: "#191713" }}>Undue</div>
           <div
             style={{
               marginLeft: 8,
               borderRadius: 999,
               background: "#fffdf9",
               padding: "8px 16px",
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: 700,
               color: "#756b5f",
               display: "flex",
@@ -154,35 +126,38 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", alignItems: "center", gap: 48 }}>
           <div
             style={{
-              width: 600,
+              width: 620,
               display: "flex",
               flexDirection: "column",
-              gap: 22,
+              gap: 20,
             }}
           >
             <div
               style={{
-                fontSize: 82,
+                fontFamily: "Bricolage Grotesque",
+                fontSize: 68,
                 fontWeight: 800,
                 color: "#191713",
-                lineHeight: 0.94,
-                letterSpacing: -3,
+                lineHeight: 0.98,
+                letterSpacing: -2.6,
                 display: "flex",
                 flexWrap: "wrap",
               }}
             >
-              Know the last day to cancel.
+              Know when to cancel, before you’re charged.
             </div>
             <div
               style={{
-                fontSize: 28,
+                fontSize: 24,
+                fontWeight: 600,
                 color: "#756b5f",
-                lineHeight: 1.35,
+                lineHeight: 1.32,
                 display: "flex",
-                maxWidth: 520,
+                maxWidth: 540,
               }}
             >
-              Track every subscription and see the exact day before you are charged again.
+              Track the last day to cancel each subscription so you can act before it
+              renews.
             </div>
             <div
               style={{
@@ -196,8 +171,8 @@ export default function OpengraphImage() {
                 style={{
                   borderRadius: 999,
                   background: "#191713",
-                  padding: "14px 24px",
-                  fontSize: 22,
+                  padding: "13px 24px",
+                  fontSize: 20,
                   fontWeight: 700,
                   color: "#f8f0e5",
                   display: "flex",
@@ -209,8 +184,8 @@ export default function OpengraphImage() {
                 style={{
                   borderRadius: 999,
                   border: "2px solid #191713",
-                  padding: "12px 22px",
-                  fontSize: 20,
+                  padding: "11px 22px",
+                  fontSize: 19,
                   fontWeight: 700,
                   color: "#191713",
                   display: "flex",
@@ -223,7 +198,7 @@ export default function OpengraphImage() {
 
           <div
             style={{
-              width: 390,
+              width: 376,
               borderRadius: 40,
               background: "#171614",
               padding: 18,
@@ -288,7 +263,7 @@ export default function OpengraphImage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 20,
+                    fontSize: 19,
                     fontWeight: 800,
                     color: "#191713",
                   }}
@@ -296,7 +271,7 @@ export default function OpengraphImage() {
                   {item.name.charAt(0)}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                  <div style={{ fontSize: 23, fontWeight: 800, color: "#191713" }}>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#191713" }}>
                     {item.name}
                   </div>
                   <div
@@ -333,12 +308,17 @@ export default function OpengraphImage() {
               display: "flex",
             }}
           />
-          <div style={{ fontSize: 22, color: "#756b5f", display: "flex" }}>
+          <div
+            style={{ fontSize: 20, fontWeight: 600, color: "#756b5f", display: "flex" }}
+          >
             Nothing leaves your device. No account, no server.
           </div>
         </div>
       </div>
     </div>,
-    { ...size },
+    {
+      ...size,
+      fonts,
+    },
   );
 }

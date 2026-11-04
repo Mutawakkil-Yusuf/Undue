@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Undue: know the last day to cancel",
+    name: "Undue: know when to cancel, before you’re charged",
     short_name: "Undue",
     description:
-      "Track every subscription and see the exact last day to cancel before you are charged.",
+      "Track the last day to cancel each subscription so you can act before it renews. No account, no bank connection.",
     start_url: "/app",
     scope: "/",
     display: "standalone",

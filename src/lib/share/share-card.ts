@@ -1,8 +1,11 @@
 import { formatMoney } from "@/lib/domain/currency";
 import type { CurrencyCode } from "@/lib/domain/schema";
 import { downloadBlob } from "@/lib/utils/download";
+import { SITE_HOST, SITE_URL } from "@/lib/site";
+import { wrapText } from "./render-card";
 
-export const SHARE_URL = "https://undue.netlify.app";
+/** Canonical public URL used in share text and the card footer. */
+export const SHARE_URL = SITE_URL;
 
 export interface ShareCardInput {
   name: string;
@@ -35,40 +38,46 @@ function roundRect(
   context.closePath();
 }
 
-function wrapText(
+async function ensureFonts(): Promise<void> {
+  if (typeof document === "undefined" || !("fonts" in document)) {
+    return;
+  }
+  const loads = [
+    `800 54px "Bricolage Grotesque"`,
+    `800 104px "Bricolage Grotesque"`,
+    `800 68px "Bricolage Grotesque"`,
+    `800 76px "Bricolage Grotesque"`,
+    `600 22px "DM Sans"`,
+    `600 24px "DM Sans"`,
+    `700 24px "DM Sans"`,
+    `700 28px "DM Sans"`,
+  ];
+  try {
+    await Promise.all(loads.map((font) => document.fonts.load(font)));
+  } catch {
+    // Fall back to whatever the system has; the card is still readable.
+  }
+}
+
+/** Largest size at which the text fits in `maxLines` lines, then wrap. */
+function fitLines(
   context: CanvasRenderingContext2D,
   text: string,
-  x: number,
-  y: number,
   maxWidth: number,
-  lineHeight: number,
-  maxLines = 3,
-): number {
-  const words = text.split(/\s+/);
-  let line = "";
-  let lineCount = 0;
-  let cursorY = y;
-
-  for (const word of words) {
-    const candidate = line ? `${line} ${word}` : word;
-    if (context.measureText(candidate).width > maxWidth && line) {
-      context.fillText(line, x, cursorY);
-      line = word;
-      cursorY += lineHeight;
-      lineCount += 1;
-      if (lineCount >= maxLines - 1) {
-        break;
-      }
-    } else {
-      line = candidate;
+  maxLines: number,
+  from: number,
+  to: number,
+): { lines: string[]; size: number } {
+  for (let size = from; size >= to; size -= 8) {
+    context.font = `800 ${size}px 'Bricolage Grotesque', 'DM Sans', sans-serif`;
+    const lines = wrapText(context, text, maxWidth);
+    if (lines.length <= maxLines) {
+      return { lines, size };
     }
   }
-
-  if (line) {
-    context.fillText(line, x, cursorY);
-    cursorY += lineHeight;
-  }
-  return cursorY;
+  context.font = `800 ${to}px 'Bricolage Grotesque', 'DM Sans', sans-serif`;
+  const lines = wrapText(context, text, maxWidth).slice(0, maxLines);
+  return { lines, size: to };
 }
 
 function drawLogo(
@@ -136,7 +145,7 @@ export async function createShareImage(input: ShareCardInput): Promise<Blob> {
 
   context.fillStyle = "#cbb8f7";
   context.beginPath();
-  context.arc(100, 1260, 210, 0, Math.PI * 2);
+  context.arc(1010, 1235, 200, 0, Math.PI * 2);
   context.fill();
 
   context.fillStyle = "#ff6b5a";
@@ -144,6 +153,7 @@ export async function createShareImage(input: ShareCardInput): Promise<Blob> {
   context.arc(910, 1140, 120, 0, Math.PI * 2);
   context.fill();
 
+  await ensureFonts();
   drawLogo(context, 72, 74);
 
   context.fillStyle = "#191713";
@@ -151,19 +161,22 @@ export async function createShareImage(input: ShareCardInput): Promise<Blob> {
   context.fillText("Undue", 250, 150);
   context.font = "600 24px 'DM Sans', sans-serif";
   context.fillStyle = "#756b5f";
-  context.fillText("Know the last day to cancel.", 250, 188);
+  context.fillText("Know when to cancel, before you’re charged.", 250, 188);
 
-  context.fillStyle = "#191713";
-  context.font = "800 104px 'Bricolage Grotesque', 'DM Sans', sans-serif";
-  wrapText(
+  const headline = fitLines(
     context,
     input.cancelled ? "One less charge." : input.name,
-    72,
-    380,
     900,
-    108,
     3,
+    104,
+    64,
   );
+  const lineHeight = Math.round(headline.size * 1.04);
+  context.fillStyle = "#191713";
+  context.font = `800 ${headline.size}px 'Bricolage Grotesque', 'DM Sans', sans-serif`;
+  headline.lines.forEach((line, index) => {
+    context.fillText(line, 72, 380 + index * lineHeight);
+  });
 
   context.fillStyle = "#191713";
   context.font = "800 76px 'Bricolage Grotesque', 'DM Sans', sans-serif";
@@ -198,7 +211,7 @@ export async function createShareImage(input: ShareCardInput): Promise<Blob> {
   context.fillText("Track yours free at", 112, 1140);
   context.fillStyle = "#bde66a";
   context.font = "800 36px 'Bricolage Grotesque', 'DM Sans', sans-serif";
-  context.fillText(SHARE_URL.replace("https://", ""), 112, 1180);
+  context.fillText(SITE_HOST, 112, 1180);
 
   context.fillStyle = "#756b5f";
   context.font = "600 22px 'DM Sans', sans-serif";
