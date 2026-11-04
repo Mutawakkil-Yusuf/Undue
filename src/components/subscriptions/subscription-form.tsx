@@ -50,6 +50,19 @@ const CURRENCY_SYMBOL: Record<CurrencyCode, string> = {
   NGN: "₦",
   USD: "$",
   GBP: "£",
+  EUR: "€",
+  CAD: "C$",
+  AUD: "A$",
+  ZAR: "R",
+  GHS: "₵",
+  KES: "KSh",
+  INR: "₹",
+  AED: "د.إ",
+  JPY: "¥",
+  CNY: "¥",
+  CHF: "CHF",
+  BRL: "R$",
+  MXN: "MX$",
 };
 
 const WEEKDAY = new Intl.DateTimeFormat("en-GB", { weekday: "short", timeZone: "UTC" });
@@ -102,6 +115,7 @@ interface SubscriptionFormProps {
   seed?: CatalogEntry | null;
   defaultCurrency: CurrencyCode;
   defaultLeadDays: number;
+  initialIsTrial?: boolean | undefined;
   onSubmit: (input: SubscriptionInput) => void;
 }
 
@@ -111,6 +125,7 @@ export function SubscriptionForm({
   seed = null,
   defaultCurrency,
   defaultLeadDays,
+  initialIsTrial = false,
   onSubmit,
 }: SubscriptionFormProps) {
   const [query, setQuery] = useState("");
@@ -149,10 +164,12 @@ export function SubscriptionForm({
   const [leadDays, setLeadDays] = useState(
     initial?.leadDays ?? seed?.defaultLeadDays ?? defaultLeadDays,
   );
-  const [isTrial, setIsTrial] = useState(initial?.isTrial ?? false);
-  const [trialEndsAt, setTrialEndsAt] = useState(
-    initial?.trialEndsAt ?? (initial?.isTrial ? initial.nextRenewal : ""),
-  );
+  const [isTrial, setIsTrial] = useState(initial?.isTrial ?? initialIsTrial);
+  const [trialEndsAt, setTrialEndsAt] = useState(() => {
+    if (initial?.trialEndsAt) return initial.trialEndsAt;
+    if (initial?.isTrial) return initial.nextRenewal;
+    return initialIsTrial ? defaultRenewalDate() : "";
+  });
   const [paidVia, setPaidVia] = useState<PaidVia>(initial?.paidVia ?? "card");
   const [chargeStatus, setChargeStatus] = useState<ChargeStatus>(
     initial?.chargeStatus ?? "unknown",

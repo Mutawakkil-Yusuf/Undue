@@ -14,17 +14,19 @@ interface PreferencesDraft {
   displayCurrency: CurrencyCode;
   defaultLeadDays: number;
   notificationTime: string;
-  usd: string;
-  gbp: string;
+  rates: Record<CurrencyCode, string>;
 }
+
+const OTHER_CODES = CURRENCY_CODES.filter((code) => code !== "NGN");
 
 function toDraft(settings: AppSettings): PreferencesDraft {
   return {
     displayCurrency: settings.displayCurrency,
     defaultLeadDays: settings.defaultLeadDays,
     notificationTime: settings.notificationTime ?? "08:00",
-    usd: String(settings.fxToNgn.USD),
-    gbp: String(settings.fxToNgn.GBP),
+    rates: Object.fromEntries(
+      CURRENCY_CODES.map((code) => [code, String(settings.fxToNgn[code] ?? 1)]),
+    ) as Record<CurrencyCode, string>,
   };
 }
 
@@ -49,13 +51,13 @@ export function PreferencesCard({ settings }: { settings: AppSettings }) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(() => toDraft(settings));
   const [ratesUpdatedAt, setRatesUpdatedAt] = useState(settings.ratesUpdatedAt ?? null);
+  const [showAllRates, setShowAllRates] = useState(false);
   const [busy, setBusy] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   function handleToggleOpen() {
     if (!open) {
-      // Pick up settings changed elsewhere (for example an imported backup)
-      // without overwriting an open draft mid-edit.
+      // Pick up settings changed elsewhere without overwriting an open draft.
       setDraft(toDraft(settings));
       setRatesUpdatedAt(settings.ratesUpdatedAt ?? null);
     }
@@ -65,16 +67,20 @@ export function PreferencesCard({ settings }: { settings: AppSettings }) {
   async function handleSave() {
     setBusy(true);
     try {
+      const rates = Object.fromEntries(
+        CURRENCY_CODES.map((code) => [
+          code,
+          code === "NGN"
+            ? 1
+            : parseRate(draft.rates[code] ?? "", settings.fxToNgn[code] ?? 1),
+        ]),
+      ) as Record<CurrencyCode, number>;
       await updateSettings({
         displayCurrency: draft.displayCurrency,
         defaultLeadDays: Math.min(60, Math.max(0, Math.trunc(draft.defaultLeadDays))),
         notificationTime: draft.notificationTime,
         ratesUpdatedAt,
-        fxToNgn: {
-          ...settings.fxToNgn,
-          USD: parseRate(draft.usd, settings.fxToNgn.USD),
-          GBP: parseRate(draft.gbp, settings.fxToNgn.GBP),
-        },
+        fxToNgn: rates,
       });
       showToast("Preferences saved", "success");
     } catch {
@@ -87,13 +93,18 @@ export function PreferencesCard({ settings }: { settings: AppSettings }) {
   async function handleRefreshRates() {
     setRefreshing(true);
     try {
-      const rates = await fetchLiveFxRates();
-      setDraft((current) => ({
-        ...current,
-        usd: String(rates.usd),
-        gbp: String(rates.gbp),
-      }));
-      setRatesUpdatedAt(rates.updatedAt);
+      const live = await fetchLiveFxRates();
+      setDraft((current) => {
+        const next = { ...current.rates };
+        for (const code of OTHER_CODES) {
+          const rate = live.rates[code];
+          if (rate !== undefined) {
+            next[code] = String(rate);
+          }
+        }
+        return { ...current, rates: next };
+      });
+      setRatesUpdatedAt(live.updatedAt);
       showToast("Rates refreshed. Review and save.", "success");
     } catch (error) {
       showToast(
@@ -139,7 +150,7 @@ export function PreferencesCard({ settings }: { settings: AppSettings }) {
           <Field
             label="Display currency"
             htmlFor="settings-currency"
-            hint="Totals are converted to this currency."
+            hint="Totals are converted to this currency using the rates below."
           >
             <SelectInput
               id="settings-currency"
@@ -208,36 +219,62 @@ export function PreferencesCard({ settings }: { settings: AppSettings }) {
               </span>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="1 USD → ₦" htmlFor="settings-usd">
-                <TextInput
-                  id="settings-usd"
-                  inputMode="decimal"
-                  value={draft.usd}
-                  onChange={(event) =>
-                    setDraft((prev) => ({ ...prev, usd: event.target.value }))
-                  }
-                />
-              </Field>
-              <Field label="1 GBP → ₦" htmlFor="settings-gbp">
-                <TextInput
-                  id="settings-gbp"
-                  inputMode="decimal"
-                  value={draft.gbp}
-                  onChange={(event) =>
-                    setDraft((prev) => ({ ...prev, gbp: event.target.value }))
-                  }
-                />
-              </Field>
+              {(["USD", "GBP"] as const).map((code) => (
+                <Field key={code} label={`1 ${code} → ₦`} htmlFor={`settings-${code}`}>
+                  <TextInput
+                    id={`settings-${code}`}
+                    inputMode="decimal"
+                    value={draft.rates[code] ?? ""}
+                    onChange={(event) =>
+                      setDraft((prev) => ({
+                        ...prev,
+                        rates: { ...prev.rates, [code]: event.target.value },
+                      }))
+                    }
+                  />
+                </Field>
+              ))}
             </div>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="self-start"
-              disabled={refreshing}
-              onClick={() => void handleRefreshRates()}
-            >
-              {refreshing ? "Refreshing…" : "Refresh live rates"}
-            </Button>
+            {showAllRates ? (
+              <div className="grid max-h-64 grid-cols-2 gap-3 overflow-y-auto overscroll-contain rounded-2xl bg-surface-soft p-2 sm:grid-cols-3">
+                {OTHER_CODES.map((code) => (
+                  <Field key={code} label={`1 ${code} → ₦`} htmlFor={`settings-${code}`}>
+                    <TextInput
+                      id={`settings-${code}`}
+                      inputMode="decimal"
+                      value={draft.rates[code] ?? ""}
+                      onChange={(event) =>
+                        setDraft((prev) => ({
+                          ...prev,
+                          rates: { ...prev.rates, [code]: event.target.value },
+                        }))
+                      }
+                    />
+                  </Field>
+                ))}
+              </div>
+            ) : null}
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="self-start"
+                disabled={refreshing}
+                onClick={() => void handleRefreshRates()}
+              >
+                {refreshing ? "Refreshing…" : "Refresh live rates"}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="self-start text-muted"
+                onClick={() => setShowAllRates((value) => !value)}
+              >
+                {showAllRates
+                  ? "Hide other rates"
+                  : `Show every rate (${OTHER_CODES.length})`}
+              </Button>
+            </div>
             <p className="text-[11px] leading-relaxed text-muted">
               Optional. Refresh sends no subscription data — only a request for public NGN
               rates. You can always keep manual rates.

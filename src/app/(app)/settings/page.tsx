@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { Mascot } from "@/components/brand/mascot";
 import { useAppData } from "@/components/providers/app-data-provider";
 import { useTheme } from "@/components/providers/theme-provider";
@@ -216,6 +217,23 @@ export default function SettingsPage() {
           className="pointer-events-none absolute -right-2 -bottom-3 hidden animate-float min-[360px]:block sm:right-8 sm:size-[180px]"
         />
       </section>
+
+      <Link
+        href="/find"
+        className="group flex flex-col gap-5 rounded-[2rem] bg-ink p-5 text-left text-bone shadow-card transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.99] sm:p-6"
+      >
+        <span className="flex size-11 items-center justify-center rounded-full bg-lime text-ink-fixed">
+          <SparkleIcon width={20} height={20} />
+        </span>
+        <span className="flex flex-col gap-0.5">
+          <span className="font-display text-xl font-extrabold tracking-[-0.04em]">
+            Find my subscriptions
+          </span>
+          <span className="text-xs font-semibold text-bone/55">
+            Play Store, Apple, Gmail and card statements — with quick-add.
+          </span>
+        </span>
+      </Link>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <section className="flex flex-col gap-5 rounded-[2rem] bg-lavender p-5 text-ink-fixed shadow-card sm:p-6">

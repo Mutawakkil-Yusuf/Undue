@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { FxToNgn } from "./currency";
+import { DEFAULT_FX_TO_NGN, type FxToNgn } from "./currency";
 import {
   projectSpend,
   projectionMonthFullLabel,
@@ -7,7 +7,7 @@ import {
 } from "./projection";
 import type { Subscription } from "./schema";
 
-const FX: FxToNgn = { NGN: 1, USD: 1600, GBP: 2000 };
+const FX: FxToNgn = { ...DEFAULT_FX_TO_NGN, USD: 1600, GBP: 2000 };
 
 function buildSubscription(overrides: Partial<Subscription> = {}): Subscription {
   return {

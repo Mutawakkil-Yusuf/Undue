@@ -31,10 +31,12 @@ import {
   convertTrial,
   deleteSubscription,
   restoreSubscription,
+  setSubscriptionDecision,
   setSubscriptionLeadDays,
   setSubscriptionStatus,
 } from "@/lib/db/subscriptions";
 import { useSubscription } from "@/lib/db/hooks";
+import { annualAmount, monthlyAmount } from "@/lib/domain/spend";
 import { computeCancelWindow } from "@/lib/domain/cancel-by";
 import {
   advance,
@@ -48,6 +50,8 @@ import { buildCalendar, CALENDAR_MIME_TYPE } from "@/lib/domain/ics";
 import { priceChange } from "@/lib/domain/price-history";
 import {
   CHARGE_STATUS_LABELS,
+  DECISION_LABELS,
+  DECISIONS,
   PAID_VIA_LABELS,
   getCategory,
   type Subscription,
@@ -445,6 +449,31 @@ function DetailBody({
   const trialEnded =
     subscription.isTrial && cancelWindow.daysUntilRenewal < 0 && !cancelled;
   const accent = cancelled ? "bg-surface" : ACCENT_BY_URGENCY[cancelWindow.urgency];
+  const monthlySavings = monthlyAmount(
+    getEffectiveAmount(subscription),
+    subscription.cycle,
+  );
+  const annualSavings = annualAmount(
+    getEffectiveAmount(subscription),
+    subscription.cycle,
+  );
+
+  async function handleDecision(decision: (typeof DECISIONS)[number]) {
+    try {
+      await setSubscriptionDecision(
+        subscription.id,
+        subscription.decision === decision ? null : decision,
+      );
+      showToast(
+        subscription.decision === decision
+          ? `Removed the ${DECISION_LABELS[decision].toLowerCase()} tag`
+          : `${DECISION_LABELS[decision]} tag saved`,
+        "success",
+      );
+    } catch {
+      showToast("Could not save that tag", "danger");
+    }
+  }
   const reminderChoices = REMINDER_CHOICES.includes(
     subscription.leadDays as (typeof REMINDER_CHOICES)[number],
   )
@@ -533,6 +562,46 @@ function DetailBody({
           </span>
         ) : null}
       </section>
+
+      {!cancelled ? (
+        <div className="flex flex-col gap-2 rounded-[1.5rem] bg-surface p-4 shadow-card">
+          <span className="text-[10px] font-bold tracking-[0.13em] text-muted uppercase">
+            Decision
+          </span>
+          <p className="text-sm font-semibold text-ink">
+            Cancelling saves{" "}
+            <MoneyText amount={monthlySavings} currency={subscription.currency} /> / month
+            (
+            <MoneyText amount={annualSavings} currency={subscription.currency} /> a year).
+          </p>
+          <div
+            role="radiogroup"
+            aria-label="Decision for this plan"
+            className="grid grid-cols-3 gap-2"
+          >
+            {DECISIONS.map((choice) => {
+              const active = subscription.decision === choice;
+              return (
+                <button
+                  key={choice}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => void handleDecision(choice)}
+                  className={cn(
+                    "inline-flex min-h-11 items-center justify-center rounded-full border px-2 text-xs font-bold transition-colors",
+                    active
+                      ? "border-ink bg-ink text-bone"
+                      : "border-line bg-surface-soft text-muted hover:text-ink",
+                  )}
+                >
+                  {DECISION_LABELS[choice]}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
 
       {!cancelled ? (
         <div className="flex flex-col gap-2">

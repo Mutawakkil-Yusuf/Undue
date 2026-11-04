@@ -3,6 +3,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "./client";
 import { DEFAULT_FX_TO_NGN } from "@/lib/domain/currency";
+import { withCompleteFx } from "./settings";
 import type { AppSettings, Subscription } from "@/lib/domain/schema";
 
 const FALLBACK_SETTINGS: AppSettings = {
@@ -26,5 +27,5 @@ export function useSubscription(id: string): Subscription | undefined {
 
 export function useSettings(): AppSettings {
   const settings = useLiveQuery(() => db.settings.get("app"), []);
-  return settings ?? FALLBACK_SETTINGS;
+  return settings ? withCompleteFx(settings) : FALLBACK_SETTINGS;
 }

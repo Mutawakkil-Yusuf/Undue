@@ -1,6 +1,7 @@
+import { CURRENCY_CODES, type CurrencyCode } from "./schema";
+
 export interface LiveFxRates {
-  readonly usd: number;
-  readonly gbp: number;
+  readonly rates: Readonly<Partial<Record<CurrencyCode, number>>>;
   readonly updatedAt: string;
 }
 
@@ -25,23 +26,28 @@ export async function fetchLiveFxRates(signal?: AbortSignal): Promise<LiveFxRate
   }
 
   const payload = (await response.json()) as ErApiResponse;
-  const usdRate = payload.rates?.USD;
-  const gbpRate = payload.rates?.GBP;
-  if (
-    payload.result !== "success" ||
-    !usdRate ||
-    !gbpRate ||
-    !Number.isFinite(usdRate) ||
-    !Number.isFinite(gbpRate) ||
-    usdRate <= 0 ||
-    gbpRate <= 0
-  ) {
+  if (payload.result !== "success") {
     throw new Error("The exchange-rate service returned an unexpected response.");
   }
 
+  const rates: Partial<Record<CurrencyCode, number>> = { NGN: 1 };
+  for (const code of CURRENCY_CODES) {
+    if (code === "NGN") {
+      continue;
+    }
+    const perNgn = payload.rates?.[code];
+    if (typeof perNgn !== "number" || !Number.isFinite(perNgn) || perNgn <= 0) {
+      continue;
+    }
+    rates[code] = Math.round((1 / perNgn) * 100) / 100;
+  }
+
+  if (Object.keys(rates).length <= 1) {
+    throw new Error("The exchange-rate service returned no usable rates.");
+  }
+
   return {
-    usd: Math.round((1 / usdRate) * 100) / 100,
-    gbp: Math.round((1 / gbpRate) * 100) / 100,
+    rates,
     updatedAt: new Date(
       (payload.time_last_update_unix ?? Date.now() / 1000) * 1000,
     ).toISOString(),

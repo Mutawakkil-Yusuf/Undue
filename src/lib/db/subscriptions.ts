@@ -1,10 +1,11 @@
 import { db } from "./client";
 import {
   subscriptionSchema,
-  type ChargeStatus,
-  type Cycle,
   type CategoryId,
+  type ChargeStatus,
   type CurrencyCode,
+  type Cycle,
+  type Decision,
   type PaidVia,
   type Subscription,
   type SubscriptionStatus,
@@ -27,6 +28,7 @@ export interface SubscriptionInput {
   trialEndsAt?: string | null;
   paidVia?: PaidVia;
   chargeStatus?: ChargeStatus;
+  decision?: Decision | null;
   myShare?: number | null;
   cancelUrl: string | null;
   notes: string | null;
@@ -53,6 +55,7 @@ function buildSubscription(input: SubscriptionInput): Subscription {
     trialEndsAt: input.isTrial ? (input.trialEndsAt ?? input.nextRenewal) : null,
     paidVia: input.paidVia ?? "card",
     chargeStatus: input.chargeStatus ?? "unknown",
+    decision: input.decision ?? null,
     myShare: input.myShare ?? null,
     id: crypto.randomUUID(),
     priceHistory: recordPrice([], {
@@ -99,6 +102,7 @@ export async function updateSubscription(
     trialEndsAt: input.isTrial ? (input.trialEndsAt ?? input.nextRenewal) : null,
     paidVia: input.paidVia ?? existing.paidVia ?? "card",
     chargeStatus: input.chargeStatus ?? existing.chargeStatus ?? "unknown",
+    decision: input.decision ?? existing.decision ?? null,
     myShare: input.myShare ?? null,
     id,
     priceHistory: recordPrice(existing.priceHistory ?? [], {
@@ -147,4 +151,11 @@ export async function deleteSubscription(id: string): Promise<void> {
 
 export async function restoreSubscription(subscription: Subscription): Promise<void> {
   await db.subscriptions.put(subscription);
+}
+
+export async function setSubscriptionDecision(
+  id: string,
+  decision: Decision | null,
+): Promise<void> {
+  await db.subscriptions.update(id, { decision, updatedAt: nowIso() });
 }

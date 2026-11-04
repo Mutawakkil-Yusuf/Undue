@@ -86,7 +86,7 @@ function parseCurrency(value: string): CurrencyCode {
   return "NGN";
 }
 
-function parseDateToken(value: string, now: Date): string | null {
+export function parseDateToken(value: string, now: Date): string | null {
   const iso = /(\d{4})-(\d{2})-(\d{2})/.exec(value);
   if (iso) {
     return validatedIso(Number(iso[1]), Number(iso[2]), Number(iso[3]));

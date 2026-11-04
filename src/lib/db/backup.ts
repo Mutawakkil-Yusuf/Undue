@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { db } from "./client";
 import { createDefaultSettings } from "./settings";
+import { DEFAULT_FX_TO_NGN } from "@/lib/domain/currency";
 import { settingsSchema, subscriptionSchema } from "@/lib/domain/schema";
 import { nowIso } from "@/lib/utils/time";
 
@@ -56,6 +57,25 @@ export function serializeBackup(backup: Backup): string {
  * dates, payment metadata). Unknown fields are stripped by the schemas and
  * missing fields receive safe defaults, so old backups remain importable.
  */
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Fill newly-added currency keys before validating old backups. */
+function normalizeBackupCurrencies(input: unknown): unknown {
+  if (!isRecord(input) || !isRecord(input.settings)) {
+    return input;
+  }
+  const fx = isRecord(input.settings.fxToNgn) ? input.settings.fxToNgn : {};
+  return {
+    ...input,
+    settings: {
+      ...input.settings,
+      fxToNgn: { ...DEFAULT_FX_TO_NGN, ...fx },
+    },
+  };
+}
+
 export function parseBackup(raw: string): Backup {
   let json: unknown;
   try {
@@ -63,6 +83,7 @@ export function parseBackup(raw: string): Backup {
   } catch {
     throw new Error("That file is not valid JSON.");
   }
+  json = normalizeBackupCurrencies(json);
   const result = backupEnvelopeSchema.safeParse(json);
   if (!result.success) {
     throw new Error("That file is not a valid Undue backup.");
@@ -75,6 +96,7 @@ export function parseBackup(raw: string): Backup {
     settings: {
       ...createDefaultSettings(),
       ...settings,
+      fxToNgn: { ...DEFAULT_FX_TO_NGN, ...settings.fxToNgn },
     },
     subscriptions: result.data.subscriptions.map((subscription) => {
       const dayMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(subscription.nextRenewal);
@@ -86,6 +108,7 @@ export function parseBackup(raw: string): Backup {
           : null,
         paidVia: subscription.paidVia ?? "card",
         chargeStatus: subscription.chargeStatus ?? "unknown",
+        decision: subscription.decision ?? null,
         myShare: subscription.myShare ?? null,
         priceHistory: subscription.priceHistory ?? [],
       };

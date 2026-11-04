@@ -16,7 +16,17 @@ import {
 } from "@/lib/notifications/notifications";
 
 const TAG_PREFIX = "undue-scheduled-";
-const DAYS_TO_SCHEDULE = 3;
+const OCCURRENCES = { trial: 1, day: 14, week: 6, month: 6, year: 4 } as const;
+
+function occurrencesFor(subscription: {
+  isTrial: boolean;
+  cycle: { unit: "day" | "week" | "month" | "year" };
+}) {
+  if (subscription.isTrial) {
+    return OCCURRENCES.trial;
+  }
+  return OCCURRENCES[subscription.cycle.unit];
+}
 
 function atNotificationTime(date: Date, notificationTime: string): Date {
   const { hours, minutes } = notificationTimeParts(notificationTime);
@@ -91,7 +101,7 @@ export function NotificationScheduler() {
         const window = computeCancelWindow(subscription, now);
         let renewal = parseIsoDate(window.renewal);
         const billingDay = getBillingDay(subscription);
-        const occurrences = subscription.isTrial ? 1 : DAYS_TO_SCHEDULE;
+        const occurrences = occurrencesFor(subscription);
 
         for (let index = 0; index < occurrences; index += 1) {
           const cancelBy = addDays(renewal, -subscription.leadDays);

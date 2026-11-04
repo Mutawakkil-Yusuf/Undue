@@ -203,7 +203,7 @@ export default function InsightsPage() {
                           <span className="shrink-0 text-right text-xs font-bold text-ink">
                             <MoneyText amount={monthly} currency={currency} rounded />
                             <span className="block text-[10px] font-medium text-muted">
-                              /mo
+                              /mo · {Math.round(share * 100)}%
                             </span>
                           </span>
                         </button>

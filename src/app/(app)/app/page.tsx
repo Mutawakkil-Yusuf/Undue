@@ -34,6 +34,7 @@ import { addDays, civilDate, formatIsoDate, todayIso } from "@/lib/domain/date";
 import { formatLongDate } from "@/lib/domain/format";
 import {
   savingsFromCancelled,
+  savingsFromDecisions,
   summarizeByCategory,
   summarizeSpend,
 } from "@/lib/domain/spend";
@@ -65,6 +66,7 @@ export default function DashboardPage() {
   const summary = summarizeSpend(active, currency, settings.fxToNgn);
   const categories = summarizeByCategory(active, currency, settings.fxToNgn);
   const savings = savingsFromCancelled(cancelled, currency, settings.fxToNgn);
+  const cutSavings = savingsFromDecisions(active, "cut", currency, settings.fxToNgn);
 
   const sorted = useMemo(() => {
     if (!today) {
@@ -136,6 +138,22 @@ export default function DashboardPage() {
       </header>
 
       <BackupNudge />
+
+      {cutSavings.count > 0 ? (
+        <section className="flex flex-col gap-2 rounded-[1.5rem] border border-coral/40 bg-coral/15 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm leading-relaxed font-semibold text-ink">
+            Cutting your {cutSavings.count} cut{" "}
+            {cutSavings.count === 1 ? "plan" : "plans"} saves{" "}
+            <MoneyText amount={cutSavings.annual} currency={currency} rounded /> a year.
+          </p>
+          <Link
+            href="/find"
+            className="shrink-0 text-xs font-bold text-coral underline decoration-coral/40 underline-offset-2"
+          >
+            Find more to review
+          </Link>
+        </section>
+      ) : null}
 
       {subscriptions === undefined || today === null ? (
         <DashboardSkeleton />
@@ -364,6 +382,12 @@ function EmptyDeadlines({
         <Button variant="secondary" size="lg" onClick={onPaste} block>
           Paste a bank alert instead
         </Button>
+        <Link
+          href="/find"
+          className="min-h-10 text-center text-sm font-bold text-ink underline decoration-coral/50 underline-offset-4 transition-colors hover:text-coral"
+        >
+          Find every subscription you already pay for
+        </Link>
         <button
           type="button"
           onClick={onSample}

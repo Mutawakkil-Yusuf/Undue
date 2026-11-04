@@ -25,11 +25,12 @@ const FORM_ID = "subscription-form";
 
 type SheetState =
   | { kind: "closed" }
-  | { kind: "add"; seed: CatalogEntry | null }
+  | { kind: "add"; seed: CatalogEntry | null; initialIsTrial?: boolean | undefined }
   | { kind: "edit"; subscription: Subscription };
 
 interface SubscriptionSheetContextValue {
-  openAdd: (seed?: CatalogEntry) => void;
+  openAdd: (seed?: CatalogEntry, options?: { isTrial?: boolean }) => void;
+  openTrial: () => void;
   openEdit: (subscription: Subscription) => void;
 }
 
@@ -43,10 +44,11 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
   const [state, setState] = useState<SheetState>({ kind: "closed" });
 
   const openAdd = useCallback(
-    (seed: CatalogEntry | undefined = undefined) =>
-      setState({ kind: "add", seed: seed ?? null }),
+    (seed: CatalogEntry | undefined = undefined, options?: { isTrial?: boolean }) =>
+      setState({ kind: "add", seed: seed ?? null, initialIsTrial: options?.isTrial }),
     [],
   );
+  const openTrial = useCallback(() => openAdd(undefined, { isTrial: true }), [openAdd]);
   const openEdit = useCallback(
     (subscription: Subscription) => setState({ kind: "edit", subscription }),
     [],
@@ -54,8 +56,8 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
   const close = useCallback(() => setState({ kind: "closed" }), []);
 
   const api = useMemo<SubscriptionSheetContextValue>(
-    () => ({ openAdd, openEdit }),
-    [openAdd, openEdit],
+    () => ({ openAdd, openTrial, openEdit }),
+    [openAdd, openTrial, openEdit],
   );
 
   const editing = state.kind === "edit" ? state.subscription : null;
@@ -109,10 +111,15 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
       >
         {state.kind !== "closed" ? (
           <SubscriptionForm
-            key={editing?.id ?? seed?.id ?? "new"}
+            key={
+              editing?.id ??
+              seed?.id ??
+              (state.kind === "add" && state.initialIsTrial ? "trial-new" : "new")
+            }
             formId={FORM_ID}
             initial={editing}
             seed={seed}
+            initialIsTrial={state.kind === "add" ? state.initialIsTrial : false}
             defaultCurrency={settings.displayCurrency}
             defaultLeadDays={settings.defaultLeadDays}
             onSubmit={handleSubmit}

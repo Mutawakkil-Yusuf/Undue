@@ -10,7 +10,7 @@ import {
 } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
-import { ensureSettings } from "@/lib/db/settings";
+import { ensureSettings, withCompleteFx } from "@/lib/db/settings";
 import { requestPersistentStorage } from "@/lib/storage/persist";
 import { DEFAULT_FX_TO_NGN } from "@/lib/domain/currency";
 import type { AppSettings } from "@/lib/domain/schema";
@@ -53,7 +53,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<AppDataValue>(
-    () => ({ settings: settings ?? FALLBACK_SETTINGS, isReady }),
+    () => ({
+      settings: settings ? withCompleteFx(settings) : FALLBACK_SETTINGS,
+      isReady,
+    }),
     [settings, isReady],
   );
 

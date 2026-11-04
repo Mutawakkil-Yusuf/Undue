@@ -89,7 +89,7 @@ describe("buildReminderEvent", () => {
   it("includes identity, summary and alarm", () => {
     const event = buildReminderEvent(makeSubscription(), NOW);
     expect(event).toContain("BEGIN:VEVENT");
-    expect(event).toContain("UID:sub-1@undue");
+    expect(event).toContain("UID:sub-1-2026-11-01@undue");
     expect(event).toContain("DTSTAMP:20261015T120000Z");
     expect(event).toContain("SUMMARY:Last day to cancel Netflix");
     expect(event).toContain("BEGIN:VALARM");
@@ -129,9 +129,9 @@ describe("buildCalendar", () => {
       ],
       NOW,
     );
-    expect(calendar.match(/BEGIN:VEVENT/g)).toHaveLength(2);
-    expect(calendar).toContain("UID:a@undue");
-    expect(calendar).toContain("UID:b@undue");
+    expect(calendar.match(/BEGIN:VEVENT/g)).toHaveLength(24);
+    expect(calendar).toContain("UID:a-2026-11-01@undue");
+    expect(calendar).toContain("UID:b-2026-11-01@undue");
   });
 });
 

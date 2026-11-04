@@ -7,9 +7,9 @@ import {
   summarizeByCategory,
   summarizeSpend,
 } from "@/lib/domain/spend";
-import type { FxToNgn } from "@/lib/domain/currency";
+import { DEFAULT_FX_TO_NGN, type FxToNgn } from "@/lib/domain/currency";
 
-const FX: FxToNgn = { NGN: 1, USD: 1600, GBP: 2000 };
+const FX: FxToNgn = { ...DEFAULT_FX_TO_NGN, USD: 1600, GBP: 2000 };
 
 describe("monthlyAmount", () => {
   it("passes through monthly amounts", () => {

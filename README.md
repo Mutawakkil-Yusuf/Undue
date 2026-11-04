@@ -2,9 +2,9 @@
 
 **Know the last day to cancel.**
 
-Undue is a privacy-first subscription tracker for Nigeria. Add the services you
-pay for and Undue tells you the exact last day to cancel each one before you are
-charged again — not just when the charge happens.
+Undue is a privacy-first subscription tracker for Nigeria and the rest of the
+world. Add the services you pay for and Undue tells you the exact last day to
+cancel each one before you are charged again — not just when the charge happens.
 
 ## Why
 
@@ -33,24 +33,35 @@ the things that need action today rise to the top.
   page), trial conversion, and one-tap calendar export.
 - **Shared plans** — record your share of a family or split plan; spend totals,
   projections, savings, and share cards use your share instead of the full price.
+- **Decide what to cut** — a Keep / Unsure / Cut tag per plan, the exact saving
+  from cancelling it, and a summary of what your cut list is worth a year.
+- **Find everything** — a dedicated `/find` flow walks through Google Play, the
+  App Store, email receipts and card statements, with after-each-step quick-add.
+  Includes an “I just started a trial” quick-add.
 - **Reminders at your time** — choose a local notification time. Supported
   browsers use Notification Triggers to fire while Undue is closed; the in-app
   notifier covers the rest, and `.ics` export is the reliable closed-app fallback.
-- **Calendar reminders** — export a single deadline or every active deadline as
-  an `.ics` file (RFC 5545 with a `VALARM`) that works with Google Calendar,
-  Apple Calendar, and Outlook.
+- **Calendar reminders** — export a single deadline or every future cancel-by
+  deadline as an `.ics` file (RFC 5545 with a `VALARM`) that works with Google
+  Calendar, Apple Calendar, and Outlook. Importing it is the reliable way to get
+  reminders when Undue is closed.
 - **Quick entry** — paste a bank alert, SMS, or small CSV and review the plans
   Undue found before adding them.
-- **Cancel guides** — searchable notes for 60+ popular Nigerian services, with
-  direct cancellation links, a last-verified date, and a report-a-wrong-link
-  action.
+- **Bank CSV detection** — upload or paste a statement and Undue spots repeats
+  (same merchant, same amount, steady cadence) fully on-device before you add
+  them.
+- **Cancel guides** — searchable notes for 70+ Nigerian and global services,
+  including popular AI subscriptions (ChatGPT, Claude, Google AI, GitHub Copilot,
+  Cursor, Perplexity, Midjourney and Notion AI), with direct cancellation links,
+  a last-verified date, and a report-a-wrong-link action.
 - **Undo, not "are you sure"** — deleting a subscription or marking one cancelled
   offers a one-tap undo instead of a blocking dialog.
 - **Backups that survive** — JSON backups are versioned (v2), v1 files migrate on
   import, and the import sheet previews counts before you choose merge or replace.
   A gentle nudge reminds you when it has been a while since the last backup.
-- **Live exchange rates (optional)** — refresh USD/GBP rates on request and see
-  when they were fetched. Manual rates remain the source of truth.
+- **Global currencies** — 16 currencies with locale-aware defaults, and a
+  one-tap refresh for all live rates (NGN as the internal anchor). Manual rates
+  remain the source of truth when you do not refresh.
 - **Share a deadline** — generate a branded PNG with the Undue URL, then share it
   through the system share sheet or download it.
 - **Dark mode** — light, dark, or follow your device, with no flash on load.
@@ -63,11 +74,16 @@ There is no backend. Subscriptions, settings, and exchange rates live in your
 browser's IndexedDB via Dexie. Nothing is sent anywhere — there is no server to
 send it to, and no account to create. Calendar files are generated on-device and
 notifications are local only. Back your data up (and move it between devices)
-with JSON export/import in Settings.
+with JSON export/import in Settings. Bank statement CSVs are parsed and scored in
+the browser and never leave this device.
 
-The optional "Refresh live rates" action sends a request to
-`open.er-api.com` for public NGN exchange rates. It never sends subscription data.
-If you prefer, leave it alone and keep manual rates.
+The only network request made by Undue itself is the optional "Refresh live
+rates" action, which fetches public NGN exchange rates from `open.er-api.com`
+and sends no subscription data. Any link you tap opens the destination you chose
+and is its own browser connection. If you prefer, leave FX alone and keep manual
+rates. Live rates are provided by open.er-api.com (NGN is not included in
+Frankfurter/ECB data); check the provider's terms and attribution before relying
+on it commercially.
 
 Undue also asks the browser for persistent storage when available, so local data
 is less likely to be evicted. Browsers can still clear it, which is why backups
@@ -80,6 +96,7 @@ and the backup nudge exist.
 - **Tailwind CSS v4** (CSS-first `@theme` tokens)
 - **Dexie** for local persistence
 - **Zod** for runtime validation at every boundary
+- **Papa Parse** (MIT) for on-device statement CSV parsing
 - **visx** for the headless spend charts
 - **Vitest** for domain and component tests, **Playwright** for end-to-end tests
 
@@ -185,8 +202,8 @@ detected Next.js runtime; no extra build command is needed.
 ```
 src/
   app/            Landing page at /, app routes under (app)/ (dashboard,
-                  calendar, guides, insights, settings), plus manifest, icons,
-                  open graph, error boundaries, and 404
+                  find, calendar, guides, insights, settings), plus manifest,
+                  icons, open graph, error boundaries, and 404
   components/
     shell/        App shell, bottom nav, brand mark, reminder notifier,
                   Notification Triggers scheduler, storage health
@@ -195,7 +212,7 @@ src/
     subscriptions/ Form, sheet, detail sheet, explorer, list, row, summary,
                   backup nudge
     settings/     Preferences and backup import preview
-    import/       Bank-alert and CSV quick entry
+    import/       Bank-alert quick entry, bank-statement recurrence detection
     brand/        Logo and mascot
     ui/           Primitives: button, field, sheet, switch, chips, icons
     providers/    Theme, toast, and app-data contexts
@@ -210,7 +227,7 @@ src/
     share/        Canvas share-card generation
     storage/      Persistent-storage request
     theme/        Theme resolution and persistence
-  data/           catalog.ng.json seed data
+  data/           catalog.ng.json seed data (unified Nigerian + global catalog)
 e2e/              Playwright smoke tests
 ```
 

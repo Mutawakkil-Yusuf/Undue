@@ -10,6 +10,7 @@ import {
   CalendarIcon,
   GuidesIcon,
   HomeIcon,
+  SearchIcon,
   PlusIcon,
   SettingsIcon,
   ShieldIcon,
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils/cn";
 
 const NAV_ITEMS = [
   { href: "/app", label: "Deadlines", Icon: HomeIcon },
+  { href: "/find", label: "Find", Icon: SearchIcon },
   { href: "/calendar", label: "Calendar", Icon: CalendarIcon },
   { href: "/guides", label: "Guides", Icon: GuidesIcon },
   { href: "/settings", label: "Settings", Icon: SettingsIcon },

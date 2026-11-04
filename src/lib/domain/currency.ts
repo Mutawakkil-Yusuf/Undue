@@ -6,12 +6,38 @@ export const DEFAULT_FX_TO_NGN: FxToNgn = {
   NGN: 1,
   USD: 1600,
   GBP: 2000,
+  EUR: 1750,
+  CAD: 1150,
+  AUD: 1050,
+  ZAR: 90,
+  GHS: 110,
+  KES: 12,
+  INR: 18,
+  AED: 435,
+  JPY: 10.3,
+  CNY: 225,
+  CHF: 1800,
+  BRL: 280,
+  MXN: 82,
 };
 
 const LOCALES: Record<CurrencyCode, string> = {
   NGN: "en-NG",
   USD: "en-US",
   GBP: "en-GB",
+  EUR: "de-DE",
+  CAD: "en-CA",
+  AUD: "en-AU",
+  ZAR: "en-ZA",
+  GHS: "en-GH",
+  KES: "en-KE",
+  INR: "en-IN",
+  AED: "en-AE",
+  JPY: "ja-JP",
+  CNY: "zh-CN",
+  CHF: "de-CH",
+  BRL: "pt-BR",
+  MXN: "es-MX",
 };
 
 export function convertToNgn(

@@ -101,6 +101,40 @@ export function summarizeByCategory(
     .sort((a, b) => b.monthly - a.monthly);
 }
 
+export interface DecisionSavings {
+  readonly count: number;
+  readonly monthly: number;
+  readonly annual: number;
+}
+
+export function savingsFromDecisions(
+  subscriptions: readonly Subscription[],
+  decision: "cut" | "keep" | "unsure",
+  displayCurrency: CurrencyCode,
+  fxToNgn: FxToNgn,
+): DecisionSavings {
+  let monthly = 0;
+  let count = 0;
+
+  for (const subscription of subscriptions) {
+    if (subscription.status !== "active" || subscription.decision !== decision) {
+      continue;
+    }
+    monthly += monthlyAmount(
+      convert(
+        getEffectiveAmount(subscription),
+        subscription.currency,
+        displayCurrency,
+        fxToNgn,
+      ),
+      subscription.cycle,
+    );
+    count += 1;
+  }
+
+  return { count, monthly, annual: monthly * 12 };
+}
+
 export interface SavingsSummary {
   readonly count: number;
   readonly monthly: number;

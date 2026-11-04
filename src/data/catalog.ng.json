@@ -221,7 +221,7 @@
     "defaultLeadDays": 2,
     "cancelUrl": "https://one.google.com/settings",
     "cancelNote": "Google One -> Settings -> Cancel membership.",
-    "lastVerified": "2026-10-01"
+    "lastVerified": "2026-11-04"
   },
   {
     "id": "dropbox",
@@ -317,9 +317,9 @@
       "interval": 1
     },
     "defaultLeadDays": 2,
-    "cancelUrl": "https://chatgpt.com/",
-    "cancelNote": "Settings -> Subscription -> Manage -> Cancel plan.",
-    "lastVerified": "2026-10-01"
+    "cancelUrl": "https://help.openai.com/en/articles/7232927-canceling-your-chatgpt-subscription",
+    "cancelNote": "ChatGPT -> Account settings -> Billing -> Manage plan -> Cancel subscription. Apple/Google Play plans cancel in the store.",
+    "lastVerified": "2026-11-04"
   },
   {
     "id": "grammarly",
@@ -332,8 +332,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.grammarly.com/subscription",
-    "cancelNote": "Subscription -> Cancel subscription.",
-    "lastVerified": "2026-10-01"
+    "cancelNote": "Account -> Subscription -> Cancel subscription. Access stays until the current billing period ends.",
+    "lastVerified": "2026-11-04"
   },
   {
     "id": "notion",
@@ -345,9 +345,9 @@
       "interval": 1
     },
     "defaultLeadDays": 2,
-    "cancelUrl": "https://www.notion.so/my-account",
-    "cancelNote": "Settings -> Plans/Billing -> Downgrade or cancel.",
-    "lastVerified": "2026-10-01"
+    "cancelUrl": "https://www.notion.com/help/upgrade-or-downgrade-your-plan",
+    "cancelNote": "Settings -> Billing -> Change plan. Access remains until the end of the current billing cycle.",
+    "lastVerified": "2026-11-04"
   },
   {
     "id": "zoom",
@@ -880,5 +880,103 @@
     "cancelUrl": null,
     "cancelNote": "Debit-card maintenance and SMS alert fees are set by your bank. Contact them to close the card or opt out of SMS alerts where possible.",
     "lastVerified": "2026-10-01"
+  },
+  {
+    "id": "claude-pro",
+    "name": "Claude Pro",
+    "category": "software",
+    "aliases": ["anthropic", "claude", "claude max", "claude ai"],
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
+    "defaultLeadDays": 2,
+    "cancelUrl": "https://support.claude.com/en/articles/8325617-cancel-your-pro-max-or-ultra-subscription",
+    "cancelNote": "Web: profile -> Settings -> Billing -> Cancel. App subscriptions are managed by Apple or Google Play, not Anthropic.",
+    "lastVerified": "2026-11-04"
+  },
+  {
+    "id": "google-ai-pro",
+    "name": "Google AI Pro",
+    "category": "software",
+    "aliases": ["gemini advanced", "google gemini", "google ai ultra", "google one ai"],
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
+    "defaultLeadDays": 2,
+    "cancelUrl": "https://one.google.com/settings",
+    "cancelNote": "Google One -> Manage membership -> Cancel membership. App Store/Play Store billing is cancelled in the store you used.",
+    "lastVerified": "2026-11-04"
+  },
+  {
+    "id": "github-copilot",
+    "name": "GitHub Copilot",
+    "category": "software",
+    "aliases": ["copilot", "github copilot pro", "copilot pro"],
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
+    "defaultLeadDays": 2,
+    "cancelUrl": "https://github.com/settings/copilot",
+    "cancelNote": "Profile -> Settings -> Billing & licensing -> Plans and usage -> GitHub Copilot -> Manage subscription -> Cancel subscription.",
+    "lastVerified": "2026-11-04"
+  },
+  {
+    "id": "cursor-pro",
+    "name": "Cursor Pro",
+    "category": "software",
+    "aliases": ["cursor", "cursor ai", "cursor pro"],
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
+    "defaultLeadDays": 2,
+    "cancelUrl": "https://cursor.com/dashboard/billing",
+    "cancelNote": "Dashboard -> Billing -> Manage subscription -> Cancel subscription. In-app Apple/Google subscriptions are managed by the store.",
+    "lastVerified": "2026-11-04"
+  },
+  {
+    "id": "perplexity-pro",
+    "name": "Perplexity Pro",
+    "category": "software",
+    "aliases": ["perplexity", "perplexity max", "perplexity ai"],
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
+    "defaultLeadDays": 2,
+    "cancelUrl": "https://www.perplexity.ai/settings",
+    "cancelNote": "Settings -> Your subscription -> Manage -> Cancel subscription. iOS and Android plans are managed in their stores.",
+    "lastVerified": "2026-11-04"
+  },
+  {
+    "id": "midjourney",
+    "name": "Midjourney",
+    "category": "software",
+    "aliases": ["midjourney pro", "midjourney subscription"],
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
+    "defaultLeadDays": 2,
+    "cancelUrl": "https://www.midjourney.com/account",
+    "cancelNote": "Manage subscription -> Cancel plan. Access stays until the current period ends; confirm the cancellation email.",
+    "lastVerified": "2026-11-04"
+  },
+  {
+    "id": "notion-ai",
+    "name": "Notion AI",
+    "category": "software",
+    "aliases": ["notion ai plus", "notion business ai", "notion plan"],
+    "defaultCycle": {
+      "unit": "month",
+      "interval": 1
+    },
+    "defaultLeadDays": 2,
+    "cancelUrl": "https://www.notion.com/help/upgrade-or-downgrade-your-plan",
+    "cancelNote": "Desktop/web: Settings -> Billing -> Change plan -> downgrade to Free. App Store/Play Store plans cancel in the store.",
+    "lastVerified": "2026-11-04"
   }
 ]

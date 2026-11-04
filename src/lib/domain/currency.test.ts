@@ -7,7 +7,7 @@ import {
   type FxToNgn,
 } from "@/lib/domain/currency";
 
-const FX: FxToNgn = { NGN: 1, USD: 1600, GBP: 2000 };
+const FX: FxToNgn = { ...DEFAULT_FX_TO_NGN, USD: 1600, GBP: 2000 };
 
 describe("convertToNgn", () => {
   it("multiplies by the configured rate", () => {
@@ -24,6 +24,20 @@ describe("convert", () => {
   it("converts across currencies via the naira anchor", () => {
     expect(convert(1600, "NGN", "USD", FX)).toBe(1);
     expect(convert(1, "GBP", "USD", FX)).toBe(1.25);
+  });
+});
+
+describe("global currencies", () => {
+  it("converts between supported currencies via NGN", () => {
+    expect(convert(1, "USD", "EUR", DEFAULT_FX_TO_NGN)).toBeCloseTo(
+      DEFAULT_FX_TO_NGN.USD / DEFAULT_FX_TO_NGN.EUR,
+      4,
+    );
+  });
+
+  it("formats a supported currency without falling back to NGN", () => {
+    expect(formatMoney(12, "EUR")).toContain("12");
+    expect(formatMoney(12, "EUR")).not.toContain("₦");
   });
 });
 

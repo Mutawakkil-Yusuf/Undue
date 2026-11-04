@@ -1,8 +1,9 @@
 import { computeCancelWindow } from "./cancel-by";
-import { cycleLabel } from "./cycle";
+import { advance, cycleLabel } from "./cycle";
 import { formatMoney } from "./currency";
-import { parseIsoDate, todayIso } from "./date";
+import { addMonths, civilDate, parseIsoDate, todayIso, formatIsoDate } from "./date";
 import { formatDate } from "./format";
+import { getBillingDay } from "./subscription";
 import type { Subscription } from "./schema";
 import { getEffectiveAmount } from "./subscription";
 
@@ -91,18 +92,22 @@ function buildDescription(subscription: Subscription, renewal: string): string {
   return lines.join("\n");
 }
 
-export function buildReminderEvent(
+const MAX_EVENTS_PER_SUBSCRIPTION = 60;
+const DEFAULT_MONTHS = 12;
+
+function buildReminderEventForRenewal(
   subscription: Subscription,
-  now: Date = new Date(),
+  renewal: Date,
+  now: Date,
 ): string {
-  const cancelWindow = computeCancelWindow(subscription, now);
-  const cancelByDate = parseIsoDate(cancelWindow.cancelBy);
+  const renewalIso = formatIsoDate(renewal);
+  const cancelByDate = new Date(renewal.getTime() - subscription.leadDays * 86_400_000);
   const summary = `Last day to cancel ${subscription.name}`;
-  const description = buildDescription(subscription, cancelWindow.renewal);
+  const description = buildDescription(subscription, renewalIso);
 
   const lines = [
     "BEGIN:VEVENT",
-    `UID:${subscription.id}@undue`,
+    `UID:${subscription.id}-${renewalIso}@undue`,
     `DTSTAMP:${formatIcsUtcStamp(now)}`,
     `DTSTART:${formatIcsFloatingDateTime(cancelByDate)}`,
     `DTEND:${formatIcsFloatingDateTime(cancelByDate, DEFAULT_HOUR, EVENT_MINUTES)}`,
@@ -126,12 +131,58 @@ export function buildReminderEvent(
   return lines.map(foldIcsLine).join(CRLF);
 }
 
+export function buildReminderEvent(
+  subscription: Subscription,
+  now: Date = new Date(),
+): string {
+  const cancelWindow = computeCancelWindow(subscription, now);
+  return buildReminderEventForRenewal(
+    subscription,
+    parseIsoDate(cancelWindow.renewal),
+    now,
+  );
+}
+
+/**
+ * Build the future cancel-by events for a subscription. Trials get one event;
+ * recurring plans get up to `months` of events (capped to keep calendars tidy).
+ */
+export function buildRecurringReminderEvents(
+  subscription: Subscription,
+  now: Date = new Date(),
+  months = DEFAULT_MONTHS,
+): string[] {
+  const first = computeCancelWindow(subscription, now);
+  const horizon = addMonths(civilDate(now), months);
+  const events: string[] = [];
+  let renewal = parseIsoDate(first.renewal);
+  const billingDay =
+    subscription.cycle.unit === "month" || subscription.cycle.unit === "year"
+      ? getBillingDay(subscription)
+      : undefined;
+
+  while (
+    renewal.getTime() < horizon.getTime() &&
+    events.length < MAX_EVENTS_PER_SUBSCRIPTION
+  ) {
+    const cancelBy = new Date(renewal.getTime() - subscription.leadDays * 86_400_000);
+    if (cancelBy.getTime() >= civilDate(now).getTime()) {
+      events.push(buildReminderEventForRenewal(subscription, renewal, now));
+    }
+    if (subscription.isTrial) {
+      break;
+    }
+    renewal = advance(renewal, subscription.cycle, billingDay);
+  }
+  return events;
+}
+
 export function buildCalendar(
   subscriptions: readonly Subscription[],
   now: Date = new Date(),
 ): string {
-  const events = subscriptions.map((subscription) =>
-    buildReminderEvent(subscription, now),
+  const events = subscriptions.flatMap((subscription) =>
+    buildRecurringReminderEvents(subscription, now, DEFAULT_MONTHS),
   );
 
   const lines = [

@@ -1,6 +1,23 @@
 import { z } from "zod";
 
-export const CURRENCY_CODES = ["NGN", "USD", "GBP"] as const;
+export const CURRENCY_CODES = [
+  "NGN",
+  "USD",
+  "GBP",
+  "EUR",
+  "CAD",
+  "AUD",
+  "ZAR",
+  "GHS",
+  "KES",
+  "INR",
+  "AED",
+  "JPY",
+  "CNY",
+  "CHF",
+  "BRL",
+  "MXN",
+] as const;
 export const currencyCodeSchema = z.enum(CURRENCY_CODES);
 export type CurrencyCode = z.infer<typeof currencyCodeSchema>;
 
@@ -86,6 +103,15 @@ export const PAID_VIA_LABELS: Record<PaidVia, string> = {
   other: "Other",
 };
 
+export const DECISIONS = ["keep", "unsure", "cut"] as const;
+export const decisionSchema = z.enum(DECISIONS);
+export type Decision = z.infer<typeof decisionSchema>;
+export const DECISION_LABELS: Record<Decision, string> = {
+  keep: "Keep",
+  unsure: "Unsure",
+  cut: "Cut",
+};
+
 export const CHARGE_STATUSES = ["unknown", "paid", "failed", "declined"] as const;
 export const chargeStatusSchema = z.enum(CHARGE_STATUSES);
 export type ChargeStatus = z.infer<typeof chargeStatusSchema>;
@@ -119,6 +145,7 @@ export const subscriptionSchema = z.object({
   trialEndsAt: isoDateSchema.nullable().optional(),
   paidVia: paidViaSchema.optional(),
   chargeStatus: chargeStatusSchema.optional(),
+  decision: decisionSchema.optional().nullable(),
   myShare: z.number().nonnegative().finite().nullable().optional(),
   cancelUrl: z.string().url().nullable(),
   notes: z.string().max(1000).nullable(),

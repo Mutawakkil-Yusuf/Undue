@@ -1,5 +1,6 @@
 import Dexie, { type EntityTable } from "dexie";
 import type { AppSettings, Subscription } from "@/lib/domain/schema";
+import { DEFAULT_FX_TO_NGN } from "@/lib/domain/currency";
 
 export class UndueDatabase extends Dexie {
   subscriptions!: EntityTable<Subscription, "id">;
@@ -85,6 +86,28 @@ export class UndueDatabase extends Dexie {
               }
             },
           );
+      });
+    this.version(4)
+      .stores({
+        subscriptions: "id, status, nextRenewal, createdAt",
+        settings: "id",
+      })
+      .upgrade(async (transaction) => {
+        await transaction
+          .table("subscriptions")
+          .toCollection()
+          .modify((subscription: { decision?: string | null }) => {
+            if (subscription.decision === undefined) {
+              subscription.decision = null;
+            }
+          });
+
+        await transaction
+          .table("settings")
+          .toCollection()
+          .modify((settings: { fxToNgn?: Record<string, number> }) => {
+            settings.fxToNgn = { ...DEFAULT_FX_TO_NGN, ...(settings.fxToNgn ?? {}) };
+          });
       });
   }
 }
