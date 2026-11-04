@@ -171,7 +171,7 @@ export default function GuidesPage() {
         <section className="relative overflow-hidden rounded-[2rem] bg-coral p-6 text-ink-fixed shadow-card sm:p-8">
           <div className="relative z-10 flex max-w-full flex-col items-start gap-5 min-[360px]:max-w-[62%] sm:max-w-[55%]">
             <h2 className="font-display text-[clamp(2.15rem,10vw,2.6rem)] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance sm:text-5xl">
-              60+ ways out, in minutes.
+              70+ ways out, in minutes.
             </h2>
             <button
               type="button"

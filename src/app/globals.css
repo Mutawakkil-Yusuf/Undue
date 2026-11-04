@@ -97,6 +97,7 @@
 
   body {
     min-height: 100dvh;
+    overflow-x: clip;
     background-color: var(--color-bone);
     color: var(--color-ink);
     font-family: var(--font-sans);

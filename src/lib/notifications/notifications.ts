@@ -1,6 +1,7 @@
 export const NOTIFICATIONS_STORAGE_KEY = "undue-notifications";
 export const LAST_NOTIFIED_STORAGE_KEY = "undue-last-notified";
 export const NOTIFIED_EVENTS_STORAGE_KEY = "undue-notified-events";
+export const PROMPTED_DECISION_EVENTS_STORAGE_KEY = "undue-prompted-decision-events";
 export const DEFAULT_NOTIFICATION_TIME = "08:00";
 
 const listeners = new Set<() => void>();
@@ -166,4 +167,36 @@ export function getTimestampTriggerConstructor(): TimestampTriggerConstructor | 
   return typeof constructor === "function"
     ? (constructor as TimestampTriggerConstructor)
     : null;
+}
+
+export function readPromptedDecisionEvents(): Record<string, string> {
+  if (typeof window === "undefined") {
+    return {};
+  }
+  try {
+    const raw = window.localStorage.getItem(PROMPTED_DECISION_EVENTS_STORAGE_KEY);
+    if (!raw) {
+      return {};
+    }
+    const parsed: unknown = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? (parsed as Record<string, string>) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function markPromptedDecisionEvent(key: string, at: string): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  try {
+    const current = readPromptedDecisionEvents();
+    current[key] = at;
+    window.localStorage.setItem(
+      PROMPTED_DECISION_EVENTS_STORAGE_KEY,
+      JSON.stringify(current),
+    );
+  } catch {
+    // Ignore storage failures; prompting is best effort.
+  }
 }

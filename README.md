@@ -35,6 +35,10 @@ the things that need action today rise to the top.
   projections, savings, and share cards use your share instead of the full price.
 - **Decide what to cut** — a Keep / Unsure / Cut tag per plan, the exact saving
   from cancelling it, and a summary of what your cut list is worth a year.
+- **Smart review** — overlapping category warnings, cash due in the next seven
+  days, price-move alerts, failed-charge risk, and stale Unsure plans. At the
+  reminder, Undue asks “Still using this?” with Keep/Cut buttons; supported
+  notifications get one-tap actions.
 - **Find everything** — a dedicated `/find` flow walks through Google Play, the
   App Store, email receipts and card statements, with after-each-step quick-add.
   Includes an “I just started a trial” quick-add.
@@ -212,6 +216,7 @@ src/
     subscriptions/ Form, sheet, detail sheet, explorer, list, row, summary,
                   backup nudge
     settings/     Preferences and backup import preview
+    smart/        Smart review cards and action handlers
     import/       Bank-alert quick entry, bank-statement recurrence detection
     brand/        Logo and mascot
     ui/           Primitives: button, field, sheet, switch, chips, icons

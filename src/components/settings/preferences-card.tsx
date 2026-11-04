@@ -236,7 +236,7 @@ export function PreferencesCard({ settings }: { settings: AppSettings }) {
               ))}
             </div>
             {showAllRates ? (
-              <div className="grid max-h-64 grid-cols-2 gap-3 overflow-y-auto overscroll-contain rounded-2xl bg-surface-soft p-2 sm:grid-cols-3">
+              <div className="grid max-h-64 grid-cols-2 gap-3 overflow-y-auto overscroll-contain rounded-2xl bg-surface-soft p-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {OTHER_CODES.map((code) => (
                   <Field key={code} label={`1 ${code} → ₦`} htmlFor={`settings-${code}`}>
                     <TextInput

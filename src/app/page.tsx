@@ -53,7 +53,7 @@ const PREVIEW = [
 const STEPS = [
   {
     title: "Add what you pay for",
-    body: "Pick from 60+ Nigerian services or add your own. Naira or dollars, monthly or yearly, whatever you are actually paying.",
+    body: "Pick from 70+ Nigerian and global services or add your own. Naira, dollars and more, monthly or yearly, whatever you are actually paying.",
     tone: "bg-coral",
   },
   {
@@ -96,7 +96,7 @@ const FEATURES = [
   {
     Icon: GuidesIcon,
     title: "Cancel guides",
-    body: "Plain steps for 60+ Nigerian services, with the direct link where one exists.",
+    body: "Plain steps for 70+ Nigerian and global services, with the direct link where one exists.",
     tone: "bg-lime",
   },
   {
@@ -132,7 +132,7 @@ const FAQS = [
   },
   {
     q: "Which services are covered?",
-    a: "Over 60 common Nigerian and international subscriptions, and you can add anything else by hand.",
+    a: "Over 70 common Nigerian and international subscriptions, including popular AI plans, and you can add anything else by hand.",
   },
 ];
 
@@ -195,7 +195,7 @@ export default function LandingPage() {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold text-muted">
                 <span className="inline-flex items-center gap-1.5">
                   <CheckIcon width={14} height={14} className="text-safe" />
-                  60+ services
+                  70+ services
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <CheckIcon width={14} height={14} className="text-safe" />

@@ -1,27 +1,39 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useToast } from "@/components/providers/toast-provider";
 import { useSubscriptions, useSettings } from "@/lib/db/hooks";
 import { notificationTimeOf } from "@/lib/db/settings";
 import { computeCancelWindow } from "@/lib/domain/cancel-by";
 import { todayIso } from "@/lib/domain/date";
 import { useNotificationsEnabled } from "@/lib/hooks/use-notifications";
 import { useToday } from "@/lib/hooks/use-today";
+import { setSubscriptionDecision } from "@/lib/db/subscriptions";
+import { CloseIcon } from "@/components/ui/icons";
 import {
   getNotificationPermission,
   isAtOrAfterNotificationTime,
   markNotified,
   markNotifiedEvents,
+  markPromptedDecisionEvent,
   notificationsSupported,
   readLastNotified,
   readNotifiedEvents,
+  readPromptedDecisionEvents,
 } from "@/lib/notifications/notifications";
 
 interface ReminderCandidate {
   key: string;
   priority: number;
   name: string;
+  id: string;
   kind: "today" | "urgent" | "missed" | "soon" | "trial";
+}
+
+interface DecisionPrompt {
+  key: string;
+  id: string;
+  name: string;
 }
 
 export function ReminderNotifier() {
@@ -30,12 +42,11 @@ export function ReminderNotifier() {
   const today = useToday();
   const enabled = useNotificationsEnabled();
   const notificationTime = notificationTimeOf(settings);
+  const { showToast } = useToast();
+  const [prompt, setPrompt] = useState<DecisionPrompt | null>(null);
 
   useEffect(() => {
     if (!enabled || !today || !subscriptions) {
-      return;
-    }
-    if (!notificationsSupported() || getNotificationPermission() !== "granted") {
       return;
     }
     if (!isAtOrAfterNotificationTime(today, notificationTime)) {
@@ -64,13 +75,20 @@ export function ReminderNotifier() {
             key,
             priority: 1,
             name: subscription.name,
+            id: subscription.id,
             kind: "trial",
           });
         }
       } else if (window.urgency === "today") {
         const key = `${base}:today:${dayKey}`;
         if (!notified[key]) {
-          candidates.push({ key, priority: 0, name: subscription.name, kind: "today" });
+          candidates.push({
+            key,
+            priority: 0,
+            name: subscription.name,
+            id: subscription.id,
+            kind: "today",
+          });
         }
       } else if (window.urgency === "urgent") {
         const key = `${base}:urgent:${dayKey}`;
@@ -79,13 +97,20 @@ export function ReminderNotifier() {
             key,
             priority: 1,
             name: subscription.name,
+            id: subscription.id,
             kind: "urgent",
           });
         }
       } else if (window.urgency === "soon") {
         const key = `${base}:soon`;
         if (!notified[key]) {
-          candidates.push({ key, priority: 3, name: subscription.name, kind: "soon" });
+          candidates.push({
+            key,
+            priority: 3,
+            name: subscription.name,
+            id: subscription.id,
+            kind: "soon",
+          });
         }
       } else if (window.urgency === "missed") {
         const key = `${base}:missed`;
@@ -94,6 +119,7 @@ export function ReminderNotifier() {
             key,
             priority: 2,
             name: subscription.name,
+            id: subscription.id,
             kind: "missed",
           });
         }
@@ -110,6 +136,7 @@ export function ReminderNotifier() {
     const names = top.map((candidate) => candidate.name);
     const firstName = names[0] ?? "A subscription";
     const kind = top[0]?.kind ?? "urgent";
+    const firstCandidate = top[0];
 
     const title =
       kind === "today"
@@ -141,17 +168,48 @@ export function ReminderNotifier() {
               ? "The free trial has ended. Cancel now if you do not want the paid plan."
               : "The safe cancellation window has passed. Check the provider before the next charge.";
 
+    const prompted = readPromptedDecisionEvents();
+    const unprompted = firstCandidate
+      ? top.find((candidate) => !prompted[`decision:${candidate.key}`])
+      : null;
+    let promptTimer: number | undefined;
+    if (unprompted) {
+      markPromptedDecisionEvent(`decision:${unprompted.key}`, dayKey);
+      promptTimer = window.setTimeout(
+        () =>
+          setPrompt({
+            id: unprompted.id,
+            key: unprompted.key,
+            name: unprompted.name,
+          }),
+        120,
+      );
+    }
+
+    if (!notificationsSupported() || getNotificationPermission() !== "granted") {
+      return promptTimer ? () => window.clearTimeout(promptTimer) : undefined;
+    }
+
     const show = async () => {
       const options = {
         body,
         tag: "undue-reminders",
-        data: { url: "/app" },
+        data: { url: "/app", subscriptionId: firstCandidate?.id },
+        actions: [
+          { action: "keep", title: "Keep" },
+          { action: "cut", title: "Cut" },
+        ],
       };
       try {
         if ("serviceWorker" in navigator) {
           const registration = await navigator.serviceWorker.getRegistration();
           if (registration) {
-            await registration.showNotification(title, options);
+            await registration.showNotification(
+              title,
+              options as NotificationOptions & {
+                actions: { action: string; title: string }[];
+              },
+            );
           } else {
             new Notification(title, options);
           }
@@ -169,7 +227,66 @@ export function ReminderNotifier() {
     };
 
     void show();
+    return promptTimer ? () => window.clearTimeout(promptTimer) : undefined;
   }, [enabled, notificationTime, subscriptions, today]);
 
-  return null;
+  async function answer(decision: "keep" | "cut") {
+    if (!prompt) {
+      return;
+    }
+    try {
+      await setSubscriptionDecision(prompt.id, decision);
+      showToast(
+        `${prompt.name} marked as ${decision === "keep" ? "Keep" : "Cut"}`,
+        "success",
+      );
+    } catch {
+      showToast("Couldn't save that decision", "danger");
+    } finally {
+      setPrompt(null);
+    }
+  }
+
+  return prompt ? (
+    <section
+      role="dialog"
+      aria-label={`Still using ${prompt.name}?`}
+      aria-modal="false"
+      className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+112px)] left-4 z-[45] rounded-[1.5rem] border border-line bg-surface p-4 shadow-float sm:right-6 sm:left-auto sm:w-80"
+    >
+      <button
+        type="button"
+        onClick={() => setPrompt(null)}
+        aria-label="Not now"
+        className="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-soft hover:text-ink"
+      >
+        <CloseIcon width={17} height={17} />
+      </button>
+      <p className="text-[10px] font-bold tracking-[0.13em] text-coral uppercase">
+        Decision time
+      </p>
+      <h2 className="mt-1 font-display text-xl leading-none font-extrabold tracking-[-0.04em] text-ink">
+        Still using {prompt.name}?
+      </h2>
+      <p className="mt-1 text-xs leading-relaxed text-muted">
+        Keep it deliberately, or cut it before it renews.
+      </p>
+      <div className="mt-3 flex gap-2">
+        <button
+          type="button"
+          onClick={() => void answer("keep")}
+          className="min-h-10 flex-1 rounded-full bg-safe-soft px-4 text-xs font-bold text-safe transition-colors hover:bg-safe hover:text-paper"
+        >
+          Keep
+        </button>
+        <button
+          type="button"
+          onClick={() => void answer("cut")}
+          className="min-h-10 flex-1 rounded-full bg-urgent-soft px-4 text-xs font-bold text-urgent transition-colors hover:bg-urgent hover:text-paper dark:hover:text-ink-fixed"
+        >
+          Cut
+        </button>
+      </div>
+    </section>
+  ) : null;
 }

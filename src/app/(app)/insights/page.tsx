@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Mascot } from "@/components/brand/mascot";
 import { useAppData } from "@/components/providers/app-data-provider";
 import { InsightsSection } from "@/components/charts/insights";
+import { SmartReviewSection } from "@/components/smart/smart-insights";
 import { useSubscriptionDetail } from "@/components/subscriptions/subscription-detail-sheet";
 import { Button } from "@/components/ui/button";
 import { CategoryIcon, categoryColor } from "@/components/ui/category-icon";
@@ -292,6 +293,14 @@ export default function InsightsPage() {
               </section>
             </div>
           </div>
+
+          <SmartReviewSection
+            subscriptions={active}
+            displayCurrency={currency}
+            fxToNgn={settings.fxToNgn}
+            today={today}
+            onSelect={openDetail}
+          />
 
           <section className="flex flex-col gap-3 rounded-[2rem] bg-surface p-5 shadow-card sm:p-6">
             <div className="flex items-center justify-between gap-3">

@@ -109,6 +109,7 @@ export function parseBackup(raw: string): Backup {
         paidVia: subscription.paidVia ?? "card",
         chargeStatus: subscription.chargeStatus ?? "unknown",
         decision: subscription.decision ?? null,
+        decisionUpdatedAt: subscription.decisionUpdatedAt ?? null,
         myShare: subscription.myShare ?? null,
         priceHistory: subscription.priceHistory ?? [],
       };

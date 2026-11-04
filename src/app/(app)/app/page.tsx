@@ -7,6 +7,7 @@ import { useAppData } from "@/components/providers/app-data-provider";
 import { useToast } from "@/components/providers/toast-provider";
 import { QuickEntrySheet } from "@/components/import/quick-entry-sheet";
 import { BackupNudge } from "@/components/subscriptions/backup-nudge";
+import { SmartDashboardAlert } from "@/components/smart/smart-insights";
 import { DeadlineCard, DeadlineHero } from "@/components/subscriptions/deadline-card";
 import { SpendSnapshot } from "@/components/subscriptions/spend-snapshot";
 import { SubscriptionExplorer } from "@/components/subscriptions/subscription-explorer";
@@ -218,6 +219,15 @@ export default function DashboardPage() {
           </div>
 
           {active.length > 0 ? <WeekStrip subscriptions={active} today={today} /> : null}
+
+          {active.length > 0 ? (
+            <SmartDashboardAlert
+              subscriptions={active}
+              displayCurrency={currency}
+              fxToNgn={settings.fxToNgn}
+              today={today}
+            />
+          ) : null}
 
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.85fr)] lg:items-start lg:gap-8">
             <div className="flex min-w-0 flex-col gap-6">

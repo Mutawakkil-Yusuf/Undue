@@ -72,8 +72,17 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = new URL(event.notification.data?.url || APP_SHELL, self.location.origin)
-    .href;
+  const url = new URL(event.notification.data?.url || APP_SHELL, self.location.origin);
+  const subscriptionId = event.notification.data?.subscriptionId;
+  if (
+    (event.action === "keep" || event.action === "cut") &&
+    typeof subscriptionId === "string" &&
+    subscriptionId
+  ) {
+    url.searchParams.set("decision", event.action);
+    url.searchParams.set("id", subscriptionId);
+  }
+  const target = url.href;
 
   event.waitUntil(
     (async () => {

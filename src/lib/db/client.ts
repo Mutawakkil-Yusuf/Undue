@@ -87,6 +87,22 @@ export class UndueDatabase extends Dexie {
             },
           );
       });
+    this.version(5)
+      .stores({
+        subscriptions: "id, status, nextRenewal, createdAt",
+        settings: "id",
+      })
+      .upgrade(async (transaction) => {
+        await transaction
+          .table("subscriptions")
+          .toCollection()
+          .modify((subscription: { decisionUpdatedAt?: string | null }) => {
+            if (subscription.decisionUpdatedAt === undefined) {
+              subscription.decisionUpdatedAt = null;
+            }
+          });
+      });
+
     this.version(4)
       .stores({
         subscriptions: "id, status, nextRenewal, createdAt",

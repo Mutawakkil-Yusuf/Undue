@@ -146,6 +146,7 @@ export const subscriptionSchema = z.object({
   paidVia: paidViaSchema.optional(),
   chargeStatus: chargeStatusSchema.optional(),
   decision: decisionSchema.optional().nullable(),
+  decisionUpdatedAt: z.string().min(1).nullable().optional(),
   myShare: z.number().nonnegative().finite().nullable().optional(),
   cancelUrl: z.string().url().nullable(),
   notes: z.string().max(1000).nullable(),

@@ -114,7 +114,11 @@ export function NotificationScheduler() {
                 {
                   body: "Today is the last safe day to cancel before the next charge.",
                   tag,
-                  data: { url: "/app" },
+                  data: { url: "/app", subscriptionId: subscription.id },
+                  actions: [
+                    { action: "keep", title: "Keep" },
+                    { action: "cut", title: "Cut" },
+                  ],
                   showTrigger: new Trigger(lastDay),
                 } as NotificationOptions & { showTrigger: unknown },
               );
@@ -133,7 +137,11 @@ export function NotificationScheduler() {
                 {
                   body: "You have a few days left to cancel before the next charge.",
                   tag,
-                  data: { url: "/app" },
+                  data: { url: "/app", subscriptionId: subscription.id },
+                  actions: [
+                    { action: "keep", title: "Keep" },
+                    { action: "cut", title: "Cut" },
+                  ],
                   showTrigger: new Trigger(soon),
                 } as NotificationOptions & { showTrigger: unknown },
               );

@@ -29,6 +29,7 @@ export interface SubscriptionInput {
   paidVia?: PaidVia;
   chargeStatus?: ChargeStatus;
   decision?: Decision | null;
+  decisionUpdatedAt?: string | null;
   myShare?: number | null;
   cancelUrl: string | null;
   notes: string | null;
@@ -56,6 +57,8 @@ function buildSubscription(input: SubscriptionInput): Subscription {
     paidVia: input.paidVia ?? "card",
     chargeStatus: input.chargeStatus ?? "unknown",
     decision: input.decision ?? null,
+    decisionUpdatedAt:
+      input.decision !== undefined ? (input.decisionUpdatedAt ?? nowIso()) : null,
     myShare: input.myShare ?? null,
     id: crypto.randomUUID(),
     priceHistory: recordPrice([], {
@@ -103,6 +106,10 @@ export async function updateSubscription(
     paidVia: input.paidVia ?? existing.paidVia ?? "card",
     chargeStatus: input.chargeStatus ?? existing.chargeStatus ?? "unknown",
     decision: input.decision ?? existing.decision ?? null,
+    decisionUpdatedAt:
+      input.decision !== undefined
+        ? (input.decisionUpdatedAt ?? nowIso())
+        : (existing.decisionUpdatedAt ?? null),
     myShare: input.myShare ?? null,
     id,
     priceHistory: recordPrice(existing.priceHistory ?? [], {
@@ -157,5 +164,9 @@ export async function setSubscriptionDecision(
   id: string,
   decision: Decision | null,
 ): Promise<void> {
-  await db.subscriptions.update(id, { decision, updatedAt: nowIso() });
+  await db.subscriptions.update(id, {
+    decision,
+    decisionUpdatedAt: nowIso(),
+    updatedAt: nowIso(),
+  });
 }

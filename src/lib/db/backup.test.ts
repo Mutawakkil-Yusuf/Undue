@@ -42,6 +42,7 @@ describe("parseBackup", () => {
     expect(backup.subscriptions[0]?.paidVia).toBe("card");
     expect(backup.subscriptions[0]?.chargeStatus).toBe("unknown");
     expect(backup.subscriptions[0]?.myShare).toBeNull();
+    expect(backup.subscriptions[0]?.decisionUpdatedAt).toBeNull();
     expect(backup.subscriptions[0]?.priceHistory).toEqual([]);
   });
 
