@@ -104,11 +104,11 @@ export default function GuidesPage() {
   return (
     <div className="flex flex-col gap-7 pt-2 lg:gap-9">
       <header className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-1">
+        <div className="flex min-w-0 flex-col gap-1">
           <span className="text-sm font-medium text-muted">
             {getCatalog().length}+ services, one place
           </span>
-          <h1 className="font-display text-[clamp(2.7rem,13vw,3.2rem)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-7xl">
+          <h1 className="font-display text-[length:min(3.2rem,16vw)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-7xl">
             Guides
           </h1>
         </div>
@@ -169,9 +169,9 @@ export default function GuidesPage() {
 
       {!showingResults ? (
         <section className="relative overflow-hidden rounded-[2rem] bg-coral p-6 text-ink-fixed shadow-card sm:p-8">
-          <div className="relative z-10 flex max-w-full flex-col items-start gap-5 min-[360px]:max-w-[62%] sm:max-w-[55%]">
-            <h2 className="font-display text-[clamp(2.15rem,10vw,2.6rem)] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance sm:text-5xl">
-              70+ ways out, in minutes.
+          <div className="relative z-10 flex max-w-[62%] flex-col items-start gap-5 sm:max-w-[55%]">
+            <h2 className="font-display text-[2.6rem] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance sm:text-5xl">
+              75+ ways out, in minutes.
             </h2>
             <button
               type="button"
@@ -186,7 +186,7 @@ export default function GuidesPage() {
             variant="happy"
             color="var(--color-lime)"
             size={170}
-            className="pointer-events-none absolute -right-3 bottom-0 hidden animate-float min-[360px]:block sm:right-8 sm:size-[210px]"
+            className="pointer-events-none absolute -right-3 bottom-0 animate-float sm:right-8 sm:size-[210px]"
           />
         </section>
       ) : null}
@@ -319,7 +319,7 @@ export default function GuidesPage() {
                 </Button>
               </div>
             ) : (
-              <ul className="grid gap-3 sm:grid-cols-2">
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {results.map((entry, index) => (
                   <li
                     key={entry.id}
@@ -401,11 +401,11 @@ function PopularCard({
         className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[2rem] ring-2 ring-ink-fixed transition-transform duration-300 ease-out group-hover:-translate-y-1 group-active:scale-[0.98]"
         style={{ background: accent }}
       >
-        <span className="font-display text-[clamp(4.5rem,22vw,5.5rem)] leading-none font-extrabold tracking-[-0.08em] text-ink-fixed/85 sm:text-[6.5rem]">
+        <span className="font-display text-[5.5rem] leading-none font-extrabold tracking-[-0.08em] text-ink-fixed/85 sm:text-[6.5rem]">
           {initial}
         </span>
         {isNew ? (
-          <span className="absolute top-3 right-3 rounded-full bg-lavender px-2.5 py-1 text-[10px] font-extrabold tracking-wide text-ink-fixed uppercase ring-2 ring-ink-fixed">
+          <span className="absolute top-3 right-3 rounded-full bg-lavender px-2.5 py-1 text-[11px] font-extrabold tracking-wide text-ink-fixed uppercase ring-2 ring-ink-fixed">
             New
           </span>
         ) : null}

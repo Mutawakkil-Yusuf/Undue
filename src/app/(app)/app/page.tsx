@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Mascot, MascotAvatar } from "@/components/brand/mascot";
+import { AnimatedMascot, AnimatedMascotAvatar } from "@/components/brand/animated-mascot";
+import { Mascot } from "@/components/brand/mascot";
+import type { MascotVariant } from "@/components/brand/mascot";
 import { useAppData } from "@/components/providers/app-data-provider";
 import { useToast } from "@/components/providers/toast-provider";
 import { QuickEntrySheet } from "@/components/import/quick-entry-sheet";
+import { Stagger } from "@/components/ui/stagger";
 import { BackupNudge } from "@/components/subscriptions/backup-nudge";
+import { BiggestCosts } from "@/components/subscriptions/biggest-costs";
+import { DecisionCard, HeadsUp } from "@/components/subscriptions/smart-cards";
 import { SmartDashboardAlert } from "@/components/smart/smart-insights";
 import { DeadlineCard, DeadlineHero } from "@/components/subscriptions/deadline-card";
 import { SpendSnapshot } from "@/components/subscriptions/spend-snapshot";
@@ -41,7 +46,9 @@ import {
 } from "@/lib/domain/spend";
 import type { Subscription } from "@/lib/domain/schema";
 import { compareUrgency } from "@/lib/domain/urgency";
+import { rankBySpend, summarizeCuts } from "@/lib/domain/decisions";
 import { useToday } from "@/lib/hooks/use-today";
+import { useFlip } from "@/lib/hooks/use-flip";
 import { cn } from "@/lib/utils/cn";
 
 const QUICK_START_IDS = ["netflix", "spotify", "dstv"] as const;
@@ -68,6 +75,8 @@ export default function DashboardPage() {
   const categories = summarizeByCategory(active, currency, settings.fxToNgn);
   const savings = savingsFromCancelled(cancelled, currency, settings.fxToNgn);
   const cutSavings = savingsFromDecisions(active, "cut", currency, settings.fxToNgn);
+  const costRows = rankBySpend(active, currency, settings.fxToNgn);
+  const cuts = summarizeCuts(active, currency, settings.fxToNgn);
 
   const sorted = useMemo(() => {
     if (!today) {
@@ -88,6 +97,19 @@ export default function DashboardPage() {
   const rest = sorted.slice(1);
   const visibleRest = showAll ? rest : rest.slice(0, 4);
   const heroWindow = hero && today ? computeCancelWindow(hero, today) : null;
+  const restListRef = useFlip<HTMLDivElement>();
+  const mood: MascotVariant =
+    subscriptions === undefined || today === null
+      ? "happy"
+      : !heroWindow
+        ? "sleepy"
+        : heroWindow.urgency === "today" ||
+            heroWindow.urgency === "urgent" ||
+            heroWindow.urgency === "missed"
+          ? "alarmed"
+          : heroWindow.urgency === "soon"
+            ? "calm"
+            : "happy";
   const dateLabel = today ? formatLongDate(todayIso(today)) : "Today";
 
   async function handleSample() {
@@ -120,7 +142,7 @@ export default function DashboardPage() {
       <header className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 flex-col gap-1">
           <span className="text-sm font-medium text-muted">{dateLabel}</span>
-          <h1 className="max-w-[9ch] font-display text-[clamp(2.8rem,13vw,3.4rem)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl lg:text-7xl">
+          <h1 className="max-w-[9ch] font-display text-[length:min(3.4rem,17vw)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl lg:text-7xl">
             Your deadlines
           </h1>
         </div>
@@ -129,8 +151,9 @@ export default function DashboardPage() {
           aria-label="Open settings"
           className="mt-1 shrink-0 transition-transform duration-200 hover:rotate-3 active:scale-95"
         >
-          <MascotAvatar
-            variant={heroWindow?.urgency === "today" ? "alarmed" : "happy"}
+          <AnimatedMascotAvatar
+            variant={mood}
+            reactive
             color="var(--color-yellow)"
             size={64}
             className="sm:size-[72px]"
@@ -167,69 +190,81 @@ export default function DashboardPage() {
         />
       ) : (
         <>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <button
-              type="button"
-              onClick={() =>
-                setPeriod((current) => (current === "monthly" ? "annual" : "monthly"))
-              }
-              className="inline-flex items-center gap-1.5 rounded-full bg-lime px-5 py-3 text-sm font-bold text-ink-fixed transition-transform duration-200 active:scale-[0.98]"
-            >
-              <MoneyText
-                amount={period === "monthly" ? summary.monthly : summary.annual}
-                currency={currency}
-                rounded
-                animate
+          <Stagger index={0}>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() =>
+                  setPeriod((current) => (current === "monthly" ? "annual" : "monthly"))
+                }
+                className="inline-flex items-center gap-1.5 rounded-full bg-lime px-5 py-3 text-sm font-bold text-ink-fixed transition-transform duration-200 active:scale-[0.98]"
+              >
+                <MoneyText
+                  amount={period === "monthly" ? summary.monthly : summary.annual}
+                  currency={currency}
+                  rounded
+                  animate
+                />
+                <span className="text-ink-fixed/70">
+                  a {period === "monthly" ? "month" : "year"}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setExplorerOpen((value) => !value)}
+                aria-expanded={explorerOpen}
+                className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-5 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-ink hover:text-bone"
+              >
+                {active.length} active
+                <ChevronDownIcon
+                  width={15}
+                  height={15}
+                  className={cn("transition-transform", explorerOpen && "rotate-180")}
+                />
+              </button>
+
+              <Link
+                href="/insights"
+                className="inline-flex items-center gap-1.5 rounded-full bg-surface px-4 py-3 text-sm font-bold text-ink shadow-card transition-colors hover:bg-surface-soft"
+              >
+                <ChartIcon width={16} height={16} />
+                Insights
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setQuickOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink px-4 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-ink hover:text-bone"
+              >
+                <SparkIcon width={16} height={16} />
+                Paste alert
+              </button>
+            </div>
+          </Stagger>
+
+          <Stagger index={1}>
+            <DecisionCard subscriptions={active} today={today} onOpen={openDetail} />
+          </Stagger>
+
+          <Stagger index={2}>
+            {active.length > 0 ? (
+              <WeekStrip subscriptions={active} today={today} />
+            ) : null}
+          </Stagger>
+
+          <Stagger index={3}>
+            {active.length > 0 ? (
+              <SmartDashboardAlert
+                subscriptions={active}
+                displayCurrency={currency}
+                fxToNgn={settings.fxToNgn}
+                today={today}
               />
-              <span className="text-ink-fixed/70">
-                a {period === "monthly" ? "month" : "year"}
-              </span>
-            </button>
+            ) : null}
+          </Stagger>
 
-            <button
-              type="button"
-              onClick={() => setExplorerOpen((value) => !value)}
-              aria-expanded={explorerOpen}
-              className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-5 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-ink hover:text-bone"
-            >
-              {active.length} active
-              <ChevronDownIcon
-                width={15}
-                height={15}
-                className={cn("transition-transform", explorerOpen && "rotate-180")}
-              />
-            </button>
-
-            <Link
-              href="/insights"
-              className="inline-flex items-center gap-1.5 rounded-full bg-surface px-4 py-3 text-sm font-bold text-ink shadow-card transition-colors hover:bg-surface-soft"
-            >
-              <ChartIcon width={16} height={16} />
-              Insights
-            </Link>
-
-            <button
-              type="button"
-              onClick={() => setQuickOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink px-4 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-ink hover:text-bone"
-            >
-              <SparkIcon width={16} height={16} />
-              Paste alert
-            </button>
-          </div>
-
-          {active.length > 0 ? <WeekStrip subscriptions={active} today={today} /> : null}
-
-          {active.length > 0 ? (
-            <SmartDashboardAlert
-              subscriptions={active}
-              displayCurrency={currency}
-              fxToNgn={settings.fxToNgn}
-              today={today}
-            />
-          ) : null}
-
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.85fr)] lg:items-start lg:gap-8">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.85fr)] lg:items-start lg:gap-8">
             <div className="flex min-w-0 flex-col gap-6">
               {active.length > 0 ? (
                 <section className="flex flex-col gap-3.5">
@@ -248,19 +283,22 @@ export default function DashboardPage() {
                     </button>
                   </div>
 
-                  {hero && heroWindow ? (
-                    <DeadlineHero
-                      subscription={hero}
-                      window={heroWindow}
-                      onSelect={openDetail}
-                    />
-                  ) : null}
+                  <Stagger index={4}>
+                    {hero && heroWindow ? (
+                      <DeadlineHero
+                        subscription={hero}
+                        window={heroWindow}
+                        onSelect={openDetail}
+                      />
+                    ) : null}
+                  </Stagger>
 
                   {visibleRest.length > 0 ? (
-                    <div className="flex flex-col gap-2.5">
+                    <div ref={restListRef} className="flex flex-col gap-2.5">
                       {visibleRest.map((subscription, index) => (
                         <div
                           key={subscription.id}
+                          data-flip-key={subscription.id}
                           className="animate-rise-in"
                           style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
                         >
@@ -278,7 +316,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setShowAll((value) => !value)}
-                      className="inline-flex items-center gap-1.5 self-start px-1 text-sm font-bold text-ink transition-colors hover:text-coral"
+                      className="hover:text-coral-ink inline-flex items-center gap-1.5 self-start px-1 text-sm font-bold text-ink transition-colors"
                     >
                       {showAll ? "Show less" : `Show ${rest.length - 4} more`}
                       <ChevronDownIcon
@@ -307,26 +345,54 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex min-w-0 flex-col gap-6">
-              {active.length > 0 ? (
-                <SpendSnapshot
-                  summary={summary}
-                  categories={categories}
-                  currency={currency}
-                  activeCount={active.length}
-                  period={period}
-                  onPeriodChange={setPeriod}
-                />
-              ) : null}
+              <Stagger index={5}>
+                {active.length > 0 ? (
+                  <HeadsUp
+                    subscriptions={active}
+                    today={today}
+                    currency={currency}
+                    fxToNgn={settings.fxToNgn}
+                    onSelect={openDetail}
+                  />
+                ) : null}
+              </Stagger>
 
-              {cancelled.length > 0 ? (
-                <CancelledSection
-                  items={cancelled}
-                  referenceDate={today}
-                  onSelect={openDetail}
-                  savingsAnnual={savings.annual}
-                  currency={currency}
-                />
-              ) : null}
+              <Stagger index={6}>
+                {active.length > 0 ? (
+                  <SpendSnapshot
+                    summary={summary}
+                    categories={categories}
+                    currency={currency}
+                    activeCount={active.length}
+                    period={period}
+                    onPeriodChange={setPeriod}
+                  />
+                ) : null}
+              </Stagger>
+
+              <Stagger index={7}>
+                {active.length > 0 ? (
+                  <BiggestCosts
+                    rows={costRows}
+                    cuts={cuts}
+                    currency={currency}
+                    period={period}
+                    onSelect={openDetail}
+                  />
+                ) : null}
+              </Stagger>
+
+              <Stagger index={8}>
+                {cancelled.length > 0 ? (
+                  <CancelledSection
+                    items={cancelled}
+                    referenceDate={today}
+                    onSelect={openDetail}
+                    savingsAnnual={savings.annual}
+                    currency={currency}
+                  />
+                ) : null}
+              </Stagger>
             </div>
           </div>
         </>
@@ -355,16 +421,19 @@ function EmptyDeadlines({
   return (
     <div className="flex animate-rise-in flex-col items-center gap-7 py-6 text-center sm:py-10">
       <div className="relative flex size-64 items-center justify-center rounded-full bg-lime sm:size-80">
-        <Mascot
+        <AnimatedMascot
           variant="sleepy"
           color="var(--color-yellow)"
           size={210}
           className="animate-float"
         />
-        <span className="absolute top-10 right-10 font-display text-2xl font-extrabold text-ink-fixed/40">
+        <span className="absolute top-10 right-10 animate-z-float font-display text-2xl font-extrabold text-ink-fixed/40">
           z
         </span>
-        <span className="absolute top-4 right-4 font-display text-lg font-extrabold text-ink-fixed/25">
+        <span
+          className="absolute top-4 right-4 animate-z-float font-display text-lg font-extrabold text-ink-fixed/25"
+          style={{ animationDelay: "1.1s" }}
+        >
           z
         </span>
       </div>
@@ -478,7 +547,7 @@ function CancelledSection({
         className="flex items-center justify-between gap-4 text-left"
       >
         <span className="flex flex-col gap-0.5">
-          <span className="text-[11px] font-bold tracking-[0.13em] text-coral uppercase">
+          <span className="text-coral-ink text-[11px] font-bold tracking-[0.13em] uppercase">
             Cancelled
           </span>
           <span className="font-display text-xl leading-tight font-extrabold tracking-[-0.04em] text-ink">
@@ -530,7 +599,7 @@ function DashboardSkeleton() {
           />
         ))}
       </div>
-      <div className="grid gap-6 lg:grid-cols-[1.35fr_0.85fr]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)]">
         <div className="flex flex-col gap-3">
           <div className="h-[280px] animate-pulse rounded-[2.25rem] bg-surface/70" />
           <div className="h-[92px] animate-pulse rounded-[1.75rem] bg-surface/70" />

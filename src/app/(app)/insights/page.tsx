@@ -83,7 +83,7 @@ export default function InsightsPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium text-muted">The full picture</span>
-            <h1 className="font-display text-[clamp(2.7rem,13vw,3.2rem)] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl">
+            <h1 className="font-display text-[length:min(3.2rem,16vw)] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl">
               Insights
             </h1>
           </div>
@@ -152,7 +152,7 @@ export default function InsightsPage() {
             />
           </section>
 
-          <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
             <div className="flex flex-col gap-6">
               <InsightsSection
                 categories={categories}
@@ -165,7 +165,7 @@ export default function InsightsPage() {
               <section className="flex flex-col gap-4 rounded-[2rem] bg-surface p-5 shadow-card sm:p-6">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-[11px] font-bold tracking-[0.13em] text-coral uppercase">
+                    <span className="text-coral-ink text-[11px] font-bold tracking-[0.13em] uppercase">
                       Biggest plans
                     </span>
                     <h2 className="font-display text-xl font-extrabold tracking-[-0.04em] text-ink">
@@ -288,7 +288,12 @@ export default function InsightsPage() {
                       {savings.count === 1 ? "plan" : "plans"}
                     </span>
                   </div>
-                  <Mascot variant="wink" color="var(--color-paper)" size={74} />
+                  <Mascot
+                    variant="wink"
+                    color="var(--color-paper)"
+                    size={74}
+                    className="size-14 shrink-0 min-[360px]:size-[74px]"
+                  />
                 </div>
               </section>
             </div>
@@ -305,7 +310,7 @@ export default function InsightsPage() {
           <section className="flex flex-col gap-3 rounded-[2rem] bg-surface p-5 shadow-card sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-bold tracking-[0.13em] text-coral uppercase">
+                <span className="text-coral-ink text-[11px] font-bold tracking-[0.13em] uppercase">
                   Categories
                 </span>
                 <h2 className="font-display text-xl font-extrabold tracking-[-0.04em] text-ink">
@@ -313,7 +318,7 @@ export default function InsightsPage() {
                 </h2>
               </div>
             </div>
-            <ul className="grid gap-2 sm:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {categories.map((category) => (
                 <li
                   key={category.category}

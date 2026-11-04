@@ -169,7 +169,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-1">
           <span className="text-sm font-medium text-muted">Every last safe day</span>
-          <h1 className="font-display text-[clamp(2.8rem,13vw,3.4rem)] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl">
+          <h1 className="font-display text-[length:min(3.4rem,17vw)] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl">
             Calendar
           </h1>
         </div>
@@ -208,7 +208,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
               {WEEKDAYS.map((day, index) => (
                 <span
                   key={`${day}-${index}`}
-                  className="pb-2 text-center text-[10px] font-bold tracking-[0.12em] text-muted uppercase"
+                  className="pb-2 text-center text-[11px] font-bold tracking-[0.12em] text-muted uppercase"
                 >
                   {day}
                 </span>
@@ -270,7 +270,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
               <span
                 className={cn(
                   "text-[11px] font-bold tracking-[0.13em] uppercase",
-                  selectedEvents.length > 0 ? "text-ink-fixed/60" : "text-coral",
+                  selectedEvents.length > 0 ? "text-ink-fixed/60" : "text-coral-ink",
                 )}
               >
                 {formatDate(selectedIso)}
@@ -329,7 +329,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
                 variant="alarmed"
                 color="var(--color-yellow)"
                 size={96}
-                className="pointer-events-none absolute -right-2 -bottom-4 hidden opacity-70 min-[360px]:block"
+                className="pointer-events-none absolute -right-2 -bottom-4 hidden opacity-70 sm:block"
               />
             ) : null}
           </section>
@@ -337,7 +337,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
 
         <div className="flex min-w-0 flex-col gap-5">
           <section className="relative overflow-hidden rounded-[2rem] bg-yellow p-5 text-ink-fixed shadow-card sm:p-6">
-            <div className="relative z-10 flex flex-col gap-1 min-[360px]:pr-24">
+            <div className="relative z-10 flex flex-col gap-1 pr-24">
               <span className="text-[11px] font-bold tracking-[0.13em] text-ink-fixed/55 uppercase">
                 This month
               </span>
@@ -389,7 +389,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
                           BADGE_TONE[window.urgency],
                         )}
                       >
-                        <span className="text-[9px] font-bold tracking-wide uppercase">
+                        <span className="text-[11px] font-bold tracking-wide uppercase">
                           {formatMonthShort(window.cancelBy)}
                         </span>
                         <span className="font-display text-lg leading-none font-extrabold">
@@ -468,7 +468,7 @@ function CalendarFallback() {
         </div>
         <div className="h-12 w-44 animate-pulse rounded-full bg-surface/70" />
       </div>
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
         <div className="h-[420px] animate-pulse rounded-[2rem] bg-surface/70" />
         <div className="h-64 animate-pulse rounded-[2rem] bg-surface/70" />
       </div>

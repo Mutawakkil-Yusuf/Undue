@@ -189,17 +189,17 @@ export default function SettingsPage() {
         <span className="text-sm font-medium text-muted">
           Your data lives in this browser only.
         </span>
-        <h1 className="font-display text-[clamp(2.9rem,14vw,3.6rem)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-7xl">
+        <h1 className="font-display text-[length:min(3.6rem,17vw)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-7xl">
           Settings
         </h1>
       </header>
 
       <section className="relative overflow-hidden rounded-[2rem] bg-sky p-6 text-ink-fixed shadow-card sm:p-8">
-        <div className="relative z-10 flex max-w-full flex-col items-start gap-4 min-[360px]:max-w-[62%] sm:max-w-[55%]">
+        <div className="relative z-10 flex max-w-[62%] flex-col items-start gap-4 sm:max-w-[55%]">
           <span className="text-[11px] font-extrabold tracking-[0.16em] uppercase">
             Private by design
           </span>
-          <h2 className="font-display text-[clamp(2.05rem,9vw,2.4rem)] leading-[0.88] font-extrabold tracking-[-0.06em] text-balance sm:text-5xl">
+          <h2 className="font-display text-[2.4rem] leading-[0.88] font-extrabold tracking-[-0.06em] text-balance sm:text-5xl">
             Nothing leaves this device.
           </h2>
           <p className="text-sm leading-relaxed font-medium text-ink-fixed/70">
@@ -223,7 +223,7 @@ export default function SettingsPage() {
           variant="happy"
           color="var(--color-paper)"
           size={150}
-          className="pointer-events-none absolute -right-2 -bottom-3 hidden animate-float min-[360px]:block sm:right-8 sm:size-[180px]"
+          className="pointer-events-none absolute -right-2 -bottom-3 hidden animate-float sm:right-8 sm:block sm:size-[180px]"
         />
       </section>
 
@@ -249,7 +249,7 @@ export default function SettingsPage() {
         />
       </Link>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <section className="flex flex-col gap-5 rounded-[2rem] bg-lavender p-5 text-ink-fixed shadow-card sm:p-6">
           <div className="flex items-start justify-between gap-3">
             <span className="flex size-11 items-center justify-center rounded-full bg-paper/45">
@@ -358,7 +358,7 @@ export default function SettingsPage() {
       <section className="flex flex-col gap-4 rounded-[2rem] bg-surface p-5 shadow-card sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-bold tracking-[0.13em] text-coral uppercase">
+            <span className="text-coral-ink text-[11px] font-bold tracking-[0.13em] uppercase">
               On device
             </span>
             <h2 className="font-display text-xl font-extrabold tracking-[-0.04em] text-ink">

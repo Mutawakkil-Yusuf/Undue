@@ -528,3 +528,22 @@
     transition: none !important;
   }
 }
+
+/* Empty-state "z" glyphs. */
+@keyframes z-float {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-14px);
+    opacity: 0;
+  }
+}
+
+@utility animate-z-float {
+  animation: z-float 3s ease-in-out infinite;
+}

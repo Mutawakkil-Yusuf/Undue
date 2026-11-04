@@ -46,7 +46,7 @@ function SourceCard({ step, icon, title, body, accent, children }: SourceCardPro
           {icon}
         </span>
         <div className="flex min-w-0 flex-col gap-1">
-          <span className="text-[10px] font-bold tracking-[0.13em] text-muted uppercase">
+          <span className="text-[11px] font-bold tracking-[0.13em] text-muted uppercase">
             Step {step}
           </span>
           <h2 className="font-display text-2xl leading-none font-extrabold tracking-[-0.05em] text-ink">
@@ -90,7 +90,7 @@ export default function FindPage() {
             <ArrowLeftIcon width={19} height={19} />
           </Link>
           <span className="text-sm font-medium text-muted">Find what you pay for</span>
-          <h1 className="max-w-[12ch] font-display text-[clamp(2.8rem,13vw,3.4rem)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl lg:text-7xl">
+          <h1 className="max-w-[12ch] font-display text-[length:min(3.4rem,17vw)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl lg:text-7xl">
             Find everything.
           </h1>
         </div>
@@ -138,11 +138,11 @@ export default function FindPage() {
           variant="happy"
           color="var(--color-paper)"
           size={150}
-          className="pointer-events-none absolute -right-2 -bottom-4 hidden animate-float min-[360px]:block sm:right-6"
+          className="pointer-events-none absolute -right-2 -bottom-4 hidden animate-float sm:right-6 sm:block"
         />
       </section>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <SourceCard
           step={1}
           icon={<MobileIcon width={19} height={19} />}
