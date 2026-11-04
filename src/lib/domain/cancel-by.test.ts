@@ -51,6 +51,53 @@ describe("computeCancelWindow", () => {
     expect(window.urgency).toBe("past");
   });
 
+  it("rolls an old active renewal forward instead of treating it as past", () => {
+    const window = computeCancelWindow(
+      {
+        nextRenewal: "2026-01-31",
+        leadDays: 2,
+        billingDay: 31,
+        isTrial: false,
+        cycle: { unit: "month", interval: 1 },
+      },
+      REFERENCE,
+    );
+    expect(window.renewal).toBe("2026-10-31");
+    expect(window.cancelBy).toBe("2026-10-29");
+    expect(window.urgency).toBe("safe");
+  });
+
+  it("uses a trial end date as the conversion deadline", () => {
+    const window = computeCancelWindow(
+      {
+        nextRenewal: "2026-11-01",
+        leadDays: 2,
+        isTrial: true,
+        trialEndsAt: "2026-10-04",
+        cycle: { unit: "month", interval: 1 },
+      },
+      REFERENCE,
+    );
+    expect(window.renewal).toBe("2026-10-04");
+    expect(window.cancelBy).toBe("2026-10-02");
+    expect(window.urgency).toBe("urgent");
+  });
+
+  it("keeps an ended trial urgent until it is converted or cancelled", () => {
+    const window = computeCancelWindow(
+      {
+        nextRenewal: "2026-10-01",
+        leadDays: 2,
+        isTrial: true,
+        trialEndsAt: "2026-09-28",
+        cycle: { unit: "month", interval: 1 },
+      },
+      REFERENCE,
+    );
+    expect(window.urgency).toBe("missed");
+    expect(window.daysUntilRenewal).toBe(-3);
+  });
+
   it("classifies deadlines within a week as soon", () => {
     const window = computeCancelWindow(
       { nextRenewal: "2026-10-09", leadDays: 2 },

@@ -1,5 +1,7 @@
 export const NOTIFICATIONS_STORAGE_KEY = "undue-notifications";
 export const LAST_NOTIFIED_STORAGE_KEY = "undue-last-notified";
+export const NOTIFIED_EVENTS_STORAGE_KEY = "undue-notified-events";
+export const DEFAULT_NOTIFICATION_TIME = "08:00";
 
 const listeners = new Set<() => void>();
 
@@ -91,4 +93,77 @@ export function markNotified(dayKey: string): void {
   } catch {
     // Ignore.
   }
+}
+
+export function readNotifiedEvents(): Record<string, string> {
+  if (typeof window === "undefined") {
+    return {};
+  }
+  try {
+    const raw = window.localStorage.getItem(NOTIFIED_EVENTS_STORAGE_KEY);
+    if (!raw) {
+      return {};
+    }
+    const parsed: unknown = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? (parsed as Record<string, string>) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function markNotifiedEvents(keys: readonly string[], at: string): void {
+  if (typeof window === "undefined" || keys.length === 0) {
+    return;
+  }
+  try {
+    const current = readNotifiedEvents();
+    for (const key of keys) {
+      current[key] = at;
+    }
+    window.localStorage.setItem(NOTIFIED_EVENTS_STORAGE_KEY, JSON.stringify(current));
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+export function notificationTimeParts(value: string): { hours: number; minutes: number } {
+  const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(value);
+  if (!match) {
+    return { hours: 8, minutes: 0 };
+  }
+  return { hours: Number(match[1]), minutes: Number(match[2]) };
+}
+
+export function isAtOrAfterNotificationTime(
+  clock: Date,
+  notificationTime: string,
+): boolean {
+  const { hours, minutes } = notificationTimeParts(notificationTime);
+  const target = new Date(clock);
+  target.setHours(hours, minutes, 0, 0);
+  return clock.getTime() >= target.getTime();
+}
+
+export function notificationTriggersSupported(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    "Notification" in window &&
+    "serviceWorker" in navigator &&
+    "TimestampTrigger" in window
+  );
+}
+
+export interface TimestampTriggerConstructor {
+  new (timestamp: number): unknown;
+}
+
+export function getTimestampTriggerConstructor(): TimestampTriggerConstructor | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  const constructor = (window as unknown as { TimestampTrigger?: unknown })
+    .TimestampTrigger;
+  return typeof constructor === "function"
+    ? (constructor as TimestampTriggerConstructor)
+    : null;
 }

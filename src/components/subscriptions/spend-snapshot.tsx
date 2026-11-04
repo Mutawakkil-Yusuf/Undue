@@ -66,9 +66,7 @@ export function SpendSnapshot({
               onClick={() => onPeriodChange(option)}
               className={cn(
                 "rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide uppercase transition-colors",
-                period === option
-                  ? "bg-ink text-bone"
-                  : "text-muted hover:text-ink",
+                period === option ? "bg-ink text-bone" : "text-muted hover:text-ink",
               )}
             >
               {option === "monthly" ? "Mo" : "Yr"}

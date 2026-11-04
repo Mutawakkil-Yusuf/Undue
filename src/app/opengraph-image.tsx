@@ -63,43 +63,72 @@ export default function OpengraphImage() {
             style={{
               width: 64,
               height: 64,
-              borderRadius: 999,
+              borderRadius: 16,
               background: "#bde66a",
-              border: "4px solid #191713",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               position: "relative",
+              overflow: "hidden",
             }}
           >
             <div
               style={{
-                width: 36,
-                height: 30,
-                borderRadius: 12,
-                background: "#f7bd3f",
+                position: "relative",
+                width: 38,
+                height: 32,
+                background: "#fffdf9",
                 border: "4px solid #191713",
+                borderRadius: 10,
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
+                boxSizing: "border-box",
               }}
             >
               <div
                 style={{
-                  width: 5,
-                  height: 7,
-                  borderRadius: 999,
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 5,
+                  height: 4,
                   background: "#191713",
                   display: "flex",
                 }}
               />
               <div
                 style={{
-                  width: 5,
-                  height: 7,
-                  borderRadius: 999,
+                  position: "absolute",
+                  left: 7,
+                  top: -8,
+                  width: 4,
+                  height: 10,
                   background: "#191713",
+                  borderRadius: 999,
+                  display: "flex",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  right: 7,
+                  top: -8,
+                  width: 4,
+                  height: 10,
+                  background: "#191713",
+                  borderRadius: 999,
+                  display: "flex",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: 5,
+                  top: 16,
+                  width: 28,
+                  height: 5,
+                  background: "#ff6b5a",
+                  borderRadius: 999,
+                  transform: "rotate(-45deg)",
                   display: "flex",
                 }}
               />
@@ -153,8 +182,7 @@ export default function OpengraphImage() {
                 maxWidth: 520,
               }}
             >
-              Track every subscription and see the exact day before you are charged
-              again.
+              Track every subscription and see the exact day before you are charged again.
             </div>
             <div
               style={{
@@ -271,7 +299,9 @@ export default function OpengraphImage() {
                   <div style={{ fontSize: 23, fontWeight: 800, color: "#191713" }}>
                     {item.name}
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(25,23,19,0.6)" }}>
+                  <div
+                    style={{ fontSize: 13, fontWeight: 600, color: "rgba(25,23,19,0.6)" }}
+                  >
                     {item.meta}
                   </div>
                 </div>
@@ -304,7 +334,7 @@ export default function OpengraphImage() {
             }}
           />
           <div style={{ fontSize: 22, color: "#756b5f", display: "flex" }}>
-            Nothing leaves your device. No account, no server, export anytime.
+            Nothing leaves your device. No account, no server.
           </div>
         </div>
       </div>

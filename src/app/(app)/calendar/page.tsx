@@ -17,12 +17,7 @@ import {
 } from "@/components/ui/icons";
 import { useSubscriptions } from "@/lib/db/hooks";
 import { computeCancelWindow, type CancelWindow } from "@/lib/domain/cancel-by";
-import {
-  addDays,
-  formatIsoDate,
-  parseIsoDate,
-  todayIso,
-} from "@/lib/domain/date";
+import { addDays, formatIsoDate, parseIsoDate, todayIso } from "@/lib/domain/date";
 import {
   formatCountdown,
   formatDate,
@@ -30,6 +25,7 @@ import {
   formatMonthYear,
 } from "@/lib/domain/format";
 import { summarizeSpend } from "@/lib/domain/spend";
+import { getEffectiveAmount } from "@/lib/domain/subscription";
 import type { Subscription } from "@/lib/domain/schema";
 import {
   compareUrgency,
@@ -57,7 +53,9 @@ function monthStartOf(iso: string): string {
 
 function shiftMonth(iso: string, delta: number): string {
   const date = parseIsoDate(iso);
-  return formatIsoDate(new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + delta, 1)));
+  return formatIsoDate(
+    new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + delta, 1)),
+  );
 }
 
 function normalizeInitialDate(raw: string | null): string {
@@ -171,7 +169,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-1">
           <span className="text-sm font-medium text-muted">Every last safe day</span>
-          <h1 className="font-display text-[3.4rem] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl">
+          <h1 className="font-display text-[clamp(2.8rem,13vw,3.4rem)] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl">
             Calendar
           </h1>
         </div>
@@ -237,12 +235,8 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
                       "relative mx-auto flex size-8 flex-col items-center justify-center rounded-full text-sm font-bold transition-all duration-200 min-[360px]:size-10 sm:size-11",
                       cell.inMonth ? "text-ink" : "text-muted/35",
                       isToday && "bg-coral text-ink-fixed ring-2 ring-ink-fixed",
-                      isSelected &&
-                        !isToday &&
-                        "bg-ink text-bone shadow-card",
-                      !isToday &&
-                        !isSelected &&
-                        "hover:bg-surface-soft active:scale-95",
+                      isSelected && !isToday && "bg-ink text-bone shadow-card",
+                      !isToday && !isSelected && "hover:bg-surface-soft active:scale-95",
                     )}
                   >
                     {cell.day}
@@ -298,13 +292,15 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
                             {subscription.name}
                           </span>
                           <span className="mt-0.5 block text-[11px] font-semibold text-ink-fixed/65">
-                            {getUrgencyPresentation(window.urgency).label} ·{" "}
-                            {formatCountdown(window.daysUntilCancelBy)}
+                            {subscription.isTrial && window.daysUntilRenewal < 0
+                              ? "Trial ended"
+                              : getUrgencyPresentation(window.urgency).label}{" "}
+                            · {formatCountdown(window.daysUntilCancelBy)}
                           </span>
                         </span>
                         <span className="shrink-0 rounded-full bg-ink-fixed px-3 py-1.5 text-xs font-bold text-paper">
                           <MoneyText
-                            amount={subscription.amount}
+                            amount={getEffectiveAmount(subscription)}
                             currency={subscription.currency}
                           />
                         </span>
@@ -333,7 +329,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
                 variant="alarmed"
                 color="var(--color-yellow)"
                 size={96}
-                className="pointer-events-none absolute -right-2 -bottom-4 hidden opacity-70 sm:block"
+                className="pointer-events-none absolute -right-2 -bottom-4 hidden opacity-70 min-[360px]:block"
               />
             ) : null}
           </section>
@@ -341,7 +337,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
 
         <div className="flex min-w-0 flex-col gap-5">
           <section className="relative overflow-hidden rounded-[2rem] bg-yellow p-5 text-ink-fixed shadow-card sm:p-6">
-            <div className="relative z-10 flex flex-col gap-1 pr-24">
+            <div className="relative z-10 flex flex-col gap-1 min-[360px]:pr-24">
               <span className="text-[11px] font-bold tracking-[0.13em] text-ink-fixed/55 uppercase">
                 This month
               </span>
@@ -414,7 +410,7 @@ function CalendarContent({ initialDate }: { initialDate: string }) {
                       </span>
                       <span className="shrink-0 text-right text-xs font-bold text-ink">
                         <MoneyText
-                          amount={subscription.amount}
+                          amount={getEffectiveAmount(subscription)}
                           currency={subscription.currency}
                         />
                       </span>

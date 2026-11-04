@@ -10,7 +10,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.netflix.com/cancelplan",
-    "cancelNote": "Account -> Membership -> Cancel Membership. Access continues until the end of the paid period."
+    "cancelNote": "Account -> Membership -> Cancel Membership. Access continues until the end of the paid period.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "prime-video",
@@ -23,7 +24,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.amazon.com/mc",
-    "cancelNote": "Account & Lists -> Prime -> Manage Membership -> End Membership."
+    "cancelNote": "Account & Lists -> Prime -> Manage Membership -> End Membership.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "disney-plus",
@@ -36,7 +38,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.disneyplus.com/account",
-    "cancelNote": "Account -> Subscription -> Cancel Subscription."
+    "cancelNote": "Account -> Subscription -> Cancel Subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "showmax",
@@ -49,7 +52,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.showmax.com/eng/account",
-    "cancelNote": "Log in, open Account, select Cancel Subscription and confirm."
+    "cancelNote": "Log in, open Account, select Cancel Subscription and confirm.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "youtube-premium",
@@ -62,7 +66,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.youtube.com/paid_memberships",
-    "cancelNote": "Settings -> Memberships -> Manage -> Cancel membership."
+    "cancelNote": "Settings -> Memberships -> Manage -> Cancel membership.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "apple-tv-plus",
@@ -75,7 +80,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
-    "cancelNote": "On iPhone: Settings -> [your name] -> Subscriptions -> Apple TV+ -> Cancel. Or manage at appleid.apple.com."
+    "cancelNote": "On iPhone: Settings -> [your name] -> Subscriptions -> Apple TV+ -> Cancel. Or manage at appleid.apple.com.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "paramount-plus",
@@ -88,7 +94,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.paramountplus.com/account/",
-    "cancelNote": "Account -> Cancel Subscription."
+    "cancelNote": "Account -> Cancel Subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "dstv",
@@ -101,7 +108,8 @@
     },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.dstv.com/en-ng/",
-    "cancelNote": "Sign in to Self Service, choose Manage Subscription, then downgrade or select Remove to stop billing."
+    "cancelNote": "Sign in to Self Service, choose Manage Subscription, then downgrade or select Remove to stop billing.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "gotv",
@@ -114,7 +122,8 @@
     },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.gotvafrica.com/en-ng/",
-    "cancelNote": "Use GOtv Self Service to change, suspend, or remove your package before the next cycle."
+    "cancelNote": "Use GOtv Self Service to change, suspend, or remove your package before the next cycle.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "spotify",
@@ -127,7 +136,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.spotify.com/account/subscription/",
-    "cancelNote": "Account -> Subscription -> Change plan -> Cancel Premium."
+    "cancelNote": "Account -> Subscription -> Change plan -> Cancel Premium.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "apple-music",
@@ -140,7 +150,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
-    "cancelNote": "iPhone Settings -> [your name] -> Subscriptions -> Apple Music -> Cancel."
+    "cancelNote": "iPhone Settings -> [your name] -> Subscriptions -> Apple Music -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "youtube-music",
@@ -153,7 +164,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.youtube.com/paid_memberships",
-    "cancelNote": "Settings -> Memberships -> Manage -> Cancel."
+    "cancelNote": "Settings -> Memberships -> Manage -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "boomplay",
@@ -166,7 +178,8 @@
     },
     "defaultLeadDays": 1,
     "cancelUrl": null,
-    "cancelNote": "In-app: Account -> VIP/Subscription -> Manage -> Cancel auto-renew. Store subscriptions can be cancelled in Google Play or the App Store."
+    "cancelNote": "In-app: Account -> VIP/Subscription -> Manage -> Cancel auto-renew. Store subscriptions can be cancelled in Google Play or the App Store.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "audiomack",
@@ -179,7 +192,8 @@
     },
     "defaultLeadDays": 1,
     "cancelUrl": "https://audiomack.com/settings",
-    "cancelNote": "Settings -> Account -> Subscription -> Cancel."
+    "cancelNote": "Settings -> Account -> Subscription -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "icloud-plus",
@@ -192,7 +206,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
-    "cancelNote": "Settings -> [your name] -> iCloud -> Manage Storage -> Change Storage Plan -> Downgrade."
+    "cancelNote": "Settings -> [your name] -> iCloud -> Manage Storage -> Change Storage Plan -> Downgrade.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "google-one",
@@ -205,7 +220,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://one.google.com/settings",
-    "cancelNote": "Google One -> Settings -> Cancel membership."
+    "cancelNote": "Google One -> Settings -> Cancel membership.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "dropbox",
@@ -218,7 +234,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.dropbox.com/account/plan",
-    "cancelNote": "Account -> Plan -> Cancel plan."
+    "cancelNote": "Account -> Plan -> Cancel plan.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "onedrive",
@@ -231,7 +248,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.microsoft.com/services",
-    "cancelNote": "Services & subscriptions -> Manage -> Cancel."
+    "cancelNote": "Services & subscriptions -> Manage -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "apple-one",
@@ -244,7 +262,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
-    "cancelNote": "Settings -> [your name] -> Subscriptions -> Apple One -> Cancel."
+    "cancelNote": "Settings -> [your name] -> Subscriptions -> Apple One -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "microsoft-365",
@@ -257,7 +276,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.microsoft.com/services",
-    "cancelNote": "Services & subscriptions -> Manage -> Cancel subscription."
+    "cancelNote": "Services & subscriptions -> Manage -> Cancel subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "adobe-cc",
@@ -270,7 +290,8 @@
     },
     "defaultLeadDays": 3,
     "cancelUrl": "https://account.adobe.com/plans",
-    "cancelNote": "Plans -> Manage plan -> Cancel plan. Annual plans cancelled early may incur a fee."
+    "cancelNote": "Plans -> Manage plan -> Cancel plan. Annual plans cancelled early may incur a fee.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "canva-pro",
@@ -283,7 +304,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.canva.com/settings/billing",
-    "cancelNote": "Settings -> Billing & plans -> Cancel plan."
+    "cancelNote": "Settings -> Billing & plans -> Cancel plan.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "chatgpt-plus",
@@ -296,7 +318,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://chatgpt.com/",
-    "cancelNote": "Settings -> Subscription -> Manage -> Cancel plan."
+    "cancelNote": "Settings -> Subscription -> Manage -> Cancel plan.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "grammarly",
@@ -309,7 +332,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.grammarly.com/subscription",
-    "cancelNote": "Subscription -> Cancel subscription."
+    "cancelNote": "Subscription -> Cancel subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "notion",
@@ -322,7 +346,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.notion.so/my-account",
-    "cancelNote": "Settings -> Plans/Billing -> Downgrade or cancel."
+    "cancelNote": "Settings -> Plans/Billing -> Downgrade or cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "zoom",
@@ -335,7 +360,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://zoom.us/billing",
-    "cancelNote": "Billing -> Current Plans -> Cancel."
+    "cancelNote": "Billing -> Current Plans -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "figma",
@@ -348,7 +374,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.figma.com/settings",
-    "cancelNote": "Settings -> Billing -> Change plan / Cancel."
+    "cancelNote": "Settings -> Billing -> Change plan / Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "linkedin-premium",
@@ -361,7 +388,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.linkedin.com/premium/manage/",
-    "cancelNote": "Premium -> Manage premium -> Cancel premium."
+    "cancelNote": "Premium -> Manage premium -> Cancel premium.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "nordvpn",
@@ -374,7 +402,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://my.nordaccount.com/",
-    "cancelNote": "Billing -> turn off auto-renew, or cancel the subscription."
+    "cancelNote": "Billing -> turn off auto-renew, or cancel the subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "surfshark",
@@ -387,7 +416,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://my.surfshark.com/",
-    "cancelNote": "Account -> Subscription -> turn off auto-renew / cancel."
+    "cancelNote": "Account -> Subscription -> turn off auto-renew / cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "1password",
@@ -400,7 +430,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://my.1password.com/",
-    "cancelNote": "Billing -> Cancel subscription."
+    "cancelNote": "Billing -> Cancel subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "proton-mail",
@@ -413,7 +444,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.proton.me/",
-    "cancelNote": "Settings -> Subscription -> Cancel subscription."
+    "cancelNote": "Settings -> Subscription -> Cancel subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "capcut-pro",
@@ -426,7 +458,8 @@
     },
     "defaultLeadDays": 1,
     "cancelUrl": null,
-    "cancelNote": "Cancel in the store you subscribed through: Google Play -> Subscriptions, or App Store -> Subscriptions."
+    "cancelNote": "Cancel in the store you subscribed through: Google Play -> Subscriptions, or App Store -> Subscriptions.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "telegram-premium",
@@ -439,7 +472,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": null,
-    "cancelNote": "Settings -> Telegram Premium -> Manage subscription -> Cancel."
+    "cancelNote": "Settings -> Telegram Premium -> Manage subscription -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "x-premium",
@@ -452,7 +486,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://x.com/settings/subscriptions",
-    "cancelNote": "Settings -> Premium -> Manage subscription -> Cancel."
+    "cancelNote": "Settings -> Premium -> Manage subscription -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "snapchat-plus",
@@ -465,7 +500,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": null,
-    "cancelNote": "Cancel via the store you subscribed through: Google Play -> Subscriptions, or App Store -> Subscriptions."
+    "cancelNote": "Cancel via the store you subscribed through: Google Play -> Subscriptions, or App Store -> Subscriptions.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "mtn-data",
@@ -478,7 +514,8 @@
     },
     "defaultLeadDays": 1,
     "cancelUrl": "https://www.mtn.ng/",
-    "cancelNote": "Use the MyMTN app or dial *131# to review active bundles and switch off automatic renewals."
+    "cancelNote": "Use the MyMTN app or dial *131# to review active bundles and switch off automatic renewals.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "airtel-data",
@@ -491,7 +528,8 @@
     },
     "defaultLeadDays": 1,
     "cancelUrl": "https://www.airtel.com.ng/",
-    "cancelNote": "Dial *141# or use the Airtel app to review plans and disable recurring bundles."
+    "cancelNote": "Dial *141# or use the Airtel app to review plans and disable recurring bundles.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "glo-data",
@@ -504,7 +542,8 @@
     },
     "defaultLeadDays": 1,
     "cancelUrl": "https://www.gloworld.com/ng/",
-    "cancelNote": "Dial *777# to manage data plans and stop automatic renewals."
+    "cancelNote": "Dial *777# to manage data plans and stop automatic renewals.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "9mobile-data",
@@ -517,7 +556,8 @@
     },
     "defaultLeadDays": 1,
     "cancelUrl": "https://www.9mobile.com.ng/",
-    "cancelNote": "Use *200# or the app to manage and stop automatic data renewals."
+    "cancelNote": "Use *200# or the app to manage and stop automatic data renewals.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "starlink",
@@ -530,7 +570,8 @@
     },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.starlink.com/account",
-    "cancelNote": "Account -> Service -> Cancel service. Service continues until the end of the billing cycle."
+    "cancelNote": "Account -> Service -> Cancel service. Service continues until the end of the billing cycle.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "spectranet",
@@ -543,7 +584,8 @@
     },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.spectranet.com.ng/",
-    "cancelNote": "Use the self-care portal or contact support to stop your plan from auto-renewing."
+    "cancelNote": "Use the self-care portal or contact support to stop your plan from auto-renewing.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "smile",
@@ -556,7 +598,8 @@
     },
     "defaultLeadDays": 3,
     "cancelUrl": "https://www.smile.com.ng/",
-    "cancelNote": "Manage your plan through Smile self-care to stop auto-renewal."
+    "cancelNote": "Manage your plan through Smile self-care to stop auto-renewal.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "whogohost",
@@ -569,7 +612,8 @@
     },
     "defaultLeadDays": 5,
     "cancelUrl": "https://www.whogohost.com/",
-    "cancelNote": "Client area -> open the service -> set the product to Do Not Renew, or request cancellation."
+    "cancelNote": "Client area -> open the service -> set the product to Do Not Renew, or request cancellation.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "qservers",
@@ -582,7 +626,8 @@
     },
     "defaultLeadDays": 5,
     "cancelUrl": "https://www.qservers.net/",
-    "cancelNote": "Client area -> Services -> request cancellation before the next due date."
+    "cancelNote": "Client area -> Services -> request cancellation before the next due date.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "namecheap",
@@ -595,7 +640,8 @@
     },
     "defaultLeadDays": 14,
     "cancelUrl": "https://ap.www.namecheap.com/",
-    "cancelNote": "Domain List -> manage the domain -> turn off auto-renew. Do the same for hosting products."
+    "cancelNote": "Domain List -> manage the domain -> turn off auto-renew. Do the same for hosting products.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "cloudways",
@@ -608,7 +654,8 @@
     },
     "defaultLeadDays": 3,
     "cancelUrl": "https://platform.cloudways.com/",
-    "cancelNote": "Account -> Billing -> delete the server / cancel the subscription before the renewal date."
+    "cancelNote": "Account -> Billing -> delete the server / cancel the subscription before the renewal date.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "ps-plus",
@@ -621,7 +668,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.playstation.com/",
-    "cancelNote": "Account Management -> Subscriptions -> PlayStation Plus -> Cancel."
+    "cancelNote": "Account Management -> Subscriptions -> PlayStation Plus -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "xbox-game-pass",
@@ -634,7 +682,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://account.microsoft.com/services",
-    "cancelNote": "Services & subscriptions -> Manage -> Cancel."
+    "cancelNote": "Services & subscriptions -> Manage -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "nintendo-online",
@@ -647,7 +696,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://accounts.nintendo.com/",
-    "cancelNote": "Account settings -> Membership -> turn off automatic renewal."
+    "cancelNote": "Account settings -> Membership -> turn off automatic renewal.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "ea-play",
@@ -660,7 +710,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.ea.com/",
-    "cancelNote": "Account -> EA Play -> Manage membership -> Cancel."
+    "cancelNote": "Account -> EA Play -> Manage membership -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "apple-arcade",
@@ -673,7 +724,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://support.apple.com/en-us/118428",
-    "cancelNote": "iPhone Settings -> [your name] -> Subscriptions -> Apple Arcade -> Cancel."
+    "cancelNote": "iPhone Settings -> [your name] -> Subscriptions -> Apple Arcade -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "discord-nitro",
@@ -686,7 +738,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://discord.com/settings/subscriptions",
-    "cancelNote": "Settings -> Subscriptions -> Cancel."
+    "cancelNote": "Settings -> Subscriptions -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "strava",
@@ -699,7 +752,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.strava.com/settings/payments",
-    "cancelNote": "Settings -> My Account -> Subscription -> Cancel."
+    "cancelNote": "Settings -> My Account -> Subscription -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "fitbit-premium",
@@ -712,7 +766,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.fitbit.com/settings/subscription",
-    "cancelNote": "Settings -> Subscription -> Cancel."
+    "cancelNote": "Settings -> Subscription -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "gym-membership",
@@ -725,7 +780,8 @@
     },
     "defaultLeadDays": 7,
     "cancelUrl": null,
-    "cancelNote": "Check your contract notice period. Many gyms require written notice or cancellation in person."
+    "cancelNote": "Check your contract notice period. Many gyms require written notice or cancellation in person.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "duolingo",
@@ -738,7 +794,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.duolingo.com/settings/subscription",
-    "cancelNote": "Cancel via the store you used (Google Play / App Store), or duolingo.com settings."
+    "cancelNote": "Cancel via the store you used (Google Play / App Store), or duolingo.com settings.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "coursera-plus",
@@ -751,7 +808,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.coursera.org/my-purchases",
-    "cancelNote": "Settings -> Purchases/Subscriptions -> Cancel."
+    "cancelNote": "Settings -> Purchases/Subscriptions -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "udemy-personal-plan",
@@ -764,7 +822,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.udemy.com/",
-    "cancelNote": "Account -> Subscriptions -> Cancel subscription."
+    "cancelNote": "Account -> Subscriptions -> Cancel subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "skillshare",
@@ -777,7 +836,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.skillshare.com/settings/payments",
-    "cancelNote": "Settings -> Membership -> Cancel."
+    "cancelNote": "Settings -> Membership -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "linkedin-learning",
@@ -790,7 +850,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://www.linkedin.com/learning/",
-    "cancelNote": "Learning -> Settings -> Manage subscription."
+    "cancelNote": "Learning -> Settings -> Manage subscription.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "google-play-pass",
@@ -803,7 +864,8 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": "https://play.google.com/store/account/subscriptions",
-    "cancelNote": "Play Store -> Payments & subscriptions -> Subscriptions -> Play Pass -> Cancel."
+    "cancelNote": "Play Store -> Payments & subscriptions -> Subscriptions -> Play Pass -> Cancel.",
+    "lastVerified": "2026-10-01"
   },
   {
     "id": "bank-card-maintenance",
@@ -816,6 +878,7 @@
     },
     "defaultLeadDays": 2,
     "cancelUrl": null,
-    "cancelNote": "Debit-card maintenance and SMS alert fees are set by your bank. Contact them to close the card or opt out of SMS alerts where possible."
+    "cancelNote": "Debit-card maintenance and SMS alert fees are set by your bank. Contact them to close the card or opt out of SMS alerts where possible.",
+    "lastVerified": "2026-10-01"
   }
 ]

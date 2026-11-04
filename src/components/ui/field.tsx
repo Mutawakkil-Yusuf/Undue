@@ -25,7 +25,7 @@ type ControlTone = "auto" | "fixed";
 
 interface FieldProps {
   label: string;
-  htmlFor: string;
+  htmlFor?: string;
   hint?: ReactNode;
   error?: string | undefined;
   children: ReactNode;
@@ -46,15 +46,26 @@ export function Field({
 }: FieldProps) {
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <label
-        htmlFor={htmlFor}
-        className={cn(
-          "text-[11px] font-bold tracking-[0.13em] uppercase",
-          labelClassName ?? "text-muted",
-        )}
-      >
-        {label}
-      </label>
+      {htmlFor ? (
+        <label
+          htmlFor={htmlFor}
+          className={cn(
+            "text-[11px] font-bold tracking-[0.13em] uppercase",
+            labelClassName ?? "text-muted",
+          )}
+        >
+          {label}
+        </label>
+      ) : (
+        <span
+          className={cn(
+            "text-[11px] font-bold tracking-[0.13em] uppercase",
+            labelClassName ?? "text-muted",
+          )}
+        >
+          {label}
+        </span>
+      )}
       {children}
       {error ? (
         <p className={cn("text-xs font-medium", errorClassName ?? "text-urgent")}>
@@ -74,7 +85,11 @@ export function TextInput({
 }: InputHTMLAttributes<HTMLInputElement> & { tone?: ControlTone }) {
   return (
     <input
-      className={cn(tone === "fixed" ? fixedControlClasses : controlClasses, "h-12", className)}
+      className={cn(
+        tone === "fixed" ? fixedControlClasses : controlClasses,
+        "h-12",
+        className,
+      )}
       {...props}
     />
   );

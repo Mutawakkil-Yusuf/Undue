@@ -108,7 +108,7 @@ export default function GuidesPage() {
           <span className="text-sm font-medium text-muted">
             {getCatalog().length}+ services, one place
           </span>
-          <h1 className="font-display text-[3.2rem] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-7xl">
+          <h1 className="font-display text-[clamp(2.7rem,13vw,3.2rem)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-7xl">
             Guides
           </h1>
         </div>
@@ -162,15 +162,15 @@ export default function GuidesPage() {
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search Netflix, DStv, 1Password…"
             aria-label="Search guides"
-            className="h-14 w-full rounded-full border-0 bg-surface pr-4 pl-12 text-base font-medium text-ink shadow-card placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-ink"
+            className="h-14 w-full rounded-full border-0 bg-surface pr-4 pl-12 text-base font-medium text-ink shadow-card placeholder:text-muted/60 focus:ring-2 focus:ring-ink focus:outline-none"
           />
         </div>
       ) : null}
 
       {!showingResults ? (
         <section className="relative overflow-hidden rounded-[2rem] bg-coral p-6 text-ink-fixed shadow-card sm:p-8">
-          <div className="relative z-10 flex max-w-[62%] flex-col items-start gap-5 sm:max-w-[55%]">
-            <h2 className="font-display text-[2.6rem] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance sm:text-5xl">
+          <div className="relative z-10 flex max-w-full flex-col items-start gap-5 min-[360px]:max-w-[62%] sm:max-w-[55%]">
+            <h2 className="font-display text-[clamp(2.15rem,10vw,2.6rem)] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance sm:text-5xl">
               60+ ways out, in minutes.
             </h2>
             <button
@@ -186,7 +186,7 @@ export default function GuidesPage() {
             variant="happy"
             color="var(--color-lime)"
             size={170}
-            className="pointer-events-none absolute -right-3 bottom-0 animate-float sm:right-8 sm:size-[210px]"
+            className="pointer-events-none absolute -right-3 bottom-0 hidden animate-float min-[360px]:block sm:right-8 sm:size-[210px]"
           />
         </section>
       ) : null}
@@ -209,7 +209,7 @@ export default function GuidesPage() {
             </button>
           </div>
 
-          <div className="no-scrollbar -mx-1 flex gap-3 overflow-x-auto px-1 pb-2 sm:grid sm:grid-cols-6 sm:gap-4 lg:grid-cols-8">
+          <div className="-mx-1 no-scrollbar flex gap-3 overflow-x-auto px-1 pb-2 sm:grid sm:grid-cols-6 sm:gap-4 lg:grid-cols-8">
             {CATEGORIES.map((option) => {
               const active = category === option.id;
               return (
@@ -401,7 +401,7 @@ function PopularCard({
         className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[2rem] ring-2 ring-ink-fixed transition-transform duration-300 ease-out group-hover:-translate-y-1 group-active:scale-[0.98]"
         style={{ background: accent }}
       >
-        <span className="font-display text-[5.5rem] leading-none font-extrabold tracking-[-0.08em] text-ink-fixed/85 sm:text-[6.5rem]">
+        <span className="font-display text-[clamp(4.5rem,22vw,5.5rem)] leading-none font-extrabold tracking-[-0.08em] text-ink-fixed/85 sm:text-[6.5rem]">
           {initial}
         </span>
         {isNew ? (

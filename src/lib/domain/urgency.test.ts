@@ -6,7 +6,7 @@ describe("urgencyBucket", () => {
     expect(urgencyBucket("missed")).toBe("now");
     expect(urgencyBucket("today")).toBe("now");
     expect(urgencyBucket("urgent")).toBe("now");
-    expect(urgencyBucket("past")).toBe("now");
+    expect(urgencyBucket("past")).toBe("later");
   });
 
   it("puts the coming week in the week bucket", () => {

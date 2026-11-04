@@ -1,6 +1,7 @@
 import type { CategoryId, Cycle, CurrencyCode, Subscription } from "./schema";
 import { monthsPerCycle } from "./cycle";
 import { convert, type FxToNgn } from "./currency";
+import { getEffectiveAmount } from "./subscription";
 
 export function monthlyAmount(amount: number, cycle: Cycle): number {
   return amount / monthsPerCycle(cycle);
@@ -31,7 +32,7 @@ export function summarizeSpend(
       continue;
     }
     const inDisplayCurrency = convert(
-      subscription.amount,
+      getEffectiveAmount(subscription),
       subscription.currency,
       displayCurrency,
       fxToNgn,
@@ -47,7 +48,12 @@ export function normalizeToDisplayCurrency(
   displayCurrency: CurrencyCode,
   fxToNgn: FxToNgn,
 ): number {
-  return convert(subscription.amount, subscription.currency, displayCurrency, fxToNgn);
+  return convert(
+    getEffectiveAmount(subscription),
+    subscription.currency,
+    displayCurrency,
+    fxToNgn,
+  );
 }
 
 export interface CategorySpend {
@@ -70,7 +76,12 @@ export function summarizeByCategory(
       continue;
     }
     const monthly = monthlyAmount(
-      convert(subscription.amount, subscription.currency, displayCurrency, fxToNgn),
+      convert(
+        getEffectiveAmount(subscription),
+        subscription.currency,
+        displayCurrency,
+        fxToNgn,
+      ),
       subscription.cycle,
     );
     monthlyByCategory.set(
@@ -109,7 +120,12 @@ export function savingsFromCancelled(
       continue;
     }
     monthly += monthlyAmount(
-      convert(subscription.amount, subscription.currency, displayCurrency, fxToNgn),
+      convert(
+        getEffectiveAmount(subscription),
+        subscription.currency,
+        displayCurrency,
+        fxToNgn,
+      ),
       subscription.cycle,
     );
     count += 1;

@@ -11,6 +11,9 @@ export function createDefaultSettings(): AppSettings {
     displayCurrency: "NGN",
     fxToNgn: { ...DEFAULT_FX_TO_NGN },
     defaultLeadDays: 2,
+    notificationTime: "08:00",
+    lastBackupAt: null,
+    ratesUpdatedAt: null,
     updatedAt: nowIso(),
   };
 }
@@ -31,6 +34,12 @@ export async function getSettings(): Promise<AppSettings> {
 }
 
 export type SettingsPatch = Partial<Omit<AppSettings, "id" | "updatedAt">>;
+
+export function notificationTimeOf(
+  settings: Pick<AppSettings, "notificationTime">,
+): string {
+  return settings.notificationTime ?? "08:00";
+}
 
 export async function updateSettings(patch: SettingsPatch): Promise<void> {
   const current = await getSettings();

@@ -7,6 +7,7 @@ import { computeCancelWindow } from "@/lib/domain/cancel-by";
 import { formatMoney } from "@/lib/domain/currency";
 import { formatDate } from "@/lib/domain/format";
 import { priceChange } from "@/lib/domain/price-history";
+import { getEffectiveAmount } from "@/lib/domain/subscription";
 import type { Subscription } from "@/lib/domain/schema";
 import { getUrgencyPresentation, urgencySurfaceClass } from "@/lib/domain/urgency";
 import { cn } from "@/lib/utils/cn";
@@ -25,6 +26,7 @@ export function SubscriptionRow({
   const window = computeCancelWindow(subscription, referenceDate);
   const cancelled = subscription.status === "cancelled";
   const presentation = getUrgencyPresentation(window.urgency);
+  const trialEnded = subscription.isTrial && window.daysUntilRenewal < 0 && !cancelled;
   const change = priceChange(subscription.priceHistory);
   const increased = !cancelled && change?.increased === true;
 
@@ -57,7 +59,11 @@ export function SubscriptionRow({
         <span className="truncate text-xs text-muted">
           {cancelled
             ? "Cancelled"
-            : `Next charge ${formatDate(subscription.nextRenewal)}`}
+            : trialEnded
+              ? "Trial ended — confirm conversion"
+              : subscription.isTrial
+                ? `Trial ends ${formatDate(window.renewal)}`
+                : `Next charge ${formatDate(window.renewal)}`}
         </span>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1">
@@ -72,15 +78,17 @@ export function SubscriptionRow({
               urgencySurfaceClass(presentation.tone),
             )}
           >
-            {presentation.level === "today"
-              ? "Today"
-              : presentation.level === "missed" || presentation.level === "past"
-                ? "Passed"
-                : `${Math.max(0, window.daysUntilCancelBy)}d`}
+            {trialEnded
+              ? "Trial ended"
+              : presentation.level === "today"
+                ? "Today"
+                : presentation.level === "missed" || presentation.level === "past"
+                  ? "Passed"
+                  : `${Math.max(0, window.daysUntilCancelBy)}d`}
           </span>
         )}
         <MoneyText
-          amount={subscription.amount}
+          amount={getEffectiveAmount(subscription)}
           currency={subscription.currency}
           className="text-xs font-semibold text-muted"
         />

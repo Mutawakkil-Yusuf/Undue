@@ -1,7 +1,8 @@
 import { convert, type FxToNgn } from "./currency";
-import { advance } from "./cycle";
+import { advance, advanceToFuture } from "./cycle";
 import { addMonths, parseIsoDate } from "./date";
 import type { CategoryId, CurrencyCode, Subscription } from "./schema";
+import { getBillingDay, getEffectiveAmount } from "./subscription";
 
 const MAX_OCCURRENCES = 4000;
 
@@ -57,18 +58,20 @@ export function projectSpend(
     }
 
     const amount = convert(
-      subscription.amount,
+      getEffectiveAmount(subscription),
       subscription.currency,
       displayCurrency,
       fxToNgn,
     );
+    const billingDay = getBillingDay(subscription);
 
-    let occurrence = parseIsoDate(subscription.nextRenewal);
+    let occurrence = advanceToFuture(
+      parseIsoDate(subscription.nextRenewal),
+      subscription.cycle,
+      start,
+      billingDay,
+    );
     let iterations = 0;
-    while (occurrence.getTime() < start.getTime() && iterations < MAX_OCCURRENCES) {
-      occurrence = advance(occurrence, subscription.cycle);
-      iterations += 1;
-    }
 
     while (occurrence.getTime() < end.getTime() && iterations < MAX_OCCURRENCES) {
       const bucket = buckets.get(monthKey(occurrence));
@@ -81,7 +84,7 @@ export function projectSpend(
           amount,
         });
       }
-      occurrence = advance(occurrence, subscription.cycle);
+      occurrence = advance(occurrence, subscription.cycle, billingDay);
       iterations += 1;
     }
   }

@@ -112,11 +112,11 @@ export function urgencyBucket(level: UrgencyLevel): UrgencyBucket {
     case "missed":
     case "today":
     case "urgent":
-    case "past":
       return "now";
     case "soon":
       return "week";
     case "safe":
+    case "past":
       return "later";
   }
 }

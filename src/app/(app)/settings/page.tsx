@@ -6,18 +6,17 @@ import { useAppData } from "@/components/providers/app-data-provider";
 import { useTheme } from "@/components/providers/theme-provider";
 import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
-import { Field, SelectInput, TextInput } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
+import { ImportBackupSheet } from "@/components/settings/import-backup-sheet";
+import { PreferencesCard } from "@/components/settings/preferences-card";
 import {
   ArrowRightIcon,
   AutoIcon,
   BellIcon,
   CalendarIcon,
-  ChevronDownIcon,
   DownloadIcon,
   MoonIcon,
   PaletteIcon,
-  SettingsIcon,
   ShieldIcon,
   SparkleIcon,
   SunIcon,
@@ -29,11 +28,14 @@ import {
   createBackup,
   eraseAll,
   parseBackup,
+  previewBackup,
   restoreBackup,
   serializeBackup,
+  type Backup,
+  type BackupPreview,
+  type ImportMode,
 } from "@/lib/db/backup";
 import { useSubscriptions } from "@/lib/db/hooks";
-import { CURRENCY_CODES, type AppSettings, type CurrencyCode } from "@/lib/domain/schema";
 import { todayIso } from "@/lib/domain/date";
 import { buildCalendar, CALENDAR_MIME_TYPE, calendarFilename } from "@/lib/domain/ics";
 import {
@@ -55,27 +57,6 @@ const THEME_ICONS: Record<Theme, typeof SunIcon> = {
   system: AutoIcon,
 };
 
-interface SettingsDraft {
-  displayCurrency: CurrencyCode;
-  defaultLeadDays: number;
-  usd: string;
-  gbp: string;
-}
-
-function toDraft(settings: AppSettings): SettingsDraft {
-  return {
-    displayCurrency: settings.displayCurrency,
-    defaultLeadDays: settings.defaultLeadDays,
-    usd: String(settings.fxToNgn.USD),
-    gbp: String(settings.fxToNgn.GBP),
-  };
-}
-
-function parseRate(value: string, fallback: number): number {
-  const parsed = Number.parseFloat(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-}
-
 export default function SettingsPage() {
   const { settings, isReady } = useAppData();
   const { theme, setTheme } = useTheme();
@@ -85,6 +66,9 @@ export default function SettingsPage() {
   const notificationsSupported = useNotificationsSupported();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [confirmingErase, setConfirmingErase] = useState(false);
+  const [pendingBackup, setPendingBackup] = useState<Backup | null>(null);
+  const [pendingPreview, setPendingPreview] = useState<BackupPreview | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
 
   const active = subscriptions?.filter((item) => item.status === "active") ?? [];
 
@@ -96,6 +80,7 @@ export default function SettingsPage() {
         serializeBackup(backup),
         "application/json",
       );
+      await updateSettings({ lastBackupAt: new Date().toISOString() });
       showToast("Backup downloaded", "success");
     } catch {
       showToast("Could not create a backup", "danger");
@@ -105,12 +90,30 @@ export default function SettingsPage() {
   async function handleImportFile(file: File) {
     try {
       const backup = parseBackup(await file.text());
-      await restoreBackup(backup);
-      showToast("Backup restored", "success");
+      const preview = await previewBackup(backup);
+      setPendingBackup(backup);
+      setPendingPreview(preview);
+      setImportOpen(true);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Could not restore that file.";
       showToast(message, "danger");
+    }
+  }
+
+  async function handleConfirmImport(mode: ImportMode) {
+    if (!pendingBackup) {
+      return;
+    }
+    try {
+      await restoreBackup(pendingBackup, mode);
+      await updateSettings({ lastBackupAt: new Date().toISOString() });
+      setImportOpen(false);
+      setPendingBackup(null);
+      setPendingPreview(null);
+      showToast(mode === "merge" ? "Backup merged" : "Backup restored", "success");
+    } catch {
+      showToast("Could not restore that backup", "danger");
     }
   }
 
@@ -176,21 +179,26 @@ export default function SettingsPage() {
         <span className="text-sm font-medium text-muted">
           Your data lives in this browser only.
         </span>
-        <h1 className="font-display text-[3.6rem] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-7xl">
+        <h1 className="font-display text-[clamp(2.9rem,14vw,3.6rem)] leading-[0.82] font-extrabold tracking-[-0.07em] text-ink sm:text-7xl">
           Settings
         </h1>
       </header>
 
       <section className="relative overflow-hidden rounded-[2rem] bg-sky p-6 text-ink-fixed shadow-card sm:p-8">
-        <div className="relative z-10 flex max-w-[62%] flex-col items-start gap-4 sm:max-w-[55%]">
+        <div className="relative z-10 flex max-w-full flex-col items-start gap-4 min-[360px]:max-w-[62%] sm:max-w-[55%]">
           <span className="text-[11px] font-extrabold tracking-[0.16em] uppercase">
             Private by design
           </span>
-          <h2 className="font-display text-[2.4rem] leading-[0.88] font-extrabold tracking-[-0.06em] text-balance sm:text-5xl">
+          <h2 className="font-display text-[clamp(2.05rem,9vw,2.4rem)] leading-[0.88] font-extrabold tracking-[-0.06em] text-balance sm:text-5xl">
             Nothing leaves this device.
           </h2>
           <p className="text-sm leading-relaxed font-medium text-ink-fixed/70">
             No account, no server. Back up when you want, move it when you want.
+          </p>
+          <p className="text-[11px] font-semibold text-ink-fixed/60">
+            {settings.lastBackupAt
+              ? `Last backup: ${new Date(settings.lastBackupAt).toLocaleDateString()}`
+              : "No backup yet — export one today."}
           </p>
           <button
             type="button"
@@ -245,7 +253,7 @@ export default function SettingsPage() {
               Daily nudge
             </span>
             <span className="text-xs font-semibold text-ink-fixed/60">
-              When a window closes
+              At your chosen time · calendar export works when closed
             </span>
           </div>
         </section>
@@ -301,9 +309,19 @@ export default function SettingsPage() {
         }}
       />
 
-      {isReady ? (
-        <PreferencesCard key={settings.updatedAt} settings={settings} />
-      ) : null}
+      {isReady ? <PreferencesCard settings={settings} /> : null}
+
+      <ImportBackupSheet
+        open={importOpen}
+        backup={pendingBackup}
+        preview={pendingPreview}
+        onClose={() => {
+          setImportOpen(false);
+          setPendingBackup(null);
+          setPendingPreview(null);
+        }}
+        onImport={handleConfirmImport}
+      />
 
       <section className="flex flex-col gap-4 rounded-[2rem] bg-surface p-5 shadow-card sm:p-6">
         <div className="flex items-center justify-between gap-3">
@@ -403,137 +421,5 @@ function ThemeSwitch({
         );
       })}
     </div>
-  );
-}
-
-function PreferencesCard({ settings }: { settings: AppSettings }) {
-  const { showToast } = useToast();
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState(() => toDraft(settings));
-  const [busy, setBusy] = useState(false);
-
-  async function handleSave() {
-    setBusy(true);
-    try {
-      await updateSettings({
-        displayCurrency: draft.displayCurrency,
-        defaultLeadDays: Math.min(60, Math.max(0, Math.trunc(draft.defaultLeadDays))),
-        fxToNgn: {
-          ...settings.fxToNgn,
-          USD: parseRate(draft.usd, settings.fxToNgn.USD),
-          GBP: parseRate(draft.gbp, settings.fxToNgn.GBP),
-        },
-      });
-      showToast("Preferences saved", "success");
-    } catch {
-      showToast("Could not save settings", "danger");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <section className="flex flex-col gap-4 rounded-[2rem] bg-surface p-5 shadow-card sm:p-6">
-      <button
-        type="button"
-        onClick={() => setOpen((value) => !value)}
-        aria-expanded={open}
-        className="flex items-center justify-between gap-4 text-left"
-      >
-        <span className="flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-full bg-surface-soft text-ink">
-            <SettingsIcon width={20} height={20} />
-          </span>
-          <span className="flex flex-col gap-0.5">
-            <span className="font-display text-xl font-extrabold tracking-[-0.04em] text-ink">
-              Preferences
-            </span>
-            <span className="text-xs font-semibold text-muted">
-              {settings.displayCurrency} · {settings.defaultLeadDays} day reminder
-            </span>
-          </span>
-        </span>
-        <ChevronDownIcon
-          width={19}
-          height={19}
-          className={cn("shrink-0 text-muted transition-transform", open && "rotate-180")}
-        />
-      </button>
-
-      {open ? (
-        <div className="flex animate-rise-in flex-col gap-4 border-t border-line pt-4">
-          <Field
-            label="Display currency"
-            htmlFor="settings-currency"
-            hint="Totals are converted to this currency."
-          >
-            <SelectInput
-              id="settings-currency"
-              value={draft.displayCurrency}
-              onChange={(event) =>
-                setDraft((prev) => ({
-                  ...prev,
-                  displayCurrency: event.target.value as CurrencyCode,
-                }))
-              }
-            >
-              {CURRENCY_CODES.map((code) => (
-                <option key={code} value={code}>
-                  {code}
-                </option>
-              ))}
-            </SelectInput>
-          </Field>
-
-          <Field
-            label="Default reminder window"
-            htmlFor="settings-lead"
-            hint="Days before a charge to flag it for cancellation."
-          >
-            <TextInput
-              id="settings-lead"
-              type="number"
-              min={0}
-              max={60}
-              inputMode="numeric"
-              value={draft.defaultLeadDays}
-              onChange={(event) =>
-                setDraft((prev) => ({
-                  ...prev,
-                  defaultLeadDays: Number.parseInt(event.target.value, 10) || 0,
-                }))
-              }
-            />
-          </Field>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="1 USD → ₦" htmlFor="settings-usd">
-              <TextInput
-                id="settings-usd"
-                inputMode="decimal"
-                value={draft.usd}
-                onChange={(event) =>
-                  setDraft((prev) => ({ ...prev, usd: event.target.value }))
-                }
-              />
-            </Field>
-            <Field label="1 GBP → ₦" htmlFor="settings-gbp">
-              <TextInput
-                id="settings-gbp"
-                inputMode="decimal"
-                value={draft.gbp}
-                onChange={(event) =>
-                  setDraft((prev) => ({ ...prev, gbp: event.target.value }))
-                }
-              />
-            </Field>
-          </div>
-
-          <Button onClick={() => void handleSave()} disabled={busy} block>
-            Save preferences
-          </Button>
-        </div>
-      ) : null}
-    </section>
   );
 }

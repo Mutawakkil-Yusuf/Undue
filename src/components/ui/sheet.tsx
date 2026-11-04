@@ -208,16 +208,14 @@ export function Sheet({
         className={cn(
           "relative z-10 flex max-h-[92dvh] w-full animate-sheet-in flex-col overflow-hidden",
           "rounded-t-[2rem] shadow-sheet sm:max-h-[88dvh] sm:rounded-[2rem]",
+          isDragging
+            ? "transition-none"
+            : "transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
           TONE_CLASSES[tone],
           SIZE_CLASSES[size],
           className,
         )}
-        style={{
-          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
-          transition: isDragging
-            ? "none"
-            : "transform 240ms cubic-bezier(0.22, 1, 0.36, 1)",
-        }}
+        style={{ transform: dragY > 0 ? `translateY(${dragY}px)` : undefined }}
       >
         <div
           onPointerDown={handlePointerDown}
@@ -287,9 +285,7 @@ export function Sheet({
           <div
             className={cn(
               "shrink-0",
-              footerPadded
-                ? "px-5 pt-3 pb-safe-3 sm:px-7 sm:pb-safe-5"
-                : "border-0",
+              footerPadded ? "px-5 pt-3 pb-safe-3 sm:px-7 sm:pb-safe-5" : "border-0",
               footerPadded
                 ? tone === "dark"
                   ? "border-t border-paper/10"

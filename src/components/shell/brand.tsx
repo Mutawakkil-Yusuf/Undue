@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils/cn";
-import { Mascot } from "@/components/brand/mascot";
+import { BrandLogo } from "@/components/brand/logo";
 
 interface BrandMarkProps {
   className?: string;
@@ -7,17 +7,7 @@ interface BrandMarkProps {
 }
 
 export function BrandMark({ className, size = 32 }: BrandMarkProps) {
-  return (
-    <span
-      className={cn(
-        "inline-flex shrink-0 items-center justify-center rounded-full bg-[var(--color-lime)] ring-2 ring-ink",
-        className,
-      )}
-      style={{ width: size, height: size }}
-    >
-      <Mascot variant="happy" color="var(--color-yellow)" size={size * 0.82} />
-    </span>
-  );
+  return <BrandLogo size={size} className={className} />;
 }
 
 export function BrandWordmark({ className }: { className?: string }) {

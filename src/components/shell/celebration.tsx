@@ -18,7 +18,14 @@ import { computeCancelWindow } from "@/lib/domain/cancel-by";
 import { todayIso } from "@/lib/domain/date";
 import { formatDate } from "@/lib/domain/format";
 import { annualAmount } from "@/lib/domain/spend";
+import { getEffectiveAmount } from "@/lib/domain/subscription";
 import type { Subscription } from "@/lib/domain/schema";
+import {
+  createShareImage,
+  shareFilename,
+  shareOrDownloadImage,
+  SHARE_URL,
+} from "@/lib/share/share-card";
 
 interface CelebrationOptions {
   onUndo?: () => void | Promise<void>;
@@ -40,12 +47,9 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   const { showToast } = useToast();
   const subscription = celebration?.subscription ?? null;
 
-  const celebrate = useCallback(
-    (next: Subscription, options?: CelebrationOptions) => {
-      setCelebration({ subscription: next, onUndo: options?.onUndo });
-    },
-    [],
-  );
+  const celebrate = useCallback((next: Subscription, options?: CelebrationOptions) => {
+    setCelebration({ subscription: next, onUndo: options?.onUndo });
+  }, []);
 
   const api = useMemo<CelebrationContextValue>(() => ({ celebrate }), [celebrate]);
 
@@ -71,20 +75,33 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
     if (!subscription) {
       return;
     }
-    const saved = annualAmount(subscription.amount, subscription.cycle);
-    const text = `I cancelled ${subscription.name} and saved ${Math.round(saved)} ${subscription.currency} a year with Undue.`;
+    const saved = annualAmount(getEffectiveAmount(subscription), subscription.cycle);
+    const text = `I cancelled ${subscription.name} and saved ${Math.round(saved)} ${subscription.currency} a year with Undue. ${SHARE_URL}`;
     try {
-      if (navigator.share) {
-        await navigator.share({ title: "One less undue charge", text });
-        return;
+      const window = computeCancelWindow(subscription, new Date());
+      const blob = await createShareImage({
+        name: subscription.name,
+        amount: getEffectiveAmount(subscription),
+        currency: subscription.currency,
+        cancelBy: formatDate(window.cancelBy),
+        renewal: formatDate(window.renewal),
+        cancelled: true,
+        trial: subscription.isTrial,
+      });
+      const result = await shareOrDownloadImage(
+        blob,
+        shareFilename(subscription.name),
+        "One less undue charge",
+        text,
+      );
+      if (result === "downloaded") {
+        showToast("Share image downloaded", "success");
       }
-      await navigator.clipboard.writeText(text);
-      showToast("Copied to clipboard", "success");
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
         return;
       }
-      showToast("Could not share that just now.", "danger");
+      showToast("Could not create the share image.", "danger");
     }
   }
 
@@ -103,7 +120,7 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   }
 
   const saved = subscription
-    ? annualAmount(subscription.amount, subscription.cycle)
+    ? annualAmount(getEffectiveAmount(subscription), subscription.cycle)
     : 0;
   const urgency = subscription
     ? computeCancelWindow(subscription, new Date()).urgency
@@ -178,11 +195,7 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
               >
                 Share
               </Button>
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={() => setCelebration(null)}
-              >
+              <Button variant="primary" size="lg" onClick={() => setCelebration(null)}>
                 Done
               </Button>
             </div>

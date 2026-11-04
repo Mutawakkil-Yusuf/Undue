@@ -66,6 +66,37 @@ export const isoDateSchema = z
 export const subscriptionStatusSchema = z.enum(["active", "cancelled"]);
 export type SubscriptionStatus = z.infer<typeof subscriptionStatusSchema>;
 
+export const PAID_VIA = [
+  "card",
+  "bank-transfer",
+  "airtime",
+  "ussd",
+  "wallet",
+  "other",
+] as const;
+export const paidViaSchema = z.enum(PAID_VIA);
+export type PaidVia = z.infer<typeof paidViaSchema>;
+
+export const PAID_VIA_LABELS: Record<PaidVia, string> = {
+  card: "Card",
+  "bank-transfer": "Bank transfer",
+  airtime: "Airtime",
+  ussd: "USSD",
+  wallet: "Wallet",
+  other: "Other",
+};
+
+export const CHARGE_STATUSES = ["unknown", "paid", "failed", "declined"] as const;
+export const chargeStatusSchema = z.enum(CHARGE_STATUSES);
+export type ChargeStatus = z.infer<typeof chargeStatusSchema>;
+
+export const CHARGE_STATUS_LABELS: Record<ChargeStatus, string> = {
+  unknown: "Not recorded",
+  paid: "Paid",
+  failed: "Failed",
+  declined: "Declined",
+};
+
 export const pricePointSchema = z.object({
   at: isoDateSchema,
   amount: z.number().nonnegative().finite(),
@@ -82,8 +113,13 @@ export const subscriptionSchema = z.object({
   currency: currencyCodeSchema,
   cycle: cycleSchema,
   nextRenewal: isoDateSchema,
+  billingDay: z.number().int().min(1).max(31).optional(),
   leadDays: z.number().int().min(0).max(60),
   isTrial: z.boolean(),
+  trialEndsAt: isoDateSchema.nullable().optional(),
+  paidVia: paidViaSchema.optional(),
+  chargeStatus: chargeStatusSchema.optional(),
+  myShare: z.number().nonnegative().finite().nullable().optional(),
   cancelUrl: z.string().url().nullable(),
   notes: z.string().max(1000).nullable(),
   priceHistory: z.array(pricePointSchema).default([]),
@@ -98,6 +134,12 @@ export const settingsSchema = z.object({
   displayCurrency: currencyCodeSchema,
   fxToNgn: z.record(currencyCodeSchema, z.number().positive()),
   defaultLeadDays: z.number().int().min(0).max(60),
+  notificationTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .optional(),
+  lastBackupAt: z.string().min(1).nullable().optional(),
+  ratesUpdatedAt: z.string().min(1).nullable().optional(),
   updatedAt: z.string().min(1),
 });
 export type AppSettings = z.infer<typeof settingsSchema>;

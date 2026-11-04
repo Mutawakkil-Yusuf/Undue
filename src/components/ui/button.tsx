@@ -2,14 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils/cn";
 
 type ButtonVariant =
-  | "primary"
-  | "accent"
-  | "secondary"
-  | "ghost"
-  | "danger"
-  | "lime"
-  | "white"
-  | "fixed";
+  "primary" | "accent" | "secondary" | "ghost" | "danger" | "lime" | "white" | "fixed";
 type ButtonSize = "sm" | "md" | "lg" | "xl";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {

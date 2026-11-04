@@ -146,7 +146,12 @@ export function SpendBars({ months, currency }: SpendBarsProps) {
 
       <p className="text-xs text-muted">
         Projected over {months.length} months:{" "}
-        <MoneyText amount={total} currency={currency} rounded className="font-bold text-ink" />
+        <MoneyText
+          amount={total}
+          currency={currency}
+          rounded
+          className="font-bold text-ink"
+        />
       </p>
 
       <table className="sr-only">

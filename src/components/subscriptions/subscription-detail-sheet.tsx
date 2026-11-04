@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/icons";
 import {
   advanceRenewal,
+  convertTrial,
   deleteSubscription,
   restoreSubscription,
   setSubscriptionLeadDays,
@@ -35,12 +36,36 @@ import {
 } from "@/lib/db/subscriptions";
 import { useSubscription } from "@/lib/db/hooks";
 import { computeCancelWindow } from "@/lib/domain/cancel-by";
-import { advance, cycleLabel, cycleShortLabel } from "@/lib/domain/cycle";
+import {
+  advance,
+  advanceToFuture,
+  cycleLabel,
+  cycleShortLabel,
+} from "@/lib/domain/cycle";
 import { civilDate, diffInDays, formatIsoDate, parseIsoDate } from "@/lib/domain/date";
 import { formatCountdown, formatDate } from "@/lib/domain/format";
 import { buildCalendar, CALENDAR_MIME_TYPE } from "@/lib/domain/ics";
 import { priceChange } from "@/lib/domain/price-history";
-import { getCategory, type Subscription } from "@/lib/domain/schema";
+import {
+  CHARGE_STATUS_LABELS,
+  PAID_VIA_LABELS,
+  getCategory,
+  type Subscription,
+} from "@/lib/domain/schema";
+import {
+  getBillingDay,
+  getChargeStatus,
+  getEffectiveAmount,
+  getPaidVia,
+  getTrialEnd,
+  hasPaymentProblem,
+} from "@/lib/domain/subscription";
+import {
+  createShareImage,
+  shareFilename,
+  shareOrDownloadImage,
+  SHARE_URL,
+} from "@/lib/share/share-card";
 import type { UrgencyLevel } from "@/lib/domain/urgency";
 import { useToday } from "@/lib/hooks/use-today";
 import { cn } from "@/lib/utils/cn";
@@ -84,18 +109,34 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
   );
 
   async function handleAdvance(target: Subscription) {
-    const nextDate = advance(parseIsoDate(target.nextRenewal), target.cycle);
+    const window = computeCancelWindow(target, new Date());
+    const nextDate = advance(
+      parseIsoDate(window.renewal),
+      target.cycle,
+      getBillingDay(target),
+    );
     try {
       await advanceRenewal(target.id, formatIsoDate(nextDate));
-      const stillPast = diffInDays(civilDate(), nextDate) <= 0;
+      showToast(`Next charge set to ${formatDate(formatIsoDate(nextDate))}`, "success");
+    } catch {
+      showToast("Could not update the renewal date", "danger");
+    }
+  }
+
+  async function handleConvertTrial(target: Subscription) {
+    const firstCharge = parseIsoDate(target.nextRenewal);
+    const nextDate =
+      diffInDays(civilDate(), firstCharge) >= 0
+        ? firstCharge
+        : advanceToFuture(firstCharge, target.cycle, civilDate(), getBillingDay(target));
+    try {
+      await convertTrial(target.id, formatIsoDate(nextDate));
       showToast(
-        stillPast
-          ? "Advanced one cycle — still in the past, try again."
-          : `Next charge set to ${formatDate(formatIsoDate(nextDate))}`,
+        `Trial converted. Next charge ${formatDate(formatIsoDate(nextDate))}`,
         "success",
       );
     } catch {
-      showToast("Could not update the renewal date", "danger");
+      showToast("Could not update this trial", "danger");
     }
   }
 
@@ -234,6 +275,7 @@ export function SubscriptionDetailProvider({ children }: { children: ReactNode }
             subscription={subscription}
             today={today}
             onAdvance={handleAdvance}
+            onConvertTrial={handleConvertTrial}
             onCancel={handleCancel}
             onLeadDays={handleLeadDays}
           />
@@ -268,23 +310,40 @@ function DetailHeader({
         : "happy";
 
   async function handleShare() {
+    const effectiveDate = window?.renewal ?? subscription.nextRenewal;
     const text = cancelled
-      ? `${subscription.name} is cancelled. One less charge.`
-      : `${subscription.name} renews ${formatDate(subscription.nextRenewal)}. Last day to cancel: ${
-          window ? formatDate(window.cancelBy) : "check Undue"
-        }.`;
+      ? `${subscription.name} is cancelled. One less charge. Track yours at ${SHARE_URL}`
+      : subscription.isTrial
+        ? `${subscription.name}'s trial ends ${formatDate(effectiveDate)}. Last day to cancel: ${
+            window ? formatDate(window.cancelBy) : "check Undue"
+          }. Track yours at ${SHARE_URL}`
+        : `${subscription.name} renews ${formatDate(effectiveDate)}. Last day to cancel: ${
+            window ? formatDate(window.cancelBy) : "check Undue"
+          }. Track yours at ${SHARE_URL}`;
     try {
-      if (navigator.share) {
-        await navigator.share({ title: subscription.name, text });
-        return;
+      const blob = await createShareImage({
+        name: subscription.name,
+        amount: getEffectiveAmount(subscription),
+        currency: subscription.currency,
+        cancelBy: window ? formatDate(window.cancelBy) : "Open Undue",
+        renewal: formatDate(window?.renewal ?? subscription.nextRenewal),
+        cancelled,
+        trial: subscription.isTrial,
+      });
+      const result = await shareOrDownloadImage(
+        blob,
+        shareFilename(subscription.name),
+        `${subscription.name} · Undue`,
+        text,
+      );
+      if (result === "downloaded") {
+        showToast("Share image downloaded", "success");
       }
-      await navigator.clipboard.writeText(text);
-      showToast("Deadline copied", "success");
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
         return;
       }
-      showToast("Could not share that just now.", "danger");
+      showToast("Could not create the share image.", "danger");
     }
   }
 
@@ -336,19 +395,25 @@ function DetailHeader({
               </span>
             ) : null}
           </div>
-          <h2 className="font-display text-[2.8rem] leading-[0.85] font-extrabold tracking-[-0.06em] text-balance">
+          <h2 className="font-display text-[clamp(2.1rem,10vw,2.8rem)] leading-[0.85] font-extrabold tracking-[-0.06em] text-balance">
             {subscription.name}
           </h2>
           <p className="text-sm font-semibold text-paper/55">
-            <MoneyText amount={subscription.amount} currency={subscription.currency} /> ·{" "}
-            {cycleShortLabel(subscription.cycle)}
+            <MoneyText
+              amount={getEffectiveAmount(subscription)}
+              currency={subscription.currency}
+            />{" "}
+            · {cycleShortLabel(subscription.cycle)}
+            {subscription.myShare !== null && subscription.myShare !== undefined
+              ? " · your share"
+              : ""}
           </p>
         </div>
         <Mascot
           variant={variant}
           color="var(--color-yellow)"
           size={104}
-          className="shrink-0 animate-float"
+          className="hidden shrink-0 animate-float min-[360px]:block"
         />
       </div>
     </header>
@@ -359,6 +424,7 @@ interface DetailBodyProps {
   subscription: Subscription;
   today: Date;
   onAdvance: (subscription: Subscription) => void;
+  onConvertTrial: (subscription: Subscription) => void;
   onCancel: (subscription: Subscription) => void;
   onLeadDays: (subscription: Subscription, leadDays: number) => void;
 }
@@ -367,6 +433,7 @@ function DetailBody({
   subscription,
   today,
   onAdvance,
+  onConvertTrial,
   onCancel,
   onLeadDays,
 }: DetailBodyProps) {
@@ -374,6 +441,9 @@ function DetailBody({
   const cancelWindow = computeCancelWindow(subscription, today);
   const cancelled = subscription.status === "cancelled";
   const change = priceChange(subscription.priceHistory);
+  const paymentProblem = hasPaymentProblem(subscription);
+  const trialEnded =
+    subscription.isTrial && cancelWindow.daysUntilRenewal < 0 && !cancelled;
   const accent = cancelled ? "bg-surface" : ACCENT_BY_URGENCY[cancelWindow.urgency];
   const reminderChoices = REMINDER_CHOICES.includes(
     subscription.leadDays as (typeof REMINDER_CHOICES)[number],
@@ -404,14 +474,18 @@ function DetailBody({
           cancelled ? "text-ink" : "text-ink-fixed",
         )}
       >
-        <div className="relative z-10 flex flex-col gap-1 pr-24">
+        <div className="relative z-10 flex flex-col gap-1 min-[360px]:pr-24">
           <span
             className={cn(
               "text-[10px] font-bold tracking-[0.14em] uppercase",
               cancelled ? "text-muted" : "text-ink-fixed/60",
             )}
           >
-            {cancelled ? "Status" : "Your last day to cancel"}
+            {cancelled
+              ? "Status"
+              : trialEnded
+                ? "Trial ended"
+                : "Your last day to cancel"}
           </span>
           <span className="font-display text-3xl leading-none font-extrabold tracking-[-0.05em]">
             {cancelled ? "Cancelled" : formatDate(cancelWindow.cancelBy)}
@@ -424,20 +498,32 @@ function DetailBody({
           >
             {cancelled
               ? "You stopped this one. Reactivate it if you keep the plan."
-              : cancelWindow.urgency === "today"
-                ? "That's today. Cancel before the next charge."
-                : cancelWindow.urgency === "missed"
-                  ? "The safe window has passed. Check the provider before the charge."
-                  : cancelWindow.urgency === "past"
-                    ? "This renewal date has passed. Mark it renewed to move to the next cycle."
-                    : `${formatCountdown(cancelWindow.daysUntilCancelBy)} left before it renews.`}
+              : trialEnded
+                ? "If you did not cancel, this plan is now paid. Confirm the conversion or cancel it."
+                : cancelWindow.urgency === "today"
+                  ? "That's today. Cancel before the next charge."
+                  : cancelWindow.urgency === "missed"
+                    ? "The safe window has passed. Check the provider before the charge."
+                    : cancelWindow.urgency === "past"
+                      ? "This renewal date has passed. Mark it renewed to move to the next cycle."
+                      : `${formatCountdown(cancelWindow.daysUntilCancelBy)} left before it renews.`}
           </span>
         </div>
         <Mascot
-          variant={cancelled ? "calm" : cancelWindow.urgency === "today" || cancelWindow.urgency === "urgent" || cancelWindow.urgency === "missed" ? "alarmed" : cancelWindow.urgency === "past" ? "sleepy" : "happy"}
+          variant={
+            cancelled
+              ? "calm"
+              : cancelWindow.urgency === "today" ||
+                  cancelWindow.urgency === "urgent" ||
+                  cancelWindow.urgency === "missed"
+                ? "alarmed"
+                : cancelWindow.urgency === "past"
+                  ? "sleepy"
+                  : "happy"
+          }
           color={cancelled ? "var(--color-lime)" : "var(--color-paper)"}
           size={92}
-          className="pointer-events-none absolute -right-1 -bottom-3"
+          className="pointer-events-none absolute -right-1 -bottom-3 hidden min-[360px]:block"
         />
         {!cancelled ? (
           <span className="relative z-10 mt-4 inline-flex items-center rounded-full bg-ink-fixed px-3 py-1.5 text-[11px] font-bold text-paper">
@@ -479,19 +565,45 @@ function DetailBody({
           className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-surface px-4 text-sm font-bold text-ink shadow-card transition-colors hover:bg-surface-soft"
         >
           <CalendarIcon width={18} height={18} />
-          Add reminder
+          Add to calendar
         </button>
         {!cancelled ? (
           <button
             type="button"
-            onClick={() => onAdvance(subscription)}
+            onClick={() =>
+              subscription.isTrial
+                ? onConvertTrial(subscription)
+                : onAdvance(subscription)
+            }
             className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-surface px-4 text-sm font-bold text-ink shadow-card transition-colors hover:bg-surface-soft"
           >
             <CheckIcon width={18} height={18} />
-            It renewed
+            {subscription.isTrial
+              ? trialEnded
+                ? "Confirm conversion"
+                : "It converted"
+              : "It renewed"}
           </button>
         ) : null}
       </div>
+
+      {trialEnded ? (
+        <div className="rounded-[1.5rem] border border-yellow/70 bg-yellow/25 p-4 text-sm font-semibold text-ink">
+          <p className="font-bold">This free trial has ended.</p>
+          <p className="mt-1 text-muted">
+            Confirm it converted to move the next charge forward, or cancel the plan
+            before the first paid renewal.
+          </p>
+        </div>
+      ) : null}
+
+      {paymentProblem ? (
+        <div className="rounded-[1.5rem] border border-urgent/30 bg-urgent-soft p-4 text-sm font-semibold text-urgent">
+          Last charge marked{" "}
+          {CHARGE_STATUS_LABELS[getChargeStatus(subscription)].toLowerCase()}. Check the
+          card or provider before the next renewal.
+        </div>
+      ) : null}
 
       {!cancelled ? (
         <section className="flex flex-col gap-3 rounded-[1.5rem] bg-surface p-4 shadow-card">
@@ -530,13 +642,36 @@ function DetailBody({
 
       <dl className="flex flex-col divide-y divide-line rounded-[1.5rem] bg-surface px-4 shadow-card">
         <DetailRow label="Charge">
-          <span className="inline-flex items-baseline gap-1.5">
-            <MoneyText amount={subscription.amount} currency={subscription.currency} />
-            <span className="text-muted">· {cycleShortLabel(subscription.cycle)}</span>
+          <span className="inline-flex flex-wrap items-baseline justify-end gap-1.5">
+            <MoneyText
+              amount={getEffectiveAmount(subscription)}
+              currency={subscription.currency}
+            />
+            <span className="text-muted">
+              · {cycleShortLabel(subscription.cycle)}
+              {subscription.myShare !== null && subscription.myShare !== undefined
+                ? " · your share"
+                : ""}
+            </span>
           </span>
         </DetailRow>
         <DetailRow label="Billing cycle">{cycleLabel(subscription.cycle)}</DetailRow>
-        <DetailRow label="Next charge">{formatDate(subscription.nextRenewal)}</DetailRow>
+        {subscription.isTrial ? (
+          <DetailRow label="Trial ends">
+            {formatDate(getTrialEnd(subscription) ?? subscription.nextRenewal)}
+          </DetailRow>
+        ) : null}
+        <DetailRow label={subscription.isTrial ? "First charge" : "Next charge"}>
+          {formatDate(
+            subscription.isTrial ? subscription.nextRenewal : cancelWindow.renewal,
+          )}
+        </DetailRow>
+        <DetailRow label="Paid via">
+          {PAID_VIA_LABELS[getPaidVia(subscription)]}
+        </DetailRow>
+        <DetailRow label="Last charge">
+          {CHARGE_STATUS_LABELS[getChargeStatus(subscription)]}
+        </DetailRow>
         <DetailRow label="Reminder window">
           {subscription.leadDays === 0
             ? "On the day"

@@ -168,7 +168,7 @@ export default function LandingPage() {
                 <ShieldIcon width={14} height={14} />
                 Private by design
               </span>
-              <h1 className="max-w-[12ch] font-display text-[3.6rem] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink text-balance sm:text-7xl lg:text-[5.2rem]">
+              <h1 className="max-w-[12ch] font-display text-[clamp(2.9rem,14vw,3.6rem)] leading-[0.84] font-extrabold tracking-[-0.07em] text-balance text-ink sm:text-7xl lg:text-[5.2rem]">
                 Know the last day to{" "}
                 <span className="relative inline-block">
                   cancel.
@@ -313,7 +313,7 @@ export default function LandingPage() {
                   <ShieldIcon width={14} height={14} />
                   Private by design
                 </span>
-                <h2 className="font-display text-[2.6rem] leading-[0.88] font-extrabold tracking-[-0.06em] text-balance sm:text-5xl">
+                <h2 className="font-display text-[clamp(2.2rem,10vw,2.6rem)] leading-[0.88] font-extrabold tracking-[-0.06em] text-balance sm:text-5xl">
                   No account. No server. No surprises.
                 </h2>
                 <p className="text-sm leading-relaxed font-medium text-ink-fixed/70">

@@ -94,13 +94,7 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
         bodyClassName="pb-2"
         footer={
           <div className="flex flex-col gap-2">
-            <Button
-              type="submit"
-              form={FORM_ID}
-              variant="primary"
-              size="lg"
-              block
-            >
+            <Button type="submit" form={FORM_ID} variant="primary" size="lg" block>
               {submitLabel}
             </Button>
             <button

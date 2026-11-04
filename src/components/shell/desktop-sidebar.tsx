@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mascot } from "@/components/brand/mascot";
+import { BrandLogo } from "@/components/brand/logo";
 import { useSubscriptionSheet } from "@/components/subscriptions/subscription-sheet";
 import { BrandWordmark } from "@/components/shell/brand";
 import {
@@ -34,11 +35,9 @@ export function DesktopSidebar() {
   const { openAdd } = useSubscriptionSheet();
 
   return (
-    <aside className="no-scrollbar fixed top-6 bottom-6 left-6 z-40 hidden w-[252px] flex-col overflow-y-auto rounded-[2.25rem] bg-dark p-5 text-paper lg:flex">
+    <aside className="fixed top-6 bottom-6 left-6 z-40 no-scrollbar hidden w-[252px] flex-col overflow-y-auto rounded-[2.25rem] bg-dark p-5 text-paper lg:flex">
       <Link href="/app" className="flex items-center gap-2.5 px-2">
-        <span className="flex size-9 items-center justify-center rounded-full bg-lime ring-2 ring-paper">
-          <Mascot variant="happy" color="var(--color-yellow)" size={30} />
-        </span>
+        <BrandLogo size={36} />
         <BrandWordmark className="text-2xl text-paper" />
       </Link>
 

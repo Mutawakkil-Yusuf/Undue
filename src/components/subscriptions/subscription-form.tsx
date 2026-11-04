@@ -27,12 +27,18 @@ import {
 import { formatDate } from "@/lib/domain/format";
 import {
   CATEGORIES,
+  CHARGE_STATUSES,
+  CHARGE_STATUS_LABELS,
   CURRENCY_CODES,
   CYCLE_UNITS,
+  PAID_VIA,
+  PAID_VIA_LABELS,
   getCategory,
   type CategoryId,
+  type ChargeStatus,
   type CurrencyCode,
   type CycleUnit,
+  type PaidVia,
   type Subscription,
 } from "@/lib/domain/schema";
 import type { SubscriptionInput } from "@/lib/db/subscriptions";
@@ -72,8 +78,16 @@ function defaultRenewalDate(): string {
 }
 
 function parseAmount(value: string): number {
-  const parsed = Number.parseFloat(value);
+  const parsed = Number.parseFloat(value.replace(/,/g, ""));
   return Number.isFinite(parsed) ? parsed : Number.NaN;
+}
+
+function safeFormatDate(iso: string): string {
+  try {
+    return formatDate(iso);
+  } catch {
+    return "the trial end date";
+  }
 }
 
 interface FormErrors {
@@ -119,10 +133,35 @@ export function SubscriptionForm({
   const [nextRenewal, setNextRenewal] = useState(
     initial?.nextRenewal ?? defaultRenewalDate(),
   );
+  const [billingDay, setBillingDay] = useState<number | undefined>(() => {
+    if (initial?.billingDay !== undefined) {
+      return initial.billingDay;
+    }
+    if (!initial?.nextRenewal) {
+      return undefined;
+    }
+    try {
+      return parseIsoDate(initial.nextRenewal).getUTCDate();
+    } catch {
+      return undefined;
+    }
+  });
   const [leadDays, setLeadDays] = useState(
     initial?.leadDays ?? seed?.defaultLeadDays ?? defaultLeadDays,
   );
   const [isTrial, setIsTrial] = useState(initial?.isTrial ?? false);
+  const [trialEndsAt, setTrialEndsAt] = useState(
+    initial?.trialEndsAt ?? (initial?.isTrial ? initial.nextRenewal : ""),
+  );
+  const [paidVia, setPaidVia] = useState<PaidVia>(initial?.paidVia ?? "card");
+  const [chargeStatus, setChargeStatus] = useState<ChargeStatus>(
+    initial?.chargeStatus ?? "unknown",
+  );
+  const [myShare, setMyShare] = useState(
+    initial?.myShare !== null && initial?.myShare !== undefined
+      ? String(initial.myShare)
+      : "",
+  );
   const [cancelUrl, setCancelUrl] = useState(
     initial?.cancelUrl ?? seed?.cancelUrl ?? null,
   );
@@ -141,13 +180,14 @@ export function SubscriptionForm({
     return entries;
   }, [catalogEntry]);
 
-  const results = useMemo(() => searchCatalog(query, pickerOpen ? 8 : 6), [query, pickerOpen]);
+  const results = useMemo(
+    () => searchCatalog(query, pickerOpen ? 8 : 6),
+    [query, pickerOpen],
+  );
 
   const todayValue = todayIso();
   const dateOptions = useMemo(() => {
-    const base = Array.from({ length: 10 }, (_, index) =>
-      addDays(civilDate(), index),
-    );
+    const base = Array.from({ length: 10 }, (_, index) => addDays(civilDate(), index));
     const hasSelected = base.some((date) => formatIsoDate(date) === nextRenewal);
     if (!hasSelected) {
       try {
@@ -160,15 +200,17 @@ export function SubscriptionForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextRenewal, todayValue]);
 
+  const effectiveRenewal = isTrial && trialEndsAt ? trialEndsAt : nextRenewal;
+
   const lastDayIso = useMemo(() => {
     try {
       return formatIsoDate(
-        addDays(parseIsoDate(nextRenewal), -Math.max(0, leadDays)),
+        addDays(parseIsoDate(effectiveRenewal), -Math.max(0, leadDays)),
       );
     } catch {
       return null;
     }
-  }, [nextRenewal, leadDays]);
+  }, [effectiveRenewal, leadDays]);
 
   const lastDayDays = lastDayIso
     ? diffInDays(civilDate(), parseIsoDate(lastDayIso))
@@ -217,6 +259,17 @@ export function SubscriptionForm({
     } catch {
       nextErrors.date = "Pick the next charge date.";
     }
+    if (isTrial) {
+      try {
+        parseIsoDate(trialEndsAt);
+      } catch {
+        nextErrors.date = "Pick the date this trial ends.";
+      }
+    }
+    const parsedShare = myShare.trim() ? parseAmount(myShare) : null;
+    if (parsedShare !== null && (!Number.isFinite(parsedShare) || parsedShare < 0)) {
+      nextErrors.amount = "Enter a valid share amount.";
+    }
 
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
@@ -237,8 +290,13 @@ export function SubscriptionForm({
         interval: Math.min(60, Math.max(1, Math.trunc(cycleInterval))),
       },
       nextRenewal,
+      ...(billingDay !== undefined ? { billingDay } : {}),
       leadDays: Math.min(60, Math.max(0, Math.trunc(leadDays))),
       isTrial,
+      trialEndsAt: isTrial ? trialEndsAt : null,
+      paidVia,
+      chargeStatus,
+      myShare: parsedShare,
       cancelUrl,
       notes: notes.trim().length > 0 ? notes.trim() : null,
     });
@@ -434,7 +492,7 @@ export function SubscriptionForm({
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-3">
           <span className="text-[11px] font-bold tracking-[0.13em] text-ink-fixed/55 uppercase">
-            Next charge
+            {isTrial ? "First charge" : "Next charge"}
           </span>
           <span className="text-[10px] font-semibold text-ink-fixed/45">
             {nextRenewal === todayValue ? "Today" : formatDate(nextRenewal)}
@@ -450,6 +508,7 @@ export function SubscriptionForm({
                 type="button"
                 onClick={() => {
                   setNextRenewal(iso);
+                  setBillingDay(date.getUTCDate());
                   setErrors((current) => ({ ...current, date: undefined }));
                 }}
                 aria-pressed={selected}
@@ -487,11 +546,16 @@ export function SubscriptionForm({
               onChange={(event) => {
                 if (event.target.value) {
                   setNextRenewal(event.target.value);
+                  try {
+                    setBillingDay(parseIsoDate(event.target.value).getUTCDate());
+                  } catch {
+                    // Keep the previous anchor if the browser supplied a bad value.
+                  }
                   setErrors((current) => ({ ...current, date: undefined }));
                 }
               }}
               className="absolute inset-0 cursor-pointer opacity-0"
-              aria-label="Pick next charge date"
+              aria-label={isTrial ? "Pick first charge date" : "Pick next charge date"}
             />
           </label>
         </div>
@@ -596,12 +660,8 @@ export function SubscriptionForm({
             </Field>
           ) : null}
 
-          <Field
-            label="Category"
-            htmlFor="subscription-category"
-            labelClassName="text-ink-fixed/55"
-          >
-            <div className="flex flex-wrap gap-2">
+          <Field label="Category" labelClassName="text-ink-fixed/55">
+            <div role="group" aria-label="Category" className="flex flex-wrap gap-2">
               {CATEGORIES.map((option) => {
                 const selected = category === option.id;
                 return (
@@ -619,9 +679,7 @@ export function SubscriptionForm({
                         : "bg-paper text-ink-fixed/55 hover:text-ink-fixed",
                     )}
                     style={
-                      selected
-                        ? { background: categoryColor(option.id) }
-                        : undefined
+                      selected ? { background: categoryColor(option.id) } : undefined
                     }
                   >
                     <CategoryIcon category={option.id} width={13} height={13} />
@@ -641,9 +699,7 @@ export function SubscriptionForm({
               <SelectInput
                 id="subscription-currency"
                 value={currency}
-                onChange={(event) =>
-                  setCurrency(event.target.value as CurrencyCode)
-                }
+                onChange={(event) => setCurrency(event.target.value as CurrencyCode)}
                 tone="fixed"
               >
                 {CURRENCY_CODES.map((code) => (
@@ -702,11 +758,108 @@ export function SubscriptionForm({
 
           <Switch
             checked={isTrial}
-            onChange={setIsTrial}
+            onChange={(checked) => {
+              setIsTrial(checked);
+              if (checked && !trialEndsAt) {
+                setTrialEndsAt(nextRenewal);
+              }
+              if (checked) {
+                try {
+                  setBillingDay(parseIsoDate(nextRenewal).getUTCDate());
+                } catch {
+                  // The date field will surface the error on submit.
+                }
+              }
+            }}
             tone="fixed"
             label="Free trial"
             description="Remind me before this converts to a paid plan."
           />
+
+          {isTrial ? (
+            <div className="flex flex-col gap-3">
+              <Field
+                label="Trial ends"
+                htmlFor="subscription-trial-end"
+                labelClassName="text-ink-fixed/55"
+              >
+                <TextInput
+                  id="subscription-trial-end"
+                  type="date"
+                  value={trialEndsAt}
+                  onChange={(event) => {
+                    if (event.target.value) {
+                      setTrialEndsAt(event.target.value);
+                      setErrors((current) => ({ ...current, date: undefined }));
+                    }
+                  }}
+                  tone="fixed"
+                />
+              </Field>
+              <p className="rounded-xl bg-paper/45 px-3 py-2 text-[11px] font-semibold text-ink-fixed/65">
+                Converts to {CURRENCY_SYMBOL[currency]}
+                {amount || "0"} on {safeFormatDate(trialEndsAt)}.
+              </p>
+            </div>
+          ) : null}
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field
+              label="Paid via"
+              htmlFor="subscription-paid-via"
+              labelClassName="text-ink-fixed/55"
+            >
+              <SelectInput
+                id="subscription-paid-via"
+                value={paidVia}
+                onChange={(event) => setPaidVia(event.target.value as PaidVia)}
+                tone="fixed"
+              >
+                {PAID_VIA.map((value) => (
+                  <option key={value} value={value}>
+                    {PAID_VIA_LABELS[value]}
+                  </option>
+                ))}
+              </SelectInput>
+            </Field>
+            <Field
+              label="Last charge"
+              htmlFor="subscription-charge-status"
+              labelClassName="text-ink-fixed/55"
+            >
+              <SelectInput
+                id="subscription-charge-status"
+                value={chargeStatus}
+                onChange={(event) => setChargeStatus(event.target.value as ChargeStatus)}
+                tone="fixed"
+              >
+                {CHARGE_STATUSES.map((value) => (
+                  <option key={value} value={value}>
+                    {CHARGE_STATUS_LABELS[value]}
+                  </option>
+                ))}
+              </SelectInput>
+            </Field>
+          </div>
+
+          <Field
+            label="My share (optional)"
+            htmlFor="subscription-share"
+            hint="For family or shared plans. Spend totals use this amount."
+            labelClassName="text-ink-fixed/55"
+          >
+            <TextInput
+              id="subscription-share"
+              inputMode="decimal"
+              value={myShare}
+              onChange={(event) => {
+                setMyShare(event.target.value);
+                setErrors((current) => ({ ...current, amount: undefined }));
+              }}
+              placeholder={`Total ${CURRENCY_SYMBOL[currency]}${amount || "0"}`}
+              tone="fixed"
+            />
+          </Field>
 
           {cancelUrl ? (
             <p className="text-[11px] font-medium text-ink-fixed/60">

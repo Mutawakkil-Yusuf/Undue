@@ -19,6 +19,14 @@ export function getCatalogEntry(id: string): CatalogEntry | undefined {
   return byId.get(id);
 }
 
+export function catalogReportUrl(entry: Pick<CatalogEntry, "id" | "name">): string {
+  const title = encodeURIComponent(`Wrong cancellation link: ${entry.name}`);
+  const body = encodeURIComponent(
+    `Service: ${entry.name}\nCatalog ID: ${entry.id}\n\nWhat is wrong?\n`,
+  );
+  return `https://github.com/Mutawakkil-Yusuf/Undue/issues/new?title=${title}&body=${body}`;
+}
+
 export function searchCatalog(query: string, limit = 40): CatalogEntry[] {
   const needle = normalize(query);
   if (needle.length === 0) {

@@ -3,12 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { computeCancelWindow } from "@/lib/domain/cancel-by";
-import {
-  addDays,
-  civilDate,
-  formatIsoDate,
-  parseIsoDate,
-} from "@/lib/domain/date";
+import { addDays, civilDate, formatIsoDate, parseIsoDate } from "@/lib/domain/date";
 import type { Subscription } from "@/lib/domain/schema";
 import type { UrgencyLevel } from "@/lib/domain/urgency";
 import { cn } from "@/lib/utils/cn";
@@ -62,7 +57,7 @@ export function WeekStrip({ subscriptions, today }: WeekStripProps) {
   const todayIsoValue = formatIsoDate(civilDate(today));
 
   return (
-    <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+    <div className="-mx-1 no-scrollbar flex gap-2 overflow-x-auto px-1 pb-1">
       {days.map((day) => {
         const iso = formatIsoDate(day);
         const isToday = iso === todayIsoValue;
@@ -97,11 +92,7 @@ export function WeekStrip({ subscriptions, today }: WeekStripProps) {
             <span
               className={cn(
                 "mt-0.5 size-1.5 rounded-full transition-colors",
-                urgency
-                  ? DOT_CLASSES[urgency]
-                  : isToday
-                    ? "bg-coral"
-                    : "bg-transparent",
+                urgency ? DOT_CLASSES[urgency] : isToday ? "bg-coral" : "bg-transparent",
               )}
             />
           </Link>

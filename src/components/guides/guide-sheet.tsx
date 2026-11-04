@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Mascot } from "@/components/brand/mascot";
 import { CategoryIcon, categoryColor } from "@/components/ui/category-icon";
 import { SwipeButton } from "@/components/ui/swipe-button";
 import {
   ArrowLeftIcon,
   ClockIcon,
+  ExternalLinkIcon,
   MobileIcon,
   PlusIcon,
 } from "@/components/ui/icons";
+import { catalogReportUrl } from "@/lib/catalog";
+import { formatMonthYear } from "@/lib/domain/format";
 import { getCategory } from "@/lib/domain/schema";
 import type { CatalogEntry } from "@/lib/catalog/schema";
 import { cn } from "@/lib/utils/cn";
@@ -47,23 +50,70 @@ interface GuideSheetProps {
 }
 
 export function GuideSheet({ entry, onClose, onTrack }: GuideSheetProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!entry) {
       return;
     }
+    const previouslyFocused = document.activeElement as HTMLElement | null;
     const original = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const panel = panelRef.current;
+    const focusableSelector =
+      "input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), a[href], [tabindex]:not([tabindex='-1'])";
+
+    function getFocusable(): HTMLElement[] {
+      return Array.from(
+        panel?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
+      ).filter((element) => element.getAttribute("aria-hidden") !== "true");
+    }
+
+    const focusTimer = window.setTimeout(() => getFocusable()[0]?.focus(), 60);
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        onClose();
+        event.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusable = getFocusable();
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) {
+        event.preventDefault();
+        return;
+      }
+
+      const active = document.activeElement;
+      if (event.shiftKey) {
+        if (active === first || !panel?.contains(active)) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !panel?.contains(active)) {
+        event.preventDefault();
+        first.focus();
       }
     }
+
     document.addEventListener("keydown", handleKeyDown);
     return () => {
+      window.clearTimeout(focusTimer);
       document.body.style.overflow = original;
       document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocused?.focus();
     };
-  }, [entry, onClose]);
+  }, [entry]);
 
   if (!entry) {
     return null;
@@ -84,6 +134,7 @@ export function GuideSheet({ entry, onClose, onTrack }: GuideSheetProps) {
         className="absolute inset-0 animate-fade-in bg-ink-fixed/50 backdrop-blur-[3px]"
       />
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label={`${entry.name} cancellation guide`}
@@ -111,7 +162,7 @@ export function GuideSheet({ entry, onClose, onTrack }: GuideSheetProps) {
 
           <div className="mt-6 flex items-end justify-between gap-4">
             <div className="flex min-w-0 flex-col gap-1">
-              <h1 className="font-display text-[2.6rem] leading-[0.86] font-extrabold tracking-[-0.06em] text-balance sm:text-5xl">
+              <h1 className="font-display text-[clamp(2.1rem,10vw,2.6rem)] leading-[0.86] font-extrabold tracking-[-0.06em] text-balance sm:text-5xl">
                 {entry.name}
               </h1>
               <p className="text-sm font-medium text-paper/55">
@@ -122,7 +173,7 @@ export function GuideSheet({ entry, onClose, onTrack }: GuideSheetProps) {
               variant="happy"
               color={mascotColor}
               size={88}
-              className="shrink-0 animate-float"
+              className="hidden shrink-0 animate-float min-[360px]:block"
             />
           </div>
         </header>
@@ -137,7 +188,11 @@ export function GuideSheet({ entry, onClose, onTrack }: GuideSheetProps) {
               Takes 2 min
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-paper/45 px-3.5 py-2 text-xs font-bold">
-              {inApp ? <MobileIcon width={15} height={15} /> : <CategoryIcon category={entry.category} width={15} height={15} />}
+              {inApp ? (
+                <MobileIcon width={15} height={15} />
+              ) : (
+                <CategoryIcon category={entry.category} width={15} height={15} />
+              )}
               {inApp ? "In app or USSD" : "On the web"}
             </span>
           </div>
@@ -192,9 +247,21 @@ export function GuideSheet({ entry, onClose, onTrack }: GuideSheetProps) {
                 No direct link saved — follow the steps above
               </div>
             )}
-            <p className="mt-3 text-center text-[11px] font-medium text-ink-fixed/55">
-              Guides are reference notes, not legal advice.
-            </p>
+            <div className="mt-3 flex flex-col items-center gap-1 text-center text-[11px] font-medium text-ink-fixed/55">
+              <span>
+                Last checked {formatMonthYear(entry.lastVerified)} · reference notes, not
+                legal advice.
+              </span>
+              <a
+                href={catalogReportUrl(entry)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-9 items-center gap-1 font-bold underline decoration-ink-fixed/30 underline-offset-2"
+              >
+                Report a wrong link
+                <ExternalLinkIcon width={13} height={13} />
+              </a>
+            </div>
           </div>
         </div>
       </div>

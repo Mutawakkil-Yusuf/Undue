@@ -115,7 +115,7 @@ export function SubscriptionExplorer({
           />
         </div>
 
-        <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+        <div className="-mx-1 no-scrollbar flex gap-2 overflow-x-auto px-1 pb-1">
           <FilterChip
             active={category === "all"}
             onClick={() => setCategory("all")}

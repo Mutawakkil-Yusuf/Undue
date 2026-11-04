@@ -46,6 +46,13 @@ describe("addMonths", () => {
   it("rolls over year boundaries", () => {
     expect(formatIsoDate(addMonths(parseIsoDate("2026-12-15"), 1))).toBe("2027-01-15");
   });
+
+  it("returns to the anchored billing day after a short month", () => {
+    const february = addMonths(parseIsoDate("2026-01-31"), 1, 31);
+    expect(formatIsoDate(february)).toBe("2026-02-28");
+    expect(formatIsoDate(addMonths(february, 1, 31))).toBe("2026-03-31");
+    expect(formatIsoDate(addMonths(february, 2, 31))).toBe("2026-04-30");
+  });
 });
 
 describe("diffInDays", () => {

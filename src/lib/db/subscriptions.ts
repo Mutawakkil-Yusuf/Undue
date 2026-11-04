@@ -1,13 +1,15 @@
 import { db } from "./client";
 import {
   subscriptionSchema,
+  type ChargeStatus,
   type Cycle,
   type CategoryId,
   type CurrencyCode,
+  type PaidVia,
   type Subscription,
   type SubscriptionStatus,
 } from "@/lib/domain/schema";
-import { todayIso } from "@/lib/domain/date";
+import { parseIsoDate, todayIso } from "@/lib/domain/date";
 import { recordPrice } from "@/lib/domain/price-history";
 import { nowIso } from "@/lib/utils/time";
 
@@ -19,16 +21,39 @@ export interface SubscriptionInput {
   currency: CurrencyCode;
   cycle: Cycle;
   nextRenewal: string;
+  billingDay?: number;
   leadDays: number;
   isTrial: boolean;
+  trialEndsAt?: string | null;
+  paidVia?: PaidVia;
+  chargeStatus?: ChargeStatus;
+  myShare?: number | null;
   cancelUrl: string | null;
   notes: string | null;
+}
+
+function billingDayFor(
+  input: Pick<SubscriptionInput, "nextRenewal" | "billingDay">,
+): number {
+  if (input.billingDay !== undefined) {
+    return Math.min(31, Math.max(1, Math.trunc(input.billingDay)));
+  }
+  try {
+    return parseIsoDate(input.nextRenewal).getUTCDate();
+  } catch {
+    return 1;
+  }
 }
 
 function buildSubscription(input: SubscriptionInput): Subscription {
   const timestamp = nowIso();
   return subscriptionSchema.parse({
     ...input,
+    billingDay: billingDayFor(input),
+    trialEndsAt: input.isTrial ? (input.trialEndsAt ?? input.nextRenewal) : null,
+    paidVia: input.paidVia ?? "card",
+    chargeStatus: input.chargeStatus ?? "unknown",
+    myShare: input.myShare ?? null,
     id: crypto.randomUUID(),
     priceHistory: recordPrice([], {
       at: todayIso(),
@@ -49,6 +74,16 @@ export async function createSubscription(
   return subscription;
 }
 
+export async function createSubscriptions(
+  inputs: readonly SubscriptionInput[],
+): Promise<Subscription[]> {
+  const subscriptions = inputs.map(buildSubscription);
+  await db.transaction("rw", db.subscriptions, async () => {
+    await db.subscriptions.bulkPut(subscriptions);
+  });
+  return subscriptions;
+}
+
 export async function updateSubscription(
   id: string,
   input: SubscriptionInput,
@@ -60,6 +95,11 @@ export async function updateSubscription(
   const next = subscriptionSchema.parse({
     ...existing,
     ...input,
+    billingDay: billingDayFor(input),
+    trialEndsAt: input.isTrial ? (input.trialEndsAt ?? input.nextRenewal) : null,
+    paidVia: input.paidVia ?? existing.paidVia ?? "card",
+    chargeStatus: input.chargeStatus ?? existing.chargeStatus ?? "unknown",
+    myShare: input.myShare ?? null,
     id,
     priceHistory: recordPrice(existing.priceHistory ?? [], {
       at: todayIso(),
@@ -80,6 +120,15 @@ export async function setSubscriptionStatus(
 
 export async function advanceRenewal(id: string, nextRenewal: string): Promise<void> {
   await db.subscriptions.update(id, { nextRenewal, updatedAt: nowIso() });
+}
+
+export async function convertTrial(id: string, nextRenewal: string): Promise<void> {
+  await db.subscriptions.update(id, {
+    isTrial: false,
+    trialEndsAt: null,
+    nextRenewal,
+    updatedAt: nowIso(),
+  });
 }
 
 export async function setSubscriptionLeadDays(

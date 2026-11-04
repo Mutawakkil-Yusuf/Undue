@@ -10,5 +10,6 @@ export const catalogEntrySchema = z.object({
   defaultLeadDays: z.number().int().min(0).max(60),
   cancelUrl: z.string().url().nullable(),
   cancelNote: z.string().min(1),
+  lastVerified: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
 export type CatalogEntry = z.infer<typeof catalogEntrySchema>;

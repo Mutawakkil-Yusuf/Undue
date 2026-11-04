@@ -45,11 +45,11 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
       href={item.href}
       aria-label={item.label}
       aria-current={active ? "page" : undefined}
-      className="group flex h-14 w-14 items-center justify-center rounded-full"
+      className="group flex h-14 w-11 items-center justify-center rounded-full min-[360px]:w-14"
     >
       <span
         className={cn(
-          "flex size-12 items-center justify-center rounded-full transition-all duration-300 ease-out",
+          "flex size-11 items-center justify-center rounded-full transition-all duration-300 ease-out min-[360px]:size-12",
           active
             ? "scale-100 bg-lime text-ink-fixed shadow-[0_0_0_4px_rgba(189,230,106,0.16)]"
             : "scale-95 text-paper/55 group-hover:bg-paper/10 group-hover:text-paper group-active:scale-90",
@@ -66,11 +66,8 @@ export function BottomNav() {
   const { openAdd } = useSubscriptionSheet();
 
   return (
-    <nav
-      aria-label="Primary"
-      className="fixed inset-x-0 bottom-nav z-40 px-4 lg:hidden"
-    >
-      <div className="mx-auto flex h-[74px] max-w-md items-center justify-between rounded-full bg-dark px-2.5 shadow-float ring-1 ring-paper/10">
+    <nav aria-label="Primary" className="fixed inset-x-0 bottom-nav z-40 px-4 lg:hidden">
+      <div className="mx-auto flex h-[72px] max-w-md items-center justify-between rounded-full bg-dark px-2 shadow-float ring-1 ring-paper/10 min-[360px]:h-[74px] min-[360px]:px-2.5">
         {LEFT_ITEMS.map((item) => (
           <NavLink key={item.href} item={item} pathname={pathname} />
         ))}
@@ -82,7 +79,7 @@ export function BottomNav() {
             openAdd();
           }}
           aria-label="Add subscription"
-          className="-mt-9 flex size-[62px] shrink-0 items-center justify-center rounded-full bg-coral text-ink-fixed ring-[6px] ring-bone transition-transform duration-200 ease-out active:scale-90"
+          className="-mt-9 flex size-[56px] shrink-0 items-center justify-center rounded-full bg-coral text-ink-fixed ring-[6px] ring-bone transition-transform duration-200 ease-out active:scale-90 min-[360px]:size-[62px]"
         >
           <PlusIcon width={30} height={30} strokeWidth={2.2} />
         </button>

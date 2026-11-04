@@ -42,16 +42,25 @@ export function addDays(date: Date, days: number): Date {
   return new Date(date.getTime() + days * MILLISECONDS_PER_DAY);
 }
 
-export function addMonths(date: Date, months: number): Date {
+export function daysInMonth(year: number, monthIndex: number): number {
+  return new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
+}
+
+/**
+ * Add calendar months while optionally preserving a billing-day anchor.
+ *
+ * Without an anchor, Jan 31 -> Feb 28 -> Mar 28 (the classic drift bug).
+ * With an anchor of 31, Jan 31 -> Feb 28 -> Mar 31, so a subscription billed
+ * on the 31st returns to the 31st whenever the month allows it.
+ */
+export function addMonths(date: Date, months: number, anchorDay?: number): Date {
   const targetMonthIndex = date.getUTCMonth() + months;
   const targetYear = date.getUTCFullYear() + Math.floor(targetMonthIndex / 12);
   const normalizedMonth = ((targetMonthIndex % 12) + 12) % 12;
 
-  const lastDayOfTargetMonth = new Date(
-    Date.UTC(targetYear, normalizedMonth + 1, 0),
-  ).getUTCDate();
-
-  const clampedDay = Math.min(date.getUTCDate(), lastDayOfTargetMonth);
+  const lastDayOfTargetMonth = daysInMonth(targetYear, normalizedMonth);
+  const day = anchorDay ?? date.getUTCDate();
+  const clampedDay = Math.min(Math.max(1, Math.trunc(day)), lastDayOfTargetMonth);
 
   return new Date(Date.UTC(targetYear, normalizedMonth, clampedDay));
 }

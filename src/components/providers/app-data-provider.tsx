@@ -11,6 +11,7 @@ import {
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/client";
 import { ensureSettings } from "@/lib/db/settings";
+import { requestPersistentStorage } from "@/lib/storage/persist";
 import { DEFAULT_FX_TO_NGN } from "@/lib/domain/currency";
 import type { AppSettings } from "@/lib/domain/schema";
 
@@ -19,6 +20,9 @@ const FALLBACK_SETTINGS: AppSettings = {
   displayCurrency: "NGN",
   fxToNgn: { ...DEFAULT_FX_TO_NGN },
   defaultLeadDays: 2,
+  notificationTime: "08:00",
+  lastBackupAt: null,
+  ratesUpdatedAt: null,
   updatedAt: "",
 };
 
@@ -35,6 +39,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let active = true;
+    void requestPersistentStorage();
     ensureSettings()
       .catch(() => undefined)
       .finally(() => {

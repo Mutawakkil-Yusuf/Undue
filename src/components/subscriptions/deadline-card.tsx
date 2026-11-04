@@ -6,6 +6,7 @@ import { ArrowRightIcon, ArrowUpRightIcon } from "@/components/ui/icons";
 import type { CancelWindow } from "@/lib/domain/cancel-by";
 import { formatCountdown, formatDate, formatDaysUntil } from "@/lib/domain/format";
 import type { Subscription } from "@/lib/domain/schema";
+import { getEffectiveAmount } from "@/lib/domain/subscription";
 import type { UrgencyLevel } from "@/lib/domain/urgency";
 import { cn } from "@/lib/utils/cn";
 
@@ -43,7 +44,10 @@ const MASCOT_COLOR: Record<DeadlineTone, string> = {
   cream: "var(--color-lime)",
 };
 
-function urgencyPill(window: CancelWindow): string {
+function urgencyPill(subscription: Subscription, window: CancelWindow): string {
+  if (subscription.isTrial && window.daysUntilRenewal < 0) {
+    return "Trial ended";
+  }
   switch (window.urgency) {
     case "today":
       return "Last day today";
@@ -58,7 +62,12 @@ function urgencyPill(window: CancelWindow): string {
   }
 }
 
-function chargeLine(window: CancelWindow): string {
+function chargeLine(subscription: Subscription, window: CancelWindow): string {
+  if (subscription.isTrial) {
+    return window.daysUntilRenewal < 0
+      ? "confirm conversion or cancel"
+      : `trial ends ${formatDaysUntil(window.daysUntilRenewal)}`;
+  }
   if (window.daysUntilRenewal < 0) {
     return "charge date has passed";
   }
@@ -84,7 +93,7 @@ export function DeadlineHero({ subscription, window, onSelect }: DeadlineHeroPro
       <div className="relative z-10 flex flex-col items-start gap-5">
         <div className="flex w-full items-start justify-between gap-4">
           <span className="inline-flex items-center rounded-full bg-ink-fixed px-3.5 py-1.5 text-xs font-bold tracking-wide text-paper">
-            {urgencyPill(window)}
+            {urgencyPill(subscription, window)}
           </span>
           <button
             type="button"
@@ -96,13 +105,16 @@ export function DeadlineHero({ subscription, window, onSelect }: DeadlineHeroPro
           </button>
         </div>
 
-        <div className="flex max-w-[78%] flex-col gap-2 sm:max-w-[68%]">
-          <h2 className="font-display text-[2.75rem] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance sm:text-5xl">
+        <div className="flex max-w-full flex-col gap-2 min-[360px]:max-w-[78%] sm:max-w-[68%]">
+          <h2 className="font-display text-[clamp(2.25rem,11vw,2.75rem)] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance sm:text-5xl">
             {subscription.name}
           </h2>
           <p className="text-sm font-semibold text-ink-fixed/75 sm:text-base">
-            <MoneyText amount={subscription.amount} currency={subscription.currency} /> ·{" "}
-            {chargeLine(window)}
+            <MoneyText
+              amount={getEffectiveAmount(subscription)}
+              currency={subscription.currency}
+            />{" "}
+            · {chargeLine(subscription, window)}
           </p>
         </div>
 
@@ -164,14 +176,16 @@ export function DeadlineCard({
 
       <div className="flex shrink-0 flex-col items-end gap-1.5">
         <span className="inline-flex items-center rounded-full bg-ink-fixed px-3 py-1.5 text-xs font-bold text-paper">
-          {window.urgency === "today"
-            ? "Today"
-            : window.urgency === "missed" || window.urgency === "past"
-              ? "Passed"
-              : formatCountdown(window.daysUntilCancelBy)}
+          {subscription.isTrial && window.daysUntilRenewal < 0
+            ? "Trial ended"
+            : window.urgency === "today"
+              ? "Today"
+              : window.urgency === "missed" || window.urgency === "past"
+                ? "Passed"
+                : formatCountdown(window.daysUntilCancelBy)}
         </span>
         <MoneyText
-          amount={subscription.amount}
+          amount={getEffectiveAmount(subscription)}
           currency={subscription.currency}
           className="text-sm font-bold"
         />

@@ -4,6 +4,7 @@ import { formatMoney } from "./currency";
 import { parseIsoDate, todayIso } from "./date";
 import { formatDate } from "./format";
 import type { Subscription } from "./schema";
+import { getEffectiveAmount } from "./subscription";
 
 const CRLF = "\r\n";
 const DEFAULT_HOUR = 9;
@@ -72,11 +73,11 @@ export function formatIcsUtcStamp(date: Date): string {
   )}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}Z`;
 }
 
-function buildDescription(subscription: Subscription): string {
+function buildDescription(subscription: Subscription, renewal: string): string {
   const lines = [
     `Last day to cancel ${subscription.name}.`,
-    `Next charge: ${formatDate(subscription.nextRenewal)} (${cycleLabel(subscription.cycle)}).`,
-    `Amount: ${formatMoney(subscription.amount, subscription.currency)}.`,
+    `${subscription.isTrial ? "Trial ends" : "Next charge"}: ${formatDate(renewal)} (${cycleLabel(subscription.cycle)}).`,
+    `Amount: ${formatMoney(getEffectiveAmount(subscription), subscription.currency)}.`,
   ];
 
   if (subscription.notes) {
@@ -97,7 +98,7 @@ export function buildReminderEvent(
   const cancelWindow = computeCancelWindow(subscription, now);
   const cancelByDate = parseIsoDate(cancelWindow.cancelBy);
   const summary = `Last day to cancel ${subscription.name}`;
-  const description = buildDescription(subscription);
+  const description = buildDescription(subscription, cancelWindow.renewal);
 
   const lines = [
     "BEGIN:VEVENT",

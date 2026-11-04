@@ -14,13 +14,18 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.URL
+      ? process.env.URL
+      : process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : "https://undue.netlify.app");
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ??
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000"),
-  ),
+  metadataBase: new URL(siteUrl),
   applicationName: "Undue",
   title: {
     default: "Undue: know the last day to cancel",
@@ -30,16 +35,26 @@ export const metadata: Metadata = {
     "Track every subscription and see the exact last day to cancel before you are charged. Private by design: nothing leaves your device.",
   openGraph: {
     type: "website",
+    url: siteUrl,
     siteName: "Undue",
     title: "Undue: know the last day to cancel",
     description:
       "Track every subscription and see the exact last day to cancel before you are charged. Private by design.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Undue: know the last day to cancel",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Undue: know the last day to cancel",
     description:
       "Track every subscription and see the exact last day to cancel before you are charged.",
+    images: ["/opengraph-image"],
   },
   appleWebApp: {
     capable: true,

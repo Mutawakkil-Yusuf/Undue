@@ -82,7 +82,7 @@ export default function InsightsPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium text-muted">The full picture</span>
-            <h1 className="font-display text-[3.2rem] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl">
+            <h1 className="font-display text-[clamp(2.7rem,13vw,3.2rem)] leading-[0.84] font-extrabold tracking-[-0.07em] text-ink sm:text-6xl">
               Insights
             </h1>
           </div>
@@ -105,7 +105,10 @@ export default function InsightsPage() {
       </header>
 
       {subscriptions === undefined || today === null ? (
-        <div className="h-72 animate-pulse rounded-[2rem] bg-surface/70" aria-hidden="true" />
+        <div
+          className="h-72 animate-pulse rounded-[2rem] bg-surface/70"
+          aria-hidden="true"
+        />
       ) : active.length === 0 ? (
         <div className="flex flex-col items-center gap-5 rounded-[2rem] bg-surface p-10 text-center shadow-card">
           <div className="flex size-40 items-center justify-center rounded-full bg-lime">
@@ -134,7 +137,7 @@ export default function InsightsPage() {
                 currency={currency}
                 rounded
                 animate
-                className="max-w-full break-words font-display text-[clamp(2.5rem,13vw,3rem)] leading-none font-extrabold tracking-[-0.07em] sm:text-7xl"
+                className="max-w-full font-display text-[clamp(2.5rem,13vw,3rem)] leading-none font-extrabold tracking-[-0.07em] break-words sm:text-7xl"
               />
               <span className="text-sm font-semibold text-ink-fixed/70">
                 across {active.length} active {active.length === 1 ? "plan" : "plans"}
@@ -150,7 +153,11 @@ export default function InsightsPage() {
 
           <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
             <div className="flex flex-col gap-6">
-              <InsightsSection categories={categories} months={months} currency={currency} />
+              <InsightsSection
+                categories={categories}
+                months={months}
+                currency={currency}
+              />
             </div>
 
             <div className="flex flex-col gap-6">
@@ -237,12 +244,20 @@ export default function InsightsPage() {
                               {subscription.name}
                             </span>
                             <span className="block text-[11px] font-medium text-ink-fixed/60">
-                              since {formatDate(subscription.priceHistory[0]?.at ?? subscription.nextRenewal)}
+                              since{" "}
+                              {formatDate(
+                                subscription.priceHistory[0]?.at ??
+                                  subscription.nextRenewal,
+                              )}
                             </span>
                           </span>
                         </span>
                         <span className="shrink-0 rounded-full bg-ink-fixed px-2.5 py-1 text-[11px] font-bold text-paper">
-                          +<MoneyText amount={change.delta} currency={subscription.currency} />
+                          +
+                          <MoneyText
+                            amount={change.delta}
+                            currency={subscription.currency}
+                          />
                         </span>
                       </li>
                     ))}

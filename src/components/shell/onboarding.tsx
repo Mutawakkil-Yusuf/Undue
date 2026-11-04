@@ -199,11 +199,7 @@ export function Onboarding() {
           <p
             className={cn(
               "text-center text-[11px]",
-              onDark
-                ? "text-paper/40"
-                : onPaper
-                  ? "text-muted"
-                  : "text-ink-fixed/45",
+              onDark ? "text-paper/40" : onPaper ? "text-muted" : "text-ink-fixed/45",
             )}
           >
             Free forever · No account · Nothing leaves this device
@@ -234,8 +230,19 @@ function IntroSlide() {
           meta="17 days left"
           className="absolute bottom-0 left-4 rotate-3 bg-lime"
         />
-        <div className="relative flex size-48 items-center justify-center rounded-full bg-paper ring-[6px] ring-paper/15">
-          <Mascot variant="happy" color="var(--color-lime)" size={156} />
+        <div className="relative flex size-40 items-center justify-center rounded-full bg-paper ring-[6px] ring-paper/15 min-[360px]:size-48">
+          <Mascot
+            variant="happy"
+            color="var(--color-lime)"
+            size={132}
+            className="min-[360px]:hidden"
+          />
+          <Mascot
+            variant="happy"
+            color="var(--color-lime)"
+            size={156}
+            className="hidden min-[360px]:block"
+          />
         </div>
       </div>
 
@@ -264,7 +271,7 @@ function FloatingCard({
   return (
     <span
       className={cn(
-        "flex min-w-[128px] flex-col gap-0.5 rounded-2xl px-4 py-3 text-left text-ink-fixed shadow-float ring-2 ring-ink-fixed/10",
+        "flex min-w-[112px] flex-col gap-0.5 rounded-2xl px-3 py-2.5 text-left text-ink-fixed shadow-float ring-2 ring-ink-fixed/10 min-[360px]:min-w-[128px] min-[360px]:px-4 min-[360px]:py-3",
         className,
       )}
     >
@@ -302,8 +309,8 @@ function NudgeSlide() {
           One nudge, on the right day.
         </h1>
         <p className="mx-auto max-w-xs text-sm leading-relaxed text-muted">
-          Undue only pings you when a cancel window is about to close. No noise, no daily
-          digest.
+          Undue only pings you when a cancel window is about to close. You can also export
+          deadlines to your calendar, so reminders work even when Undue is closed.
         </p>
       </div>
 

@@ -1,13 +1,7 @@
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils/cn";
 
-export type MascotVariant =
-  | "happy"
-  | "calm"
-  | "alarmed"
-  | "sleepy"
-  | "party"
-  | "wink";
+export type MascotVariant = "happy" | "calm" | "alarmed" | "sleepy" | "party" | "wink";
 
 interface MascotProps {
   variant?: MascotVariant;
@@ -47,18 +41,8 @@ export function Mascot({
       style={style}
     >
       {/* antennae */}
-      <path
-        d="M46 34V17"
-        stroke={INK}
-        strokeWidth="7"
-        strokeLinecap="round"
-      />
-      <path
-        d="M94 34V17"
-        stroke={INK}
-        strokeWidth="7"
-        strokeLinecap="round"
-      />
+      <path d="M46 34V17" stroke={INK} strokeWidth="7" strokeLinecap="round" />
+      <path d="M94 34V17" stroke={INK} strokeWidth="7" strokeLinecap="round" />
 
       {variant === "party" ? (
         <g>
@@ -99,8 +83,22 @@ export function Mascot({
         </g>
       ) : variant === "alarmed" ? (
         <g>
-          <circle cx="52" cy="69" r="12" fill="var(--color-paper)" stroke={INK} strokeWidth="4" />
-          <circle cx="88" cy="69" r="12" fill="var(--color-paper)" stroke={INK} strokeWidth="4" />
+          <circle
+            cx="52"
+            cy="69"
+            r="12"
+            fill="var(--color-paper)"
+            stroke={INK}
+            strokeWidth="4"
+          />
+          <circle
+            cx="88"
+            cy="69"
+            r="12"
+            fill="var(--color-paper)"
+            stroke={INK}
+            strokeWidth="4"
+          />
           <circle cx="53" cy="70" r="5.5" fill={INK} />
           <circle cx="89" cy="70" r="5.5" fill={INK} />
           <circle cx="55" cy="67" r="1.8" fill="var(--color-paper)" />
@@ -153,12 +151,7 @@ export function Mascot({
           fill="var(--color-coral)"
         />
       ) : (
-        <path
-          d="M56 90q14 12 28 0"
-          stroke={INK}
-          strokeWidth="6"
-          strokeLinecap="round"
-        />
+        <path d="M56 90q14 12 28 0" stroke={INK} strokeWidth="6" strokeLinecap="round" />
       )}
 
       {/* cheeks */}
@@ -202,16 +195,37 @@ export function Confetti({ className }: { className?: string }) {
   const pieces = [
     { left: "6%", delay: "0s", drift: "-20px", color: "var(--color-coral)", size: 10 },
     { left: "16%", delay: "1.1s", drift: "18px", color: "var(--color-sky)", size: 8 },
-    { left: "28%", delay: "0.4s", drift: "-14px", color: "var(--color-yellow)", size: 12 },
-    { left: "42%", delay: "1.6s", drift: "26px", color: "var(--color-lavender)", size: 9 },
+    {
+      left: "28%",
+      delay: "0.4s",
+      drift: "-14px",
+      color: "var(--color-yellow)",
+      size: 12,
+    },
+    {
+      left: "42%",
+      delay: "1.6s",
+      drift: "26px",
+      color: "var(--color-lavender)",
+      size: 9,
+    },
     { left: "56%", delay: "0.2s", drift: "-24px", color: "var(--color-coral)", size: 11 },
     { left: "68%", delay: "1.3s", drift: "16px", color: "var(--color-yellow)", size: 8 },
     { left: "80%", delay: "0.7s", drift: "-18px", color: "var(--color-sky)", size: 12 },
-    { left: "92%", delay: "1.8s", drift: "22px", color: "var(--color-lavender)", size: 9 },
+    {
+      left: "92%",
+      delay: "1.8s",
+      drift: "22px",
+      color: "var(--color-lavender)",
+      size: 9,
+    },
   ] as const;
 
   return (
-    <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}>
+    <div
+      aria-hidden="true"
+      className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
+    >
       {pieces.map((piece, index) => (
         <span
           key={index}

@@ -4,16 +4,16 @@ import type { ReactNode } from "react";
 import { AppDataProvider } from "@/components/providers/app-data-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ToastProvider } from "@/components/providers/toast-provider";
-import {
-  SubscriptionSheetProvider,
-} from "@/components/subscriptions/subscription-sheet";
+import { SubscriptionSheetProvider } from "@/components/subscriptions/subscription-sheet";
 import { SubscriptionDetailProvider } from "@/components/subscriptions/subscription-detail-sheet";
 import { BottomNav } from "./bottom-nav";
 import { CelebrationProvider } from "./celebration";
 import { DesktopSidebar } from "./desktop-sidebar";
+import { NotificationScheduler } from "./notification-scheduler";
 import { Onboarding } from "./onboarding";
 import { ReminderNotifier } from "./reminder-notifier";
 import { ServiceWorkerRegistrar } from "./service-worker-registrar";
+import { StorageHealth } from "./storage-health";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -32,7 +32,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <BottomNav />
                 <Onboarding />
                 <ReminderNotifier />
+                <NotificationScheduler />
                 <ServiceWorkerRegistrar />
+                <StorageHealth />
               </SubscriptionDetailProvider>
             </SubscriptionSheetProvider>
           </CelebrationProvider>
