@@ -209,7 +209,7 @@ export default function GuidesPage() {
             </button>
           </div>
 
-          <div className="-mx-1 no-scrollbar flex gap-3 overflow-x-auto px-1 pb-2 sm:grid sm:grid-cols-6 sm:gap-4 lg:grid-cols-8">
+          <div className="-mx-1 no-scrollbar flex gap-3 overflow-x-auto overscroll-x-contain px-1 pb-2 sm:grid sm:grid-cols-6 sm:gap-4 lg:grid-cols-8">
             {CATEGORIES.map((option) => {
               const active = category === option.id;
               return (

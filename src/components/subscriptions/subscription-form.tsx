@@ -322,7 +322,7 @@ export function SubscriptionForm({
   return (
     <form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div className="flex flex-col gap-3">
-        <div className="no-scrollbar flex gap-2.5 overflow-x-auto pb-1">
+        <div className="no-scrollbar flex gap-2.5 overflow-x-auto overscroll-x-contain pb-1">
           {quickEntries.map((entry) => {
             const selected = catalogEntry?.id === entry.id;
             return (
@@ -517,7 +517,7 @@ export function SubscriptionForm({
             {nextRenewal === todayValue ? "Today" : formatDate(nextRenewal)}
           </span>
         </div>
-        <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+        <div className="no-scrollbar flex gap-2 overflow-x-auto overscroll-x-contain pb-1">
           {dateOptions.map((date) => {
             const iso = formatIsoDate(date);
             const selected = iso === nextRenewal;

@@ -278,7 +278,7 @@ export function Sheet({
 
         <div
           className={cn(
-            "flex min-h-0 flex-1 overflow-y-auto overscroll-contain",
+            "flex min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain",
             padded ? "px-5 pb-5 sm:px-7" : "p-0",
             bodyClassName,
           )}

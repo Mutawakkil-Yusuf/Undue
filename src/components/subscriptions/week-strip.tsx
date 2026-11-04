@@ -57,7 +57,7 @@ export function WeekStrip({ subscriptions, today }: WeekStripProps) {
   const todayIsoValue = formatIsoDate(civilDate(today));
 
   return (
-    <div className="-mx-1 no-scrollbar flex gap-2 overflow-x-auto px-1 pb-1">
+    <div className="-mx-1 no-scrollbar flex gap-2 overflow-x-auto overscroll-x-contain px-1 pb-1">
       {days.map((day) => {
         const iso = formatIsoDate(day);
         const isToday = iso === todayIsoValue;
