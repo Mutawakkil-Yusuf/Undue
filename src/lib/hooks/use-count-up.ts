@@ -9,9 +9,9 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-export function useCountUp(target: number, duration = 650): number {
-  const [value, setValue] = useState(target);
-  const previous = useRef(target);
+export function useCountUp(target: number, duration = 650, fromZero = false): number {
+  const [value, setValue] = useState(fromZero ? 0 : target);
+  const previous = useRef(fromZero ? 0 : target);
   const frame = useRef<number | undefined>(undefined);
 
   useEffect(() => {

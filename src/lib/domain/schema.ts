@@ -103,6 +103,8 @@ export const PAID_VIA_LABELS: Record<PaidVia, string> = {
   other: "Other",
 };
 
+export const MAX_SHARE_COUNT = 12;
+
 export const DECISIONS = ["keep", "unsure", "cut"] as const;
 export const decisionSchema = z.enum(DECISIONS);
 export type Decision = z.infer<typeof decisionSchema>;
@@ -147,6 +149,9 @@ export const subscriptionSchema = z.object({
   chargeStatus: chargeStatusSchema.optional(),
   decision: decisionSchema.optional().nullable(),
   decisionUpdatedAt: z.string().min(1).nullable().optional(),
+  /** Number of people splitting the bill, including the user. Defaults to 1. */
+  shareCount: z.number().int().min(1).max(MAX_SHARE_COUNT).optional(),
+  /** Absolute amount the user is responsible for, when it differs from the bill. */
   myShare: z.number().nonnegative().finite().nullable().optional(),
   cancelUrl: z.string().url().nullable(),
   notes: z.string().max(1000).nullable(),

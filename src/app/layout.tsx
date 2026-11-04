@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -14,47 +15,30 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.URL
-      ? process.env.URL
-      : process.env.NODE_ENV === "development"
-        ? "http://localhost:3000"
-        : "https://undue.netlify.app");
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   applicationName: "Undue",
   title: {
-    default: "Undue: know the last day to cancel",
+    default: "Undue: know when to cancel, before you’re charged",
     template: "%s · Undue",
   },
   description:
-    "Track every subscription and see the exact last day to cancel before you are charged. Private by design: nothing leaves your device.",
+    "Undue tracks the last day to cancel each subscription so you can act before it renews. No account, no bank connection. Your data stays on your device.",
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    url: siteUrl,
+    url: "/",
     siteName: "Undue",
-    title: "Undue: know the last day to cancel",
+    locale: "en_NG",
+    title: "Undue: know when to cancel, before you’re charged",
     description:
-      "Track every subscription and see the exact last day to cancel before you are charged. Private by design.",
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "Undue: know the last day to cancel",
-      },
-    ],
+      "Track the last day to cancel each subscription so you can act before it renews. No account, no bank connection.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Undue: know the last day to cancel",
+    title: "Undue: know when to cancel, before you’re charged",
     description:
-      "Track every subscription and see the exact last day to cancel before you are charged.",
-    images: ["/opengraph-image"],
+      "Track the last day to cancel each subscription so you can act before it renews.",
   },
   appleWebApp: {
     capable: true,

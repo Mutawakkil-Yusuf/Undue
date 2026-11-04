@@ -1,8 +1,8 @@
 import type { CurrencyCode } from "./schema";
 
-export type FxToNgn = Readonly<Record<CurrencyCode, number>>;
+export type FxToNgn = Readonly<Partial<Record<CurrencyCode, number>>>;
 
-export const DEFAULT_FX_TO_NGN: FxToNgn = {
+export const DEFAULT_FX_TO_NGN: Readonly<Record<CurrencyCode, number>> = {
   NGN: 1,
   USD: 1600,
   GBP: 2000,
@@ -40,12 +40,20 @@ const LOCALES: Record<CurrencyCode, string> = {
   MXN: "es-MX",
 };
 
+/** Naira per unit of `code`, falling back to the built-in starting rate. */
+export function rateOf(fxToNgn: FxToNgn, code: CurrencyCode): number {
+  if (code === "NGN") {
+    return 1;
+  }
+  return fxToNgn[code] ?? DEFAULT_FX_TO_NGN[code];
+}
+
 export function convertToNgn(
   amount: number,
   from: CurrencyCode,
   fxToNgn: FxToNgn,
 ): number {
-  return amount * fxToNgn[from];
+  return amount * rateOf(fxToNgn, from);
 }
 
 export function convert(
@@ -57,7 +65,7 @@ export function convert(
   if (from === to) {
     return amount;
   }
-  return convertToNgn(amount, from, fxToNgn) / fxToNgn[to];
+  return convertToNgn(amount, from, fxToNgn) / rateOf(fxToNgn, to);
 }
 
 const formatterCache = new Map<string, Intl.NumberFormat>();

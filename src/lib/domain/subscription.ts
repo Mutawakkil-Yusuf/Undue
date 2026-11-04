@@ -15,9 +15,14 @@ export function getBillingDay(
 }
 
 export function getEffectiveAmount(
-  subscription: Pick<Subscription, "amount" | "myShare">,
+  subscription: Pick<Subscription, "amount" | "myShare" | "shareCount">,
 ): number {
-  return subscription.myShare ?? subscription.amount;
+  // An explicit absolute share wins over the split ratio when both are set.
+  if (subscription.myShare != null) {
+    return subscription.myShare;
+  }
+  const people = subscription.shareCount ?? 1;
+  return people > 1 ? subscription.amount / people : subscription.amount;
 }
 
 export function getTrialEnd(subscription: {

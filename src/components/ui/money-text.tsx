@@ -11,6 +11,8 @@ interface MoneyTextProps {
   className?: string;
   rounded?: boolean;
   animate?: boolean;
+  /** Start the count-up from zero instead of the current value. */
+  countFromZero?: boolean;
 }
 
 export function MoneyText({
@@ -19,8 +21,9 @@ export function MoneyText({
   className,
   rounded = false,
   animate = false,
+  countFromZero = false,
 }: MoneyTextProps) {
-  const counted = useCountUp(amount);
+  const counted = useCountUp(amount, 650, countFromZero);
   const value = animate ? counted : amount;
   const formatted = rounded
     ? formatMoney(Math.round(value), currency)

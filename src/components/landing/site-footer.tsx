@@ -27,7 +27,7 @@ export function SiteFooter() {
               <BrandWordmark className="text-2xl text-paper" />
             </div>
             <p className="max-w-xs text-sm leading-relaxed text-paper/55">
-              Pay what&apos;s due. Nothing undue.
+              Know when to cancel. Before you’re charged.
             </p>
           </div>
 
@@ -42,11 +42,11 @@ export function SiteFooter() {
                   href={href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="inline-flex items-center gap-2 rounded-full bg-paper/10 px-3.5 py-2 text-sm text-paper transition-colors hover:bg-paper/15"
+                  className="inline-flex max-w-full min-w-0 items-center gap-2 rounded-full bg-paper/10 px-3.5 py-2 text-sm text-paper transition-colors hover:bg-paper/15"
                 >
                   <Icon width={16} height={16} />
                   <span className="text-paper/50">{label}</span>
-                  <span className="font-semibold">@{handle}</span>
+                  <span className="min-w-0 truncate font-semibold">@{handle}</span>
                 </a>
               ))}
             </div>

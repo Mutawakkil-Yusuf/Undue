@@ -10,6 +10,12 @@ interface MascotProps {
   className?: string;
   title?: string | undefined;
   style?: CSSProperties;
+  /**
+   * Turns on the idle animations (blinking, antennae, mood details). Off by
+   * default so small avatars in lists stay still; see AnimatedMascot for the
+   * version that also reacts to touch.
+   */
+  animated?: boolean;
 }
 
 const INK = "#191713";
@@ -23,8 +29,14 @@ export function Mascot({
   className,
   title,
   style,
+  animated = false,
 }: MascotProps) {
   const labelled = title !== undefined;
+  // Different sizes start at different points in the blink cycle, so several
+  // mascots on one screen do not blink in lockstep.
+  const svgStyle = animated
+    ? ({ ...style, "--mascot-delay": `-${((size * 7) % 50) / 10}s` } as CSSProperties)
+    : style;
 
   return (
     <svg
@@ -37,130 +49,156 @@ export function Mascot({
       aria-label={title}
       aria-hidden={labelled ? undefined : true}
       focusable="false"
-      className={cn("overflow-visible", className)}
-      style={style}
+      className={cn("overflow-visible", animated && "mascot-animated", className)}
+      style={svgStyle}
     >
-      {/* antennae */}
-      <path d="M46 34V17" stroke={INK} strokeWidth="7" strokeLinecap="round" />
-      <path d="M94 34V17" stroke={INK} strokeWidth="7" strokeLinecap="round" />
+      <g className={cn("mascot-body", `mascot-${variant}`)}>
+        {/* antennae */}
+        <path
+          className="mascot-antenna mascot-antenna-l"
+          d="M46 34V17"
+          stroke={INK}
+          strokeWidth="7"
+          strokeLinecap="round"
+        />
+        <path
+          className="mascot-antenna mascot-antenna-r"
+          d="M94 34V17"
+          stroke={INK}
+          strokeWidth="7"
+          strokeLinecap="round"
+        />
 
-      {variant === "party" ? (
-        <g>
-          <path
-            d="M76 33 92 2l17 31Z"
-            fill="var(--color-coral)"
-            stroke={INK}
-            strokeWidth="6"
-            strokeLinejoin="round"
-          />
-          <circle
-            cx="92"
-            cy="3"
-            r="7"
-            fill="var(--color-yellow)"
-            stroke={INK}
-            strokeWidth="5"
-          />
-        </g>
-      ) : null}
-
-      {/* head */}
-      <rect
-        x="23"
-        y="32"
-        width="94"
-        height="86"
-        rx="31"
-        fill={color}
-        stroke={INK}
-        strokeWidth="7"
-      />
-
-      {variant === "sleepy" ? (
-        <g stroke={INK} strokeWidth="6" strokeLinecap="round">
-          <path d="M43 69q9 8 18 0" />
-          <path d="M79 69q9 8 18 0" />
-        </g>
-      ) : variant === "alarmed" ? (
-        <g>
-          <circle
-            cx="52"
-            cy="69"
-            r="12"
-            fill="var(--color-paper)"
-            stroke={INK}
-            strokeWidth="4"
-          />
-          <circle
-            cx="88"
-            cy="69"
-            r="12"
-            fill="var(--color-paper)"
-            stroke={INK}
-            strokeWidth="4"
-          />
-          <circle cx="53" cy="70" r="5.5" fill={INK} />
-          <circle cx="89" cy="70" r="5.5" fill={INK} />
-          <circle cx="55" cy="67" r="1.8" fill="var(--color-paper)" />
-          <circle cx="91" cy="67" r="1.8" fill="var(--color-paper)" />
-          <path
-            d="M44 53q8-5 16-1M80 52q8-4 16 1"
-            stroke={INK}
-            strokeWidth="4.5"
-            strokeLinecap="round"
-          />
-          <ellipse cx="70" cy="97" rx="8" ry="10" fill={INK} />
-          <path
-            d="M116 58c0 6-8 14-8 14s-8-8-8-14a8 8 0 1 1 16 0Z"
-            fill={SWEAT}
-            stroke={INK}
-            strokeWidth="3.5"
-            strokeLinejoin="round"
-          />
-        </g>
-      ) : (
-        <g>
-          {variant === "wink" ? (
+        {variant === "party" ? (
+          <g className="mascot-hat">
             <path
-              d="M43 69q9 8 18 0"
+              d="M76 33 92 2l17 31Z"
+              fill="var(--color-coral)"
               stroke={INK}
               strokeWidth="6"
+              strokeLinejoin="round"
+            />
+            <circle
+              cx="92"
+              cy="3"
+              r="7"
+              fill="var(--color-yellow)"
+              stroke={INK}
+              strokeWidth="5"
+            />
+          </g>
+        ) : null}
+
+        {/* head */}
+        <rect
+          x="23"
+          y="32"
+          width="94"
+          height="86"
+          rx="31"
+          fill={color}
+          stroke={INK}
+          strokeWidth="7"
+        />
+
+        {variant === "sleepy" ? (
+          <g stroke={INK} strokeWidth="6" strokeLinecap="round">
+            <path d="M43 69q9 8 18 0" />
+            <path d="M79 69q9 8 18 0" />
+          </g>
+        ) : variant === "alarmed" ? (
+          <g>
+            <circle
+              cx="52"
+              cy="69"
+              r="12"
+              fill="var(--color-paper)"
+              stroke={INK}
+              strokeWidth="4"
+            />
+            <circle
+              cx="88"
+              cy="69"
+              r="12"
+              fill="var(--color-paper)"
+              stroke={INK}
+              strokeWidth="4"
+            />
+            <g className="mascot-look">
+              <circle cx="53" cy="70" r="5.5" fill={INK} />
+              <circle cx="89" cy="70" r="5.5" fill={INK} />
+              <circle cx="55" cy="67" r="1.8" fill="var(--color-paper)" />
+              <circle cx="91" cy="67" r="1.8" fill="var(--color-paper)" />
+            </g>
+            <path
+              d="M44 53q8-5 16-1M80 52q8-4 16 1"
+              stroke={INK}
+              strokeWidth="4.5"
               strokeLinecap="round"
             />
-          ) : (
-            <g>
-              <ellipse cx="52" cy="68" rx="7" ry="9" fill={INK} />
-              <circle cx="54.5" cy="64.5" r="2.6" fill="var(--color-paper)" />
-            </g>
-          )}
-          <g>
-            <ellipse cx="88" cy="68" rx="7" ry="9" fill={INK} />
-            <circle cx="90.5" cy="64.5" r="2.6" fill="var(--color-paper)" />
+            <ellipse cx="70" cy="97" rx="8" ry="10" fill={INK} />
+            <path
+              className="mascot-sweat"
+              d="M116 58c0 6-8 14-8 14s-8-8-8-14a8 8 0 1 1 16 0Z"
+              fill={SWEAT}
+              stroke={INK}
+              strokeWidth="3.5"
+              strokeLinejoin="round"
+            />
           </g>
-        </g>
-      )}
+        ) : (
+          <g>
+            {variant === "wink" ? (
+              <path
+                d="M43 69q9 8 18 0"
+                stroke={INK}
+                strokeWidth="6"
+                strokeLinecap="round"
+              />
+            ) : (
+              <g className="mascot-look">
+                <g className="mascot-eyes">
+                  <ellipse cx="52" cy="68" rx="7" ry="9" fill={INK} />
+                  <circle cx="54.5" cy="64.5" r="2.6" fill="var(--color-paper)" />
+                </g>
+              </g>
+            )}
+            <g className="mascot-look">
+              <g className="mascot-eyes">
+                <ellipse cx="88" cy="68" rx="7" ry="9" fill={INK} />
+                <circle cx="90.5" cy="64.5" r="2.6" fill="var(--color-paper)" />
+              </g>
+            </g>
+          </g>
+        )}
 
-      {variant === "alarmed" ? null : variant === "sleepy" ? (
-        <ellipse cx="70" cy="94" rx="5" ry="6.5" fill={INK} />
-      ) : variant === "party" ? (
-        <path
-          d="M54 88q16 17 32 0"
-          stroke={INK}
-          strokeWidth="6"
-          strokeLinecap="round"
-          fill="var(--color-coral)"
-        />
-      ) : (
-        <path d="M56 90q14 12 28 0" stroke={INK} strokeWidth="6" strokeLinecap="round" />
-      )}
+        {variant === "alarmed" ? null : variant === "sleepy" ? (
+          <ellipse cx="70" cy="94" rx="5" ry="6.5" fill={INK} />
+        ) : variant === "party" ? (
+          <path
+            d="M54 88q16 17 32 0"
+            stroke={INK}
+            strokeWidth="6"
+            strokeLinecap="round"
+            fill="var(--color-coral)"
+          />
+        ) : (
+          <path
+            d="M56 90q14 12 28 0"
+            stroke={INK}
+            strokeWidth="6"
+            strokeLinecap="round"
+          />
+        )}
 
-      {/* cheeks */}
-      {variant === "alarmed" ? null : (
-        <g opacity="0.62">
-          <circle cx="38" cy="88" r="8" fill={CHEEK} />
-          <circle cx="102" cy="88" r="8" fill={CHEEK} />
-        </g>
-      )}
+        {/* cheeks */}
+        {variant === "alarmed" ? null : (
+          <g opacity="0.62">
+            <circle cx="38" cy="88" r="8" fill={CHEEK} />
+            <circle cx="102" cy="88" r="8" fill={CHEEK} />
+          </g>
+        )}
+      </g>
     </svg>
   );
 }

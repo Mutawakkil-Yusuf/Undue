@@ -1,4 +1,60 @@
 import { CURRENCY_CODES, type CurrencyCode } from "./schema";
+import { DEFAULT_FX_TO_NGN } from "./currency";
+
+/** Naira per unit for each currency, as returned by a refresh. */
+export type FxRates = Partial<Record<CurrencyCode, number>>;
+
+const RATES_URL = "https://open.er-api.com/v6/latest/USD";
+const TIMEOUT_MS = 8_000;
+/** A refreshed rate may be at most this many times off the built-in starting rate. */
+const SANITY_FACTOR = 20;
+
+function round2(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+function isPositiveNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value > 0;
+}
+
+/**
+ * Turns a "USD base" response ({ rates: { NGN, EUR, ... } }) into naira per
+ * unit. Currencies missing from the response are skipped; anything implausible
+ * is rejected so a bad response can never silently corrupt every total.
+ */
+export function parseRates(json: unknown): FxRates {
+  const rates =
+    typeof json === "object" && json !== null && "rates" in json
+      ? (json as { rates: Record<string, unknown> }).rates
+      : null;
+  const ngnPerUsd = rates?.NGN;
+  if (!rates || !isPositiveNumber(ngnPerUsd)) {
+    throw new Error("The rates response was not in the expected format.");
+  }
+  if (ngnPerUsd < 50 || ngnPerUsd > 20_000) {
+    throw new Error("The rates looked wrong, so they were not applied.");
+  }
+
+  const result: FxRates = { USD: round2(ngnPerUsd) };
+
+  for (const code of CURRENCY_CODES) {
+    if (code === "NGN" || code === "USD") {
+      continue;
+    }
+    const perUsd = rates[code];
+    if (!isPositiveNumber(perUsd)) {
+      continue;
+    }
+    const inNgn = ngnPerUsd / perUsd;
+    const start = DEFAULT_FX_TO_NGN[code];
+    if (inNgn < start / SANITY_FACTOR || inNgn > start * SANITY_FACTOR) {
+      throw new Error("The rates looked wrong, so they were not applied.");
+    }
+    result[code] = round2(inNgn);
+  }
+
+  return result;
+}
 
 export interface LiveFxRates {
   readonly rates: Readonly<Partial<Record<CurrencyCode, number>>>;

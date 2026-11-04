@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils/cn";
-import { BrandLogo } from "@/components/brand/logo";
+import { LogoMark } from "@/components/brand/logo-mark";
 
 interface BrandMarkProps {
   className?: string;
@@ -7,7 +7,7 @@ interface BrandMarkProps {
 }
 
 export function BrandMark({ className, size = 32 }: BrandMarkProps) {
-  return <BrandLogo size={size} className={className} />;
+  return <LogoMark size={size} className={cn("shrink-0", className)} />;
 }
 
 export function BrandWordmark({ className }: { className?: string }) {

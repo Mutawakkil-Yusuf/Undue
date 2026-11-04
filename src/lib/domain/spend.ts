@@ -43,6 +43,16 @@ export function summarizeSpend(
   return { monthly, annual: monthly * 12 };
 }
 
+/**
+ * What the user actually pays, in the charged currency: an explicit absolute
+ * share when set, otherwise the bill split across `shareCount` people.
+ */
+export function effectiveAmount(
+  subscription: Pick<Subscription, "amount" | "myShare" | "shareCount">,
+): number {
+  return getEffectiveAmount(subscription);
+}
+
 export function normalizeToDisplayCurrency(
   subscription: Subscription,
   displayCurrency: CurrencyCode,
