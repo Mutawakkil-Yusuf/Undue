@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useFocusTrap } from "@/lib/hooks/use-focus-trap";
 import { Mascot } from "@/components/brand/mascot";
 import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,11 @@ export function Onboarding() {
   const [step, setStep] = useState(0);
   const { showToast } = useToast();
   const supported = useNotificationsSupported();
+  const dialogRef = useFocusTrap<HTMLDivElement>({
+    enabled: open,
+    onEscape: () => finish(),
+    initialFocus: "button",
+  });
 
   useEffect(() => {
     if (!hasOnboarded()) {
@@ -35,17 +41,6 @@ export function Onboarding() {
       return () => window.clearTimeout(timer);
     }
   }, []);
-
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-    const original = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = original;
-    };
-  }, [open]);
 
   useEffect(() => {
     function handleReplay() {
@@ -91,6 +86,8 @@ export function Onboarding() {
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-label="Welcome to Undue"

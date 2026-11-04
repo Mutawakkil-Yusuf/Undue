@@ -105,7 +105,11 @@ export function Sheet({
       ).filter((element) => element.getAttribute("aria-hidden") !== "true");
     }
 
-    window.setTimeout(() => getFocusable()[0]?.focus(), 60);
+    const focusTimer = window.setTimeout(() => {
+      const preferred =
+        panel?.querySelector<HTMLElement>("[data-autofocus]") ?? getFocusable()[0];
+      preferred?.focus({ preventScroll: true });
+    }, 60);
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -139,6 +143,7 @@ export function Sheet({
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      window.clearTimeout(focusTimer);
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = originalOverflow;
       previouslyFocused?.focus();

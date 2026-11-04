@@ -433,6 +433,7 @@ export function SubscriptionForm({
             placeholder="What is it?"
             maxLength={80}
             tone="fixed"
+            data-autofocus={!catalogEntry ? true : undefined}
           />
         </Field>
       ) : null}
@@ -468,6 +469,7 @@ export function SubscriptionForm({
               inputMode="decimal"
               placeholder="0"
               aria-label="Price"
+              data-autofocus={catalogEntry ? true : undefined}
               className="min-w-0 flex-1 bg-transparent font-display text-4xl leading-none font-extrabold tracking-[-0.05em] text-ink-fixed placeholder:text-ink-fixed/25 focus:outline-none"
             />
             <div className="flex shrink-0 rounded-full bg-paper-soft p-1">

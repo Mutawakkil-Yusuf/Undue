@@ -42,6 +42,7 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
   const { settings } = useAppData();
   const { showToast } = useToast();
   const [state, setState] = useState<SheetState>({ kind: "closed" });
+  const [submitting, setSubmitting] = useState(false);
 
   const openAdd = useCallback(
     (seed: CatalogEntry | undefined = undefined, options?: { isTrial?: boolean }) =>
@@ -69,6 +70,10 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
       : "Add subscription";
 
   async function handleSubmit(input: SubscriptionInput) {
+    if (submitting) {
+      return;
+    }
+    setSubmitting(true);
     try {
       if (editing) {
         await updateSubscription(editing.id, input);
@@ -80,6 +85,8 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
       close();
     } catch {
       showToast("Something went wrong. Try again.", "danger");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -96,13 +103,21 @@ export function SubscriptionSheetProvider({ children }: { children: ReactNode })
         bodyClassName="pb-2"
         footer={
           <div className="flex flex-col gap-2">
-            <Button type="submit" form={FORM_ID} variant="primary" size="lg" block>
-              {submitLabel}
+            <Button
+              type="submit"
+              form={FORM_ID}
+              variant="primary"
+              size="lg"
+              block
+              disabled={submitting}
+            >
+              {submitting ? "Saving…" : submitLabel}
             </Button>
             <button
               type="button"
               onClick={close}
-              className="text-center text-xs font-semibold text-ink-fixed/55 hover:text-ink-fixed"
+              className="text-center text-xs font-semibold text-ink-fixed/55 transition-colors hover:text-ink-fixed disabled:opacity-50"
+              disabled={submitting}
             >
               Cancel
             </button>

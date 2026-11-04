@@ -43,11 +43,10 @@ import {
   useNotificationsEnabled,
   useNotificationsSupported,
 } from "@/lib/hooks/use-notifications";
-import {
-  requestNotificationPermission,
-  setNotificationsEnabled,
-} from "@/lib/notifications/notifications";
+import { requestNotificationPermission } from "@/lib/notifications/notifications";
 import { THEMES, THEME_LABELS, type Theme } from "@/lib/theme/theme";
+import { clearAppStorage } from "@/lib/storage/clear";
+import { setNotificationsEnabled } from "@/lib/notifications/notifications";
 import { downloadTextFile } from "@/lib/utils/download";
 import { vibrate } from "@/lib/utils/haptics";
 import { cn } from "@/lib/utils/cn";
@@ -81,7 +80,11 @@ export default function SettingsPage() {
         serializeBackup(backup),
         "application/json",
       );
-      await updateSettings({ lastBackupAt: new Date().toISOString() });
+      // The backup exists even when this timestamp cannot be saved; don't show a
+      // false failure after a successful download.
+      await updateSettings({ lastBackupAt: new Date().toISOString() }).catch(
+        () => undefined,
+      );
       showToast("Backup downloaded", "success");
     } catch {
       showToast("Could not create a backup", "danger");
@@ -119,6 +122,10 @@ export default function SettingsPage() {
   }
 
   function handleExportCalendar() {
+    if (subscriptions === undefined) {
+      showToast("Still loading your subscriptions.");
+      return;
+    }
     if (active.length === 0) {
       showToast("Add a subscription first to create reminders.");
       return;
@@ -159,6 +166,8 @@ export default function SettingsPage() {
     vibrate([12, 40, 12]);
     try {
       await eraseAll();
+      clearAppStorage();
+      setNotificationsEnabled(false);
       showToast("Everything erased", "success");
     } catch {
       showToast("Could not erase your data", "danger");
@@ -220,7 +229,7 @@ export default function SettingsPage() {
 
       <Link
         href="/find"
-        className="group flex flex-col gap-5 rounded-[2rem] bg-ink p-5 text-left text-bone shadow-card transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.99] sm:p-6"
+        className="group relative flex flex-col gap-5 overflow-hidden rounded-[2rem] bg-ink p-5 text-left text-bone shadow-card transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.99] sm:p-6"
       >
         <span className="flex size-11 items-center justify-center rounded-full bg-lime text-ink-fixed">
           <SparkleIcon width={20} height={20} />
@@ -233,6 +242,11 @@ export default function SettingsPage() {
             Play Store, Apple, Gmail and card statements — with quick-add.
           </span>
         </span>
+        <ArrowRightIcon
+          width={22}
+          height={22}
+          className="absolute right-5 bottom-5 transition-transform duration-200 group-hover:translate-x-1 sm:right-6 sm:bottom-6"
+        />
       </Link>
 
       <div className="grid gap-4 sm:grid-cols-2">

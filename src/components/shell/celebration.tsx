@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -15,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { CheckIcon, ShareIcon } from "@/components/ui/icons";
 import { MoneyText } from "@/components/ui/money-text";
 import { computeCancelWindow } from "@/lib/domain/cancel-by";
+import { useFocusTrap } from "@/lib/hooks/use-focus-trap";
 import { todayIso } from "@/lib/domain/date";
 import { formatDate } from "@/lib/domain/format";
 import { annualAmount } from "@/lib/domain/spend";
@@ -44,6 +44,11 @@ const CelebrationContext = createContext<CelebrationContextValue | null>(null);
 
 export function CelebrationProvider({ children }: { children: ReactNode }) {
   const [celebration, setCelebration] = useState<CelebrationState | null>(null);
+  const dialogRef = useFocusTrap<HTMLDivElement>({
+    enabled: celebration !== null,
+    onEscape: () => setCelebration(null),
+    initialFocus: "[data-autofocus]",
+  });
   const { showToast } = useToast();
   const subscription = celebration?.subscription ?? null;
 
@@ -52,24 +57,6 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const api = useMemo<CelebrationContextValue>(() => ({ celebrate }), [celebrate]);
-
-  useEffect(() => {
-    if (!subscription) {
-      return;
-    }
-    const original = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setCelebration(null);
-      }
-    }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = original;
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [subscription]);
 
   async function handleShare() {
     if (!subscription) {
@@ -137,6 +124,8 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
       {children}
       {subscription ? (
         <div
+          ref={dialogRef}
+          tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-label={`${subscription.name} cancelled`}
@@ -195,7 +184,12 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
               >
                 Share
               </Button>
-              <Button variant="primary" size="lg" onClick={() => setCelebration(null)}>
+              <Button
+                variant="primary"
+                size="lg"
+                data-autofocus
+                onClick={() => setCelebration(null)}
+              >
                 Done
               </Button>
             </div>
