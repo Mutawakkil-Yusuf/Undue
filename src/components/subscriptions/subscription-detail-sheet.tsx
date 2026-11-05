@@ -10,6 +10,7 @@ import {
 } from "react";
 import { Mascot } from "@/components/brand/mascot";
 import { useToast } from "@/components/providers/toast-provider";
+import { ShareCardDialog } from "@/components/share/share-card-dialog";
 import { useCelebration } from "@/components/shell/celebration";
 import { Button } from "@/components/ui/button";
 import { MoneyText } from "@/components/ui/money-text";
@@ -64,12 +65,6 @@ import {
   getTrialEnd,
   hasPaymentProblem,
 } from "@/lib/domain/subscription";
-import {
-  createShareImage,
-  shareFilename,
-  shareOrDownloadImage,
-  SHARE_URL,
-} from "@/lib/share/share-card";
 import type { UrgencyLevel } from "@/lib/domain/urgency";
 import { useToday } from "@/lib/hooks/use-today";
 import { cn } from "@/lib/utils/cn";
@@ -300,7 +295,8 @@ function DetailHeader({
   onClose: () => void;
   onEdit: () => void;
 }) {
-  const { showToast } = useToast();
+  const [shareOpen, setShareOpen] = useState(false);
+  const closeShare = useCallback(() => setShareOpen(false), []);
   const window = today ? computeCancelWindow(subscription, today) : null;
   const cancelled = subscription.status === "cancelled";
   const variant = cancelled
@@ -312,44 +308,6 @@ function DetailHeader({
       : window?.urgency === "past"
         ? "sleepy"
         : "happy";
-
-  async function handleShare() {
-    const effectiveDate = window?.renewal ?? subscription.nextRenewal;
-    const text = cancelled
-      ? `${subscription.name} is cancelled. One less charge. Track yours at ${SHARE_URL}`
-      : subscription.isTrial
-        ? `${subscription.name}'s trial ends ${formatDate(effectiveDate)}. Last day to cancel: ${
-            window ? formatDate(window.cancelBy) : "check Undue"
-          }. Track yours at ${SHARE_URL}`
-        : `${subscription.name} renews ${formatDate(effectiveDate)}. Last day to cancel: ${
-            window ? formatDate(window.cancelBy) : "check Undue"
-          }. Track yours at ${SHARE_URL}`;
-    try {
-      const blob = await createShareImage({
-        name: subscription.name,
-        amount: getEffectiveAmount(subscription),
-        currency: subscription.currency,
-        cancelBy: window ? formatDate(window.cancelBy) : "Open Undue",
-        renewal: formatDate(window?.renewal ?? subscription.nextRenewal),
-        cancelled,
-        trial: subscription.isTrial,
-      });
-      const result = await shareOrDownloadImage(
-        blob,
-        shareFilename(subscription.name),
-        `${subscription.name} · Undue`,
-        text,
-      );
-      if (result === "downloaded") {
-        showToast("Share image downloaded", "success");
-      }
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        return;
-      }
-      showToast("Could not create the share image.", "danger");
-    }
-  }
 
   return (
     <header className="relative overflow-hidden bg-dark px-5 pt-1 pb-6 text-paper sm:px-7">
@@ -365,8 +323,8 @@ function DetailHeader({
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => void handleShare()}
-            aria-label="Share deadline"
+            onClick={() => setShareOpen(true)}
+            aria-label="Share as image"
             className="flex size-11 items-center justify-center rounded-full bg-paper/10 text-paper transition-colors hover:bg-paper/15"
           >
             <ShareIcon width={19} height={19} />
@@ -385,21 +343,21 @@ function DetailHeader({
       <div className="mt-5 flex items-end justify-between gap-4">
         <div className="flex min-w-0 flex-col gap-1.5">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-paper/10 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-paper/65 uppercase">
+            <span className="rounded-full bg-paper/10 px-2.5 py-1 text-[11px] font-bold tracking-[0.12em] text-paper/65 uppercase">
               {getCategory(subscription.category).label}
             </span>
             {subscription.isTrial ? (
-              <span className="rounded-full bg-coral px-2.5 py-1 text-[10px] font-bold text-ink-fixed">
+              <span className="rounded-full bg-coral px-2.5 py-1 text-[11px] font-bold text-ink-fixed">
                 Trial
               </span>
             ) : null}
             {cancelled ? (
-              <span className="rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold text-ink-fixed">
+              <span className="rounded-full bg-lime px-2.5 py-1 text-[11px] font-bold text-ink-fixed">
                 Cancelled
               </span>
             ) : null}
           </div>
-          <h2 className="font-display text-[clamp(2.1rem,10vw,2.8rem)] leading-[0.85] font-extrabold tracking-[-0.06em] text-balance">
+          <h2 className="line-clamp-3 font-display text-[clamp(2.1rem,10vw,2.8rem)] leading-[0.85] font-extrabold tracking-[-0.06em] text-balance break-words">
             {subscription.name}
           </h2>
           <p className="text-sm font-semibold text-paper/55">
@@ -420,6 +378,13 @@ function DetailHeader({
           className="hidden shrink-0 animate-float min-[360px]:block"
         />
       </div>
+      {shareOpen ? (
+        <ShareCardDialog
+          subscription={subscription}
+          defaultIncludeAmount={cancelled}
+          onClose={closeShare}
+        />
+      ) : null}
     </header>
   );
 }
@@ -506,7 +471,7 @@ function DetailBody({
         <div className="relative z-10 flex flex-col gap-1 min-[360px]:pr-24">
           <span
             className={cn(
-              "text-[10px] font-bold tracking-[0.14em] uppercase",
+              "text-[11px] font-bold tracking-[0.14em] uppercase",
               cancelled ? "text-muted" : "text-ink-fixed/60",
             )}
           >
@@ -565,7 +530,7 @@ function DetailBody({
 
       {!cancelled ? (
         <div className="flex flex-col gap-2 rounded-[1.5rem] bg-surface p-4 shadow-card">
-          <span className="text-[10px] font-bold tracking-[0.13em] text-muted uppercase">
+          <span className="text-[11px] font-bold tracking-[0.13em] text-muted uppercase">
             Decision
           </span>
           <p className="text-sm font-semibold text-ink">
@@ -753,7 +718,7 @@ function DetailBody({
       {change ? (
         <section className="flex flex-col gap-3 rounded-[1.5rem] bg-surface p-4 shadow-card">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-[10px] font-bold tracking-[0.13em] text-coral uppercase">
+            <span className="text-[11px] font-bold tracking-[0.13em] text-coral-ink uppercase">
               Price history
             </span>
             {change.increased ? (
@@ -809,7 +774,7 @@ function DetailBody({
 
       {subscription.notes ? (
         <div className="rounded-[1.5rem] bg-surface p-4 shadow-card">
-          <span className="text-[10px] font-bold tracking-[0.13em] text-muted uppercase">
+          <span className="text-[11px] font-bold tracking-[0.13em] text-muted uppercase">
             Notes
           </span>
           <p className="mt-1 text-sm whitespace-pre-wrap text-ink">

@@ -118,7 +118,7 @@ function Count({
       <span className="font-display text-3xl leading-none font-extrabold tracking-[-0.05em]">
         {value}
       </span>
-      <span className="mt-1 block text-[10px] font-bold tracking-wide uppercase opacity-65">
+      <span className="mt-1 block text-[11px] font-bold tracking-wide uppercase opacity-65">
         {label}
       </span>
     </div>

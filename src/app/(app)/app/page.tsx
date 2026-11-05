@@ -172,7 +172,7 @@ export default function DashboardPage() {
           </p>
           <Link
             href="/find"
-            className="shrink-0 text-xs font-bold text-coral underline decoration-coral/40 underline-offset-2"
+            className="shrink-0 text-xs font-bold text-coral-ink underline decoration-coral/40 underline-offset-2"
           >
             Find more to review
           </Link>
@@ -463,7 +463,7 @@ function EmptyDeadlines({
         </Button>
         <Link
           href="/find"
-          className="min-h-10 text-center text-sm font-bold text-ink underline decoration-coral/50 underline-offset-4 transition-colors hover:text-coral"
+          className="min-h-10 text-center text-sm font-bold text-ink underline decoration-coral/50 underline-offset-4 transition-colors hover:text-coral-ink"
         >
           Find every subscription you already pay for
         </Link>

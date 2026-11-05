@@ -341,7 +341,7 @@ export function SubscriptionForm({
                 style={{ background: categoryColor(entry.category) }}
               >
                 {entry.name.trim().charAt(0).toUpperCase()}
-                <span className="mt-0.5 max-w-[54px] truncate text-[9px] font-bold tracking-wide text-ink-fixed/60 uppercase">
+                <span className="mt-0.5 max-w-[54px] truncate text-[11px] font-bold tracking-wide text-ink-fixed/60 uppercase">
                   {entry.name.split(" ")[0]}
                 </span>
               </button>
@@ -359,7 +359,7 @@ export function SubscriptionForm({
             )}
           >
             <PlusIcon width={22} height={22} />
-            <span className="text-[9px] font-bold tracking-wide uppercase">Find</span>
+            <span className="text-[11px] font-bold tracking-wide uppercase">Find</span>
           </button>
         </div>
 
@@ -449,7 +449,7 @@ export function SubscriptionForm({
               const index = CURRENCY_CODES.indexOf(currency);
               setCurrency(CURRENCY_CODES[(index + 1) % CURRENCY_CODES.length] ?? "NGN");
             }}
-            className="rounded-full bg-paper/35 px-2.5 py-1 text-[10px] font-bold tracking-wide text-ink-fixed uppercase"
+            className="rounded-full bg-paper/35 px-2.5 py-1 text-[11px] font-bold tracking-wide text-ink-fixed uppercase"
             aria-label="Change currency"
           >
             {currency}
@@ -497,7 +497,7 @@ export function SubscriptionForm({
             </div>
           </div>
           {isCustomCycle ? (
-            <span className="text-[10px] font-semibold text-ink-fixed/55">
+            <span className="text-[11px] font-semibold text-ink-fixed/55">
               Custom cycle: every {cycleInterval} {cycleUnit}
               {cycleInterval === 1 ? "" : "s"}
             </span>
@@ -513,7 +513,7 @@ export function SubscriptionForm({
           <span className="text-[11px] font-bold tracking-[0.13em] text-ink-fixed/55 uppercase">
             {isTrial ? "First charge" : "Next charge"}
           </span>
-          <span className="text-[10px] font-semibold text-ink-fixed/45">
+          <span className="text-[11px] font-semibold text-ink-fixed/45">
             {nextRenewal === todayValue ? "Today" : formatDate(nextRenewal)}
           </span>
         </div>
@@ -540,7 +540,7 @@ export function SubscriptionForm({
               >
                 <span
                   className={cn(
-                    "text-[9px] font-bold tracking-wide uppercase",
+                    "text-[11px] font-bold tracking-wide uppercase",
                     selected ? "text-paper/55" : "text-ink-fixed/50",
                   )}
                 >
@@ -557,7 +557,7 @@ export function SubscriptionForm({
           })}
           <label className="relative flex h-[68px] w-[56px] shrink-0 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-[1.1rem] border-2 border-dashed border-ink-fixed/35 text-ink-fixed transition-colors hover:bg-paper/25">
             <CalendarIcon width={18} height={18} />
-            <span className="text-[9px] font-bold tracking-wide uppercase">Pick</span>
+            <span className="text-[11px] font-bold tracking-wide uppercase">Pick</span>
             <input
               ref={dateInputRef}
               type="date"
@@ -618,7 +618,7 @@ export function SubscriptionForm({
           className="shrink-0"
         />
         <div className="flex min-w-0 flex-col gap-0.5">
-          <span className="text-[9px] font-bold tracking-[0.14em] text-paper/45 uppercase">
+          <span className="text-[11px] font-bold tracking-[0.14em] text-paper/45 uppercase">
             Your last day to cancel
           </span>
           <span className="font-display text-2xl leading-none font-extrabold tracking-[-0.05em]">

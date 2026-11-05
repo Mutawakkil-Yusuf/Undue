@@ -249,7 +249,7 @@ export function BankCsvSheet({ open, onClose, onAdded }: BankCsvSheetProps) {
                       <span className="truncate text-sm font-bold text-ink">
                         {entry.name}
                       </span>
-                      <span className="shrink-0 rounded-full bg-line/40 px-2 py-0.5 text-[10px] font-bold text-muted">
+                      <span className="shrink-0 rounded-full bg-line/40 px-2 py-0.5 text-[11px] font-bold text-muted">
                         {CONFIDENCE_LABEL[entry.confidence]}
                       </span>
                     </span>

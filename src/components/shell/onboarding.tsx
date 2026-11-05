@@ -288,7 +288,7 @@ function NudgeSlide() {
           <Mascot variant="alarmed" color="var(--color-yellow)" size={34} />
         </span>
         <div className="flex min-w-0 flex-col">
-          <span className="text-[10px] font-bold tracking-[0.12em] text-ink-fixed/45 uppercase">
+          <span className="text-[11px] font-bold tracking-[0.12em] text-ink-fixed/45 uppercase">
             Undue · now
           </span>
           <span className="text-sm leading-snug font-semibold text-ink-fixed">

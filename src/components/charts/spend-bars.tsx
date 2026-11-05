@@ -64,12 +64,13 @@ export function SpendBars({ months, currency }: SpendBarsProps) {
         </span>
       </div>
 
-      <div ref={containerRef} className="w-full">
+      <div ref={containerRef} className="w-full min-w-0">
         {measuredWidth > 0 ? (
           <svg
             viewBox={`0 0 ${width} ${HEIGHT}`}
             width={width}
             height={HEIGHT}
+            className="block h-auto max-w-full"
             role="img"
             aria-label={`Projected charges over ${months.length} months, totalling ${formatMoney(Math.round(total), currency)}`}
           >

@@ -105,8 +105,8 @@ export function DeadlineHero({ subscription, window, onSelect }: DeadlineHeroPro
           </button>
         </div>
 
-        <div className="flex max-w-full flex-col gap-2 min-[360px]:max-w-[78%] sm:max-w-[68%]">
-          <h2 className="font-display text-[clamp(2.25rem,11vw,2.75rem)] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance sm:text-5xl">
+        <div className="flex max-w-full flex-col gap-2 min-[400px]:max-w-[72%] sm:max-w-[68%]">
+          <h2 className="line-clamp-3 font-display text-[clamp(2.25rem,11vw,2.75rem)] leading-[0.86] font-extrabold tracking-[-0.065em] text-balance break-words sm:text-5xl">
             {subscription.name}
           </h2>
           <p className="text-sm font-semibold text-ink-fixed/75 sm:text-base">
@@ -128,7 +128,7 @@ export function DeadlineHero({ subscription, window, onSelect }: DeadlineHeroPro
         </button>
       </div>
 
-      <div className="pointer-events-none absolute -right-2 -bottom-4 z-0 hidden opacity-95 min-[360px]:block sm:right-6 sm:-bottom-5">
+      <div className="pointer-events-none absolute -right-2 -bottom-4 z-0 hidden opacity-95 min-[400px]:block sm:right-6 sm:-bottom-5">
         <Mascot
           variant={MASCOT_BY_URGENCY[window.urgency]}
           color={MASCOT_COLOR[tone]}

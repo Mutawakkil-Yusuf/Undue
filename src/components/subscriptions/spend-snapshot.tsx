@@ -41,8 +41,8 @@ export function SpendSnapshot({
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-bold tracking-[0.13em] text-coral uppercase">
+        <div className="flex min-w-0 flex-col gap-1">
+          <span className="text-[11px] font-bold tracking-[0.13em] text-coral-ink uppercase">
             Your spend
           </span>
           <MoneyText
@@ -50,7 +50,7 @@ export function SpendSnapshot({
             currency={currency}
             rounded
             animate
-            className="font-display text-4xl leading-none font-extrabold tracking-[-0.06em] text-ink sm:text-5xl"
+            className="font-display text-[length:min(2.25rem,11vw)] leading-none font-extrabold tracking-[-0.06em] text-ink sm:text-5xl"
           />
           <span className="text-xs text-muted">
             {period === "monthly" ? "each month" : "each year"} across {activeCount}{" "}
@@ -58,14 +58,14 @@ export function SpendSnapshot({
           </span>
         </div>
 
-        <div className="flex flex-col gap-1 rounded-full bg-surface-soft p-1">
+        <div className="flex shrink-0 flex-col gap-1 rounded-full bg-surface-soft p-1">
           {(["monthly", "annual"] as const).map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => onPeriodChange(option)}
               className={cn(
-                "rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide uppercase transition-colors",
+                "rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide uppercase transition-colors",
                 period === option ? "bg-ink text-bone" : "text-muted hover:text-ink",
               )}
             >
@@ -106,7 +106,7 @@ export function SpendSnapshot({
 
       <Link
         href="/insights"
-        className="inline-flex items-center gap-1.5 self-start text-sm font-bold text-ink transition-colors hover:text-coral"
+        className="inline-flex items-center gap-1.5 self-start text-sm font-bold text-ink transition-colors hover:text-coral-ink"
       >
         See insights
         <ArrowRightIcon width={16} height={16} />

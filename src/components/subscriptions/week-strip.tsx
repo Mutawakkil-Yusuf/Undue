@@ -80,7 +80,7 @@ export function WeekStrip({ subscriptions, today }: WeekStripProps) {
           >
             <span
               className={cn(
-                "text-[10px] font-semibold tracking-wide",
+                "text-[11px] font-semibold tracking-wide",
                 isToday ? "text-bone/60" : "text-muted",
               )}
             >

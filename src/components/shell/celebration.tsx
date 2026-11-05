@@ -10,6 +10,7 @@ import {
 } from "react";
 import { Confetti, Mascot } from "@/components/brand/mascot";
 import { useToast } from "@/components/providers/toast-provider";
+import { ShareCardDialog } from "@/components/share/share-card-dialog";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, ShareIcon } from "@/components/ui/icons";
 import { MoneyText } from "@/components/ui/money-text";
@@ -20,12 +21,6 @@ import { formatDate } from "@/lib/domain/format";
 import { annualAmount } from "@/lib/domain/spend";
 import { getEffectiveAmount } from "@/lib/domain/subscription";
 import type { Subscription } from "@/lib/domain/schema";
-import {
-  createShareImage,
-  shareFilename,
-  shareOrDownloadImage,
-  SHARE_URL,
-} from "@/lib/share/share-card";
 
 interface CelebrationOptions {
   onUndo?: () => void | Promise<void>;
@@ -50,47 +45,16 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
     initialFocus: "[data-autofocus]",
   });
   const { showToast } = useToast();
+  const [shareOpen, setShareOpen] = useState(false);
+  const closeShare = useCallback(() => setShareOpen(false), []);
   const subscription = celebration?.subscription ?? null;
 
   const celebrate = useCallback((next: Subscription, options?: CelebrationOptions) => {
+    setShareOpen(false);
     setCelebration({ subscription: next, onUndo: options?.onUndo });
   }, []);
 
   const api = useMemo<CelebrationContextValue>(() => ({ celebrate }), [celebrate]);
-
-  async function handleShare() {
-    if (!subscription) {
-      return;
-    }
-    const saved = annualAmount(getEffectiveAmount(subscription), subscription.cycle);
-    const text = `I cancelled ${subscription.name} and saved ${Math.round(saved)} ${subscription.currency} a year with Undue. ${SHARE_URL}`;
-    try {
-      const window = computeCancelWindow(subscription, new Date());
-      const blob = await createShareImage({
-        name: subscription.name,
-        amount: getEffectiveAmount(subscription),
-        currency: subscription.currency,
-        cancelBy: formatDate(window.cancelBy),
-        renewal: formatDate(window.renewal),
-        cancelled: true,
-        trial: subscription.isTrial,
-      });
-      const result = await shareOrDownloadImage(
-        blob,
-        shareFilename(subscription.name),
-        "One less undue charge",
-        text,
-      );
-      if (result === "downloaded") {
-        showToast("Share image downloaded", "success");
-      }
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        return;
-      }
-      showToast("Could not create the share image.", "danger");
-    }
-  }
 
   async function handleUndo() {
     const undo = celebration?.onUndo;
@@ -179,10 +143,10 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
               <Button
                 variant="fixed"
                 size="lg"
-                onClick={() => void handleShare()}
+                onClick={() => setShareOpen(true)}
                 leadingIcon={<ShareIcon width={18} height={18} />}
               >
-                Share
+                Share image
               </Button>
               <Button
                 variant="primary"
@@ -195,6 +159,14 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
             </div>
           </div>
         </div>
+      ) : null}
+      {shareOpen && subscription ? (
+        <ShareCardDialog
+          subscription={subscription}
+          mode="saved"
+          defaultIncludeAmount
+          onClose={closeShare}
+        />
       ) : null}
     </CelebrationContext.Provider>
   );

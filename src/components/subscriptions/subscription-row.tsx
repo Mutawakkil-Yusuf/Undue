@@ -45,12 +45,12 @@ export function SubscriptionRow({
         <div className="flex min-w-0 items-center gap-1.5">
           <span className="truncate text-sm font-bold text-ink">{subscription.name}</span>
           {subscription.isTrial ? (
-            <span className="shrink-0 rounded-full bg-coral px-1.5 py-0.5 text-[10px] font-bold text-ink-fixed">
+            <span className="shrink-0 rounded-full bg-coral px-1.5 py-0.5 text-[11px] font-bold text-ink-fixed">
               Trial
             </span>
           ) : null}
           {increased && change ? (
-            <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-urgent-soft px-1.5 py-0.5 text-[10px] font-bold text-urgent">
+            <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-urgent-soft px-1.5 py-0.5 text-[11px] font-bold text-urgent">
               <TrendUpIcon width={10} height={10} />
               {formatMoney(change.delta, subscription.currency)}
             </span>

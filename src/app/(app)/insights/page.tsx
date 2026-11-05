@@ -203,7 +203,7 @@ export default function InsightsPage() {
                           </span>
                           <span className="shrink-0 text-right text-xs font-bold text-ink">
                             <MoneyText amount={monthly} currency={currency} rounded />
-                            <span className="block text-[10px] font-medium text-muted">
+                            <span className="block text-[11px] font-medium text-muted">
                               /mo · {Math.round(share * 100)}%
                             </span>
                           </span>
@@ -275,7 +275,7 @@ export default function InsightsPage() {
                   Money kept
                 </span>
                 <div className="flex items-end justify-between gap-3">
-                  <div className="flex flex-col">
+                  <div className="flex min-w-0 flex-col">
                     <MoneyText
                       amount={savings.annual}
                       currency={currency}

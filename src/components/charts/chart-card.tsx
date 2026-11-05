@@ -26,8 +26,8 @@ export function ChartCard({
       )}
     >
       <header className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-[11px] font-bold tracking-[0.13em] text-coral uppercase">
+        <div className="flex min-w-0 flex-col gap-1">
+          <h2 className="text-[11px] font-bold tracking-[0.13em] text-coral-ink uppercase">
             {label}
           </h2>
           <p className="font-display text-xl leading-tight font-extrabold tracking-[-0.04em] text-ink">

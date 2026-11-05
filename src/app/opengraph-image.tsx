@@ -3,6 +3,11 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { LogoMark } from "@/components/brand/logo-mark";
 
+// Read from disk (not fetch) so the image is generated once at build time and
+// served as a static file, which link-preview crawlers fetch quickly.
+const loadFont = (file: string) =>
+  readFile(join(process.cwd(), "src/assets/fonts", file));
+
 export const alt = "Undue: know when to cancel, before you’re charged";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -13,39 +18,12 @@ const PREVIEW = [
   { name: "Spotify", meta: "Charges 18 Nov", tone: "#bde66a", pill: "17 days" },
 ];
 
-async function loadFonts() {
-  const [bricolage, dmSans600, dmSans700] = await Promise.all([
-    readFile(join(process.cwd(), "src/assets/fonts/bricolage-grotesque-800.woff")),
-    readFile(join(process.cwd(), "src/assets/fonts/dm-sans-600.woff")),
-    readFile(join(process.cwd(), "src/assets/fonts/dm-sans-700.woff")),
-  ]);
-  const asArrayBuffer = (buffer: Buffer): ArrayBuffer =>
-    Uint8Array.from(buffer).buffer as ArrayBuffer;
-
-  return [
-    {
-      name: "Bricolage Grotesque",
-      data: asArrayBuffer(bricolage),
-      weight: 800 as const,
-      style: "normal" as const,
-    },
-    {
-      name: "DM Sans",
-      data: asArrayBuffer(dmSans600),
-      weight: 600 as const,
-      style: "normal" as const,
-    },
-    {
-      name: "DM Sans",
-      data: asArrayBuffer(dmSans700),
-      weight: 700 as const,
-      style: "normal" as const,
-    },
-  ];
-}
-
 export default async function OpengraphImage() {
-  const fonts = await loadFonts();
+  const [display, bodyBold, bodySemi] = await Promise.all([
+    loadFont("bricolage-grotesque-800.woff"),
+    loadFont("dm-sans-700.woff"),
+    loadFont("dm-sans-600.woff"),
+  ]);
 
   return new ImageResponse(
     <div
@@ -98,11 +76,11 @@ export default async function OpengraphImage() {
           <LogoMark size={64} />
           <div
             style={{
-              fontFamily: "Bricolage Grotesque",
-              fontSize: 40,
+              fontSize: 46,
               fontWeight: 800,
-              letterSpacing: -1.5,
               color: "#191713",
+              fontFamily: "Bricolage",
+              letterSpacing: -1.5,
             }}
           >
             Undue
@@ -113,7 +91,7 @@ export default async function OpengraphImage() {
               borderRadius: 999,
               background: "#fffdf9",
               padding: "8px 16px",
-              fontSize: 17,
+              fontSize: 18,
               fontWeight: 700,
               color: "#756b5f",
               display: "flex",
@@ -126,38 +104,36 @@ export default async function OpengraphImage() {
         <div style={{ display: "flex", alignItems: "center", gap: 48 }}>
           <div
             style={{
-              width: 620,
+              width: 600,
               display: "flex",
               flexDirection: "column",
-              gap: 20,
+              gap: 22,
             }}
           >
             <div
               style={{
-                fontFamily: "Bricolage Grotesque",
-                fontSize: 68,
+                fontSize: 70,
+                fontFamily: "Bricolage",
                 fontWeight: 800,
                 color: "#191713",
-                lineHeight: 0.98,
-                letterSpacing: -2.6,
+                lineHeight: 0.94,
+                letterSpacing: -3,
                 display: "flex",
                 flexWrap: "wrap",
               }}
             >
-              Know when to cancel, before you’re charged.
+              Know when to cancel. Before you’re charged.
             </div>
             <div
               style={{
-                fontSize: 24,
-                fontWeight: 600,
+                fontSize: 28,
                 color: "#756b5f",
-                lineHeight: 1.32,
+                lineHeight: 1.35,
                 display: "flex",
-                maxWidth: 540,
+                maxWidth: 520,
               }}
             >
-              Track the last day to cancel each subscription so you can act before it
-              renews.
+              See the last day to cancel each subscription. No account needed.
             </div>
             <div
               style={{
@@ -171,8 +147,8 @@ export default async function OpengraphImage() {
                 style={{
                   borderRadius: 999,
                   background: "#191713",
-                  padding: "13px 24px",
-                  fontSize: 20,
+                  padding: "14px 24px",
+                  fontSize: 22,
                   fontWeight: 700,
                   color: "#f8f0e5",
                   display: "flex",
@@ -184,8 +160,8 @@ export default async function OpengraphImage() {
                 style={{
                   borderRadius: 999,
                   border: "2px solid #191713",
-                  padding: "11px 22px",
-                  fontSize: 19,
+                  padding: "12px 22px",
+                  fontSize: 20,
                   fontWeight: 700,
                   color: "#191713",
                   display: "flex",
@@ -198,7 +174,7 @@ export default async function OpengraphImage() {
 
           <div
             style={{
-              width: 376,
+              width: 390,
               borderRadius: 40,
               background: "#171614",
               padding: 18,
@@ -263,7 +239,7 @@ export default async function OpengraphImage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 19,
+                    fontSize: 20,
                     fontWeight: 800,
                     color: "#191713",
                   }}
@@ -271,7 +247,14 @@ export default async function OpengraphImage() {
                   {item.name.charAt(0)}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#191713" }}>
+                  <div
+                    style={{
+                      fontSize: 25,
+                      fontWeight: 800,
+                      fontFamily: "Bricolage",
+                      color: "#191713",
+                    }}
+                  >
                     {item.name}
                   </div>
                   <div
@@ -308,17 +291,19 @@ export default async function OpengraphImage() {
               display: "flex",
             }}
           />
-          <div
-            style={{ fontSize: 20, fontWeight: 600, color: "#756b5f", display: "flex" }}
-          >
-            Nothing leaves your device. No account, no server.
+          <div style={{ fontSize: 22, color: "#756b5f", display: "flex" }}>
+            Nothing leaves your device. No account, no server, export anytime.
           </div>
         </div>
       </div>
     </div>,
     {
       ...size,
-      fonts,
+      fonts: [
+        { name: "Bricolage", data: display, weight: 800, style: "normal" },
+        { name: "DM Sans", data: bodyBold, weight: 700, style: "normal" },
+        { name: "DM Sans", data: bodySemi, weight: 400, style: "normal" },
+      ],
     },
   );
 }

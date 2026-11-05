@@ -65,7 +65,7 @@ export function SmartDashboardAlert({
       className="block rounded-[1.5rem] border border-line bg-surface-soft p-4 transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none"
       aria-label="Open smart review"
     >
-      <span className="flex items-center gap-2 text-[10px] font-bold tracking-[0.13em] text-coral uppercase">
+      <span className="flex items-center gap-2 text-[11px] font-bold tracking-[0.13em] text-coral-ink uppercase">
         <AlertIcon width={13} height={13} />
         Smart review
       </span>
@@ -167,7 +167,7 @@ export function SmartReviewSection({
     >
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-bold tracking-[0.13em] text-coral uppercase">
+          <span className="text-[11px] font-bold tracking-[0.13em] text-coral-ink uppercase">
             Smart review
           </span>
           <h2 className="font-display text-2xl font-extrabold tracking-[-0.04em] text-ink">
@@ -256,14 +256,14 @@ export function SmartReviewSection({
                               onSelect(subscription);
                             }
                           }}
-                          className="rounded-full bg-surface px-2 py-1 text-[10px] font-bold text-ink transition-colors hover:bg-line"
+                          className="rounded-full bg-surface px-2 py-1 text-[11px] font-bold text-ink transition-colors hover:bg-line"
                         >
                           {item.name}
                         </button>
                       ) : (
                         <span
                           key={item.id}
-                          className="rounded-full bg-surface px-2 py-1 text-[10px] font-bold text-ink"
+                          className="rounded-full bg-surface px-2 py-1 text-[11px] font-bold text-ink"
                         >
                           {item.name}
                         </span>
@@ -282,7 +282,7 @@ export function SmartReviewSection({
                 <MoneyText
                   amount={unsure.reduce((sum, item) => sum + item.annual, 0)}
                   currency={displayCurrency}
-                  className="text-xs font-extrabold text-coral"
+                  className="text-xs font-extrabold text-coral-ink"
                 />
               </div>
               <ul className="flex flex-col gap-2">

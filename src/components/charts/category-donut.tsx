@@ -80,7 +80,7 @@ export function CategoryDonut({ data, currency }: CategoryDonutProps) {
         </svg>
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span className="text-[10px] font-bold tracking-[0.12em] text-muted uppercase">
+          <span className="text-[11px] font-bold tracking-[0.12em] text-muted uppercase">
             {focused ? getCategory(focused.category).label : "Each month"}
           </span>
           <MoneyText

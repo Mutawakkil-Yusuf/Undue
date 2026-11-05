@@ -29,6 +29,8 @@
   /* Playful accents */
   --color-coral: #ff6b5a;
   --color-coral-strong: #f25b49;
+  /* Coral for small text on light surfaces; plain coral is too pale to read. */
+  --color-coral-ink: #b23627;
   --color-yellow: #f7bd3f;
   --color-lime: #bde66a;
   --color-sky: #93baf8;
@@ -41,11 +43,11 @@
   --color-on-ember: #191713;
 
   /* Semantic urgency */
-  --color-safe: #4d7a25;
+  --color-safe: #46701f;
   --color-safe-soft: #e9f6d3;
-  --color-soon: #9a6500;
+  --color-soon: #8f5d00;
   --color-soon-soft: #fdf0cd;
-  --color-urgent: #bd3b2c;
+  --color-urgent: #b23627;
   --color-urgent-soft: #ffe1dc;
 
   /* Categories */
@@ -356,6 +358,7 @@
   --color-ember: #ff7a6a;
   --color-ember-strong: #ff6b5a;
   --color-ember-soft: #3a211d;
+  --color-coral-ink: #ff7a6a;
   --color-on-ember: #191713;
 
   --color-safe: #b7e184;

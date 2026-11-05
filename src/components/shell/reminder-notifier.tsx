@@ -262,7 +262,7 @@ export function ReminderNotifier() {
       >
         <CloseIcon width={17} height={17} />
       </button>
-      <p className="text-[10px] font-bold tracking-[0.13em] text-coral uppercase">
+      <p className="text-[11px] font-bold tracking-[0.13em] text-coral-ink uppercase">
         Decision time
       </p>
       <h2 className="mt-1 font-display text-xl leading-none font-extrabold tracking-[-0.04em] text-ink">

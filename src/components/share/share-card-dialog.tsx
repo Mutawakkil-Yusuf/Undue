@@ -44,6 +44,7 @@ export function ShareCardDialog({
   const [rendered, setRendered] = useState<Rendered | null>(null);
   const [failed, setFailed] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   // Draw the image up front so the Share tap can call navigator.share()
   // immediately; browsers reject share() if it waits on async work first.
@@ -85,10 +86,34 @@ export function ShareCardDialog({
     closeRef.current?.focus();
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const panel = dialogRef.current;
+    const focusableSelector =
+      "button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex='-1'])";
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         event.stopPropagation();
         onClose();
+        return;
+      }
+      if (event.key === "Tab" && panel) {
+        // Keep Tab inside this dialog, and stop the sheet or celebration
+        // underneath from pulling focus back into itself.
+        event.stopPropagation();
+        const focusable = Array.from(panel.querySelectorAll<HTMLElement>(focusableSelector));
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!first || !last) {
+          event.preventDefault();
+          return;
+        }
+        const active = document.activeElement;
+        if (event.shiftKey && (active === first || !panel.contains(active))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (active === last || !panel.contains(active))) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     }
     document.addEventListener("keydown", handleKeyDown, true);
@@ -138,6 +163,7 @@ export function ShareCardDialog({
 
   return createPortal(
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label="Share as an image"

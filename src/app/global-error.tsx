@@ -12,7 +12,7 @@ export default function GlobalError({
       <body
         style={{
           margin: 0,
-          minHeight: "100vh",
+          minHeight: "100dvh",
           display: "grid",
           placeItems: "center",
           background: "#f8f0e5",
